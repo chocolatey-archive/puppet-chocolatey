@@ -1,0 +1,12 @@
+homebrew
+
+This is a home brew package provider. Use it like this:
+
+    class hightower::packages {
+      pkglist = [‘postgresql’, ‘nginx’, ‘git’, ‘tmux’]
+
+      package { $pkglist:
+        ensure   => installed,
+        provider => ‘homebrew’,
+      }
+    }
