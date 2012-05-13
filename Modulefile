@@ -1,11 +1,11 @@
-name    'kelseyhightower-homebrew'
+name    'rismoney-chocolatey'
 version '0.0.1'
-source 'https://github.com/kelseyhightower/puppet-homebrew'
-author 'kelseyhightower'
+source 'https://github.com/rismoney/puppet-chocolatey'
+author 'rismoeny'
 license 'APACHE2'
-summary 'Homebrew package provider'
-description 'Homebrew package provider'
-project_page 'https://github.com/kelseyhightower/puppet-homebrew'
+summary 'Chocolatey package provider'
+description 'Chocolatey package provider'
+project_page 'https://github.com/rismoney/puppet-chocolatey'
 
 ## Add dependencies, if any:
 # dependency 'username/name', '>= 1.2.0'

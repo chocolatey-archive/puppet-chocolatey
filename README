@@ -1,12 +1,12 @@
-homebrew
+chocolatey
 
-This is a home brew package provider. Use it like this:
+This is a chocolatey package provider. Use it like this:
 
-    class hightower::packages {
-      pkglist = [‘postgresql’, ‘nginx’, ‘git’, ‘tmux’]
+    class rich::packages {
+      pkglist = [‘notepadplusplus’, ‘msysgit’]
 
       package { $pkglist:
         ensure   => installed,
-        provider => ‘homebrew’,
+        provider => ‘chocolatey’,
       }
     }
