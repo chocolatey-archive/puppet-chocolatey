@@ -3,11 +3,11 @@ require 'puppet/provider/package'
 Puppet::Type.type(:package).provide :chocolatey, :parent => Puppet::Provider::Package do
   desc "Package management via chocolatey."
 
-  commands :chocolatey => "C:/Chocolatey/chocolateyInstall/chocolatey.cmd"
+  commands :chocolatey => ENV['ChocolateyInstall'] + "/chocolateyInstall/chocolatey.cmd"
   confine    :operatingsystem => :windows
   
   def self.parse(line)
-    #parse everything with foo==ver
+    #parse everything with foo==ver - stolen from pip :)
     if line.chomp =~ /^([^=]+)==([^=]+)$/
       {:ensure => $2, :name => $1, :provider => name}
     else
