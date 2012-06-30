@@ -1,4 +1,4 @@
-#!/usr/bin/env rspec
+.#!/usr/bin/env rspec
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:package).provider(:chocolatey)
@@ -109,22 +109,6 @@ describe provider_class do
       @provider.install
     end
 
-    it "should install from SCM" do
-      @resource[:ensure] = :installed
-      @resource[:source] = @url
-      @provider.expects(:lazy_chocolatey).
-        with("install", '-q', '-e', "#{@url}#egg=fake_package")
-      @provider.install
-    end
-
-    it "should install a particular SCM revision" do
-      @resource[:ensure] = "0123456"
-      @resource[:source] = @url
-      @provider.expects(:lazy_chocolatey).
-        with("install", "-q", "-e", "#{@url}@0123456#egg=fake_package")
-      @provider.install
-    end
-
     it "should install a particular version" do
       @resource[:ensure] = "0.0.0"
       @resource[:source] = nil
@@ -147,7 +131,7 @@ describe provider_class do
     it "should uninstall" do
       @resource[:name] = "fake_package"
       @provider.expects(:lazy_chocolatey).
-        with('uninstall', '-y', '-q', 'fake_package')
+        with('uninstall', 'fake_package')
       @provider.uninstall
     end
 
