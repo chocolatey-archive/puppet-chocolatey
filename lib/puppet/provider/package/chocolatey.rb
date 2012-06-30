@@ -9,13 +9,15 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   commands :chocolatey => "C:/Chocolatey/chocolateyInstall/chocolatey.cmd"
  
+ def print() 
+   notice("The value is: '${name}'")
+ end
+
   def install
     args = "install ", @resource[:name]
-    notice "Hello #{args})"
     chocolatey(*args)
     
   end
-
 
 
   def update
@@ -28,7 +30,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     
     if line.chomp =~ /^([^=]+)==([^=]+)$/
       {:ensure => $2, :name => $1, :provider => name}
-      
+
     else
       nil
     end
@@ -50,31 +52,43 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   
+    def self.listcmd
+    [command(:chocolatey), " version all -lo"]
+  end
+
+  
   def self.instances
     packages = []
     
-    # the following:
-    # chocolatey version all -lo | ForEach-Object { "{0}=={1}" -f $_.Name, $_.Found }
-    # returns
-    #(name==version)
-    
-    subcommand = "version"
-    package = "all"
-    args=subcommand + ' ' + package + ' -lo '
-    
-    
-    #args = subcommand + ' ' + package + ' -lo'
-    chocolatey(*args) do |process|
-      
-      process.collect do |line|
+    begin
+      execpipe(listcmd()) do |process|
         
-        next unless options = parse(line)
-      
-        packages << new(options)
+        regex = %r{^([^=]+)==([^=]+)$}
+        fields = [:name, :ensure]
+        hash = {}
+       
+        process.each_line { |line|
+          if match = regex.match(line)
+            fields.zip(match.captures) { |field,value|
+              hash[field] = value
+          }
+            name = hash[:name]
+            hash[:provider] = self.name
+            packages << new(hash)
+            hash = {}
+          else
+            warning("Failed to match line %s" % line)
+          end
+        }
       end
+    rescue Puppet::ExecutionFailure
+      return nil
     end
     packages
   end
 
   
- end
+  
+  
+  
+end
