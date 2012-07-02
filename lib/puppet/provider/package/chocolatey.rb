@@ -5,7 +5,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     confine    :operatingsystem => :windows
 
-  # has_feature :versionable
   has_feature :installable, :uninstallable, :upgradeable, :versionable
   commands :chocolatey => "C:/Chocolatey/chocolateyInstall/chocolatey.cmd"
  
@@ -42,10 +41,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   
   def self.listcmd
-    # right now my version of chocolatey outs package==version for -lo switch 
-    # will roll that change back to standard object output and do use this line :
-    # [command(:chocolatey), ' version all ^| % { \"{0}=={1}\" -f $_.Name, $_.Found }']
-    [command(:chocolatey), " version all -lo"]
+    
+    [command(:chocolatey), ' version all -lo ^| % { \"{0}=={1}\" -f $_.Name, $_.Found }']
   end
 
   
@@ -65,6 +62,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
               hash[field] = value
           }
             name = hash[:name]
+            notice "name #{name}"
             hash[:provider] = self.name
             packages << new(hash)
             hash = {}
@@ -100,8 +98,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           }
             latest = hash[:latest]
             hash[:provider] = latest
-            puts "latest #{latest}"
-            #hash = {}
+            notice "latest #{latest}"
+            hash = {}
             return latest
           else
             warning("Failed to match line %s" % line)
