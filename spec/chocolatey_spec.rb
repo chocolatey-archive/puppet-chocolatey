@@ -11,6 +11,7 @@ describe provider do
       :provider => :chocolatey
     )
     @provider = provider.new(@resource)
+		
 
     # Stub all file and config tests
     provider.stubs(:healthcheck)
@@ -41,11 +42,53 @@ describe provider do
     end
   end
   
-		describe "when uninstalling" do
-			it "should call the remove operation" do
+	describe "when uninstalling" do
+		it "should call the remove operation" do
 			@provider.expects(:chocolatey).with('uninstall', 'chocolatey')
 			@provider.uninstall
-			end
 		end
+	end
 		
+		
+	describe "when updating" do
+    it "should use a command without versioned package" do
+      @provider.expects(:chocolatey).with('update', 'chocolatey')
+      @provider.update
+    end
+  end
+	
+	describe "when uninstalling" do
+    it "should call the remove operation" do
+      @provider.expects(:chocolatey).with('uninstall', 'chocolatey')
+      @provider.uninstall
+    end
+  end
+	
+	
+  describe "query" do
+
+
+    it "should return a hash when chocolatey and the package are present" do
+      provider.expects(:instances).returns [provider.new({
+        :ensure   => "1.2.5",
+        :name     => "chocolatey",
+        :provider => :chocolatey,
+      })]
+
+      @provider.query.should == {
+        :ensure   => "1.2.5",
+        :name     => "chocolatey",
+        :provider => :chocolatey,
+      }
+    end
+
+    it "should return nil when the package is missing" do
+      provider.expects(:instances).returns []
+      @provider.query.should == nil
+    end
+
+  end
+
+
+	
 end
