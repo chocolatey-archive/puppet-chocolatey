@@ -17,6 +17,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     chocolatey(*args)
   end
 
+  def uninstall
+    args = "uninstall ", @resource[:name]
+    chocolatey(*args)
+  end
+  
   def update
     args = "update ", @resource[:name]
     chocolatey(*args)
