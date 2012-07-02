@@ -22,10 +22,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     args = "update ", @resource[:name]
     chocolatey(*args)
   end
-
   
-
-      # from puppet-dev mailing list
+    # from puppet-dev mailing list
   	# Puppet will call the query method on the instance of the package 
 		# provider resource when checking if the package is installed already or 
 		# not.
@@ -44,6 +42,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   
   def self.listcmd
+    # right now my version of chocolatey outs package==version for -lo switch 
+    # will roll that change back to standard object output and do use this line :
+    # [command(:chocolatey), ' version all ^| % { \"{0}=={1}\" -f $_.Name, $_.Found }']
     [command(:chocolatey), " version all -lo"]
   end
 
@@ -112,7 +113,5 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
     packages
   end
-  
-  
   
 end
