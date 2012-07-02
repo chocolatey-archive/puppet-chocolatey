@@ -88,6 +88,45 @@ describe provider do
     end
 
   end
+	
+	describe "when fetching a package list" do
+    it "should query chocolatey" do
+      commands=ENV['ChocolateyInstall'] + "/chocolateyInstall/chocolatey.cmd"
+			provider.expects(:execpipe).with([commands, ' version all -lo ^| % { \"{0}=={1}\" -f $_.Name, $_.Found }'])
+      provider.instances
+    end
+
+    it "should return installed packages with their versions" do
+      provider.expects(:execpipe).yields(StringIO.new(%Q(package1==1.23\n\package2==2.00\n)))
+      packages = (provider.instances)
+
+      packages.length.should == 2
+
+      packages[0].properties.should == {
+        :provider => :chocolatey,
+        :ensure => "1.23\n",
+        :name => 'package1'
+      }
+
+      packages[1].properties.should == {
+        :provider => :chocolatey,
+        :ensure => "2.00\n",
+        :name => 'package2'
+      }
+			
+    end
+
+    it "should return nil on error" do
+      provider.expects(:execpipe).raises(Puppet::ExecutionFailure.new("ERROR!"))
+      provider.instances.should be_nil
+    end
+
+    it "should warn on invalid input" do
+      provider.expects(:execpipe).yields(StringIO.new("blah"))
+      provider.expects(:warning).with("Failed to match line blah")
+      provider.instances.should == []
+    end
+  end
 
 
 	
