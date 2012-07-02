@@ -24,16 +24,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   
-  def self.parse(line)
-    #parse everything with foo==ver - stolen from pip :)
-    
-    if line.chomp =~ /^([^=]+)==([^=]+)$/
-      {:ensure => $2, :name => $1, :provider => name}
-
-    else
-      nil
-    end
-  end
 
       # from puppet-dev mailing list
   	# Puppet will call the query method on the instance of the package 
