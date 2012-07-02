@@ -5,8 +5,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     confine    :operatingsystem => :windows
 
-  has_feature :versionable
-
+  # has_feature :versionable
+  has_feature :installable, :uninstallable, :upgradeable, :versionable
   commands :chocolatey => "C:/Chocolatey/chocolateyInstall/chocolatey.cmd"
  
  def print() 
@@ -16,16 +16,15 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def install
     args = "install ", @resource[:name]
     chocolatey(*args)
-    
   end
 
-
   def update
-    self.install
+    args = "update ", @resource[:name]
+    chocolatey(*args)
   end
 
   
-    def self.parse(line)
+  def self.parse(line)
     #parse everything with foo==ver - stolen from pip :)
     
     if line.chomp =~ /^([^=]+)==([^=]+)$/
@@ -45,14 +44,16 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 		# Query provides the information for the single package identified by @Resource[:name]. 
     
     def query
+    
     self.class.instances.each do |provider_chocolatey|
+      # notice "provider_chocolatey.name=#{provider_chocolatey.name}  == resource:name #{@resource[:name]}"
       return provider_chocolatey.properties if @resource[:name] == provider_chocolatey.name
     end
     return nil
   end
 
   
-    def self.listcmd
+  def self.listcmd
     [command(:chocolatey), " version all -lo"]
   end
 
@@ -87,7 +88,40 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     packages
   end
 
+  def latestcmd
+    [command(:chocolatey), ' version ' + @resource[:name] + ' ^| % { \"{0}=={1}\" -f $_.Name, $_.Latest }']
+  end
   
+  def latest
+    packages = []
+    
+    begin
+      output = execpipe(latestcmd()) do |process|
+        puts "#{output}"
+        regex = %r{^([^=]+)==([^=]+)$}
+        fields = [:name, :latest]
+        hash = {}
+       
+        process.each_line { |line|
+          if match = regex.match(line)
+            fields.zip(match.captures) { |field,value|
+              hash[field] = value
+          }
+            latest = hash[:latest]
+            hash[:provider] = latest
+            puts "latest #{latest}"
+            #hash = {}
+            return latest
+          else
+            warning("Failed to match line %s" % line)
+          end
+        }
+      end
+    rescue Puppet::ExecutionFailure
+      return nil
+    end
+    packages
+  end
   
   
   
