@@ -1,177 +1,51 @@
-.#!/usr/bin/env rspec
 require 'spec_helper'
+require 'stringio'
 
-provider_class = Puppet::Type.type(:package).provider(:chocolatey)
+provider = Puppet::Type.type(:package).provider(:chocolatey)
 
-describe provider_class do
+describe provider do
+  before(:each) do
+    @resource = Puppet::Type.type(:package).new(
+      :name     => "chocolatey",
+      :ensure   => :present,
+      :provider => :chocolatey
+    )
+    @provider = provider.new(@resource)
 
-  before do
-    @resource = Puppet::Resource.new(:package, "fake_package")
-    @provider = provider_class.new(@resource)
-    @client = stub_everything('client')
-    @client.stubs(:call).with('package_releases', 'real_package').returns(["1.3", "1.2.5", "1.2.4"])
-    @client.stubs(:call).with('package_releases', 'fake_package').returns([])
-    
+    # Stub all file and config tests
+    provider.stubs(:healthcheck)
   end
 
-  describe "parse" do
-
-    it "should return a hash on valid input" do
-      provider_class.parse("real_package==1.2.5").should == {
-        :ensure   => "1.2.5",
-        :name     => "real_package",
-        :provider => :chocolatey,
-      }
-    end
-
-    it "should return nil on invalid input" do
-      provider_class.parse("foo").should == nil
-    end
-
+  it "should have an install method" do
+    @provider.should respond_to(:install)
   end
 
-  describe "instances" do
-
-    it "should return an array when chocolatey is present" do
-      provider_class.expects(:which).with('chocolatey').returns("/fake/bin/chocolatey")
-      p = stub("process")
-      p.expects(:collect).yields("real_package==1.2.5")
-      provider_class.expects(:execpipe).with("/fake/bin/chocolatey freeze").yields(p)
-      provider_class.instances
-    end
-
-    it "should return an empty array when chocolatey is missing" do
-      provider_class.expects(:which).with('chocolatey').returns nil
-      provider_class.instances.should == []
-    end
-
+  it "should have a latest method" do
+    @provider.should respond_to(:uninstall)
   end
 
-  describe "query" do
-
-    before do
-      @resource[:name] = "real_package"
-    end
-
-    it "should return a hash when chocolatey and the package are present" do
-      provider_class.expects(:instances).returns [provider_class.new({
-        :ensure   => "1.2.5",
-        :name     => "real_package",
-        :provider => :chocolatey,
-      })]
-
-      @provider.query.should == {
-        :ensure   => "1.2.5",
-        :name     => "real_package",
-        :provider => :chocolatey,
-      }
-    end
-
-    it "should return nil when the package is missing" do
-      provider_class.expects(:instances).returns []
-      @provider.query.should == nil
-    end
-
+  it "should have an update method" do
+    @provider.should respond_to(:update)
   end
 
-  describe "latest" do
-
-    it "should find a version number for real_package" do
-      @resource[:name] = "real_package"
-      @provider.latest.should_not == nil
-    end
-
-    it "should not find a version number for fake_package" do
-      @resource[:name] = "fake_package"
-      @provider.latest.should == nil
-    end
-
-    it "should handle a timeout gracefully" do
-      @resource[:name] = "fake_package"
-      @client.stubs(:call).raises(Timeout::Error)
-      lambda { @provider.latest }.should raise_error(Puppet::Error)
-    end
-
+  it "should have a latest method" do
+    @provider.should respond_to(:latest)
   end
 
-  describe "install" do
 
-    before do
-      @resource[:name] = "fake_package"
-      @url = "git+https://example.com/fake_package.git"
-    end
-
-    it "should install" do
-      @resource[:ensure] = :installed
-      @resource[:source] = nil
-      @provider.expects(:lazy_chocolatey).
-        with("install", '-q', "fake_package")
-      @provider.install
-    end
-
-    it "should install a particular version" do
-      @resource[:ensure] = "0.0.0"
-      @resource[:source] = nil
-      @provider.expects(:lazy_chocolatey).with("install", "-q", "fake_package==0.0.0")
-      @provider.install
-    end
-
-    it "should upgrade" do
+  describe "when installing" do
+    it "should use a command without versioned package" do
       @resource[:ensure] = :latest
-      @resource[:source] = nil
-      @provider.expects(:lazy_chocolatey).
-        with("install", "-q", "--upgrade", "fake_package")
+      @provider.expects(:chocolatey).with('install', 'chocolatey')
       @provider.install
     end
-
   end
-
-  describe "uninstall" do
-
-    it "should uninstall" do
-      @resource[:name] = "fake_package"
-      @provider.expects(:lazy_chocolatey).
-        with('uninstall', 'fake_package')
-      @provider.uninstall
-    end
-
-  end
-
-  describe "update" do
-
-    it "should just call install" do
-      @provider.expects(:install).returns(nil)
-      @provider.update
-    end
-
-  end
-
-  describe "lazy_chocolatey" do
-
-    it "should succeed if chocolatey is present" do
-      @provider.stubs(:chocolatey).returns(nil)
-      @provider.method(:lazy_chocolatey).call "freeze"
-    end
-
-    it "should retry if chocolatey has not yet been found" do
-      @provider.expects(:chocolatey).twice.with('freeze').raises(NoMethodError).then.returns(nil)
-      @provider.expects(:which).with('chocolatey').returns("/fake/bin/chocolatey")
-      @provider.method(:lazy_chocolatey).call "freeze"
-    end
-
-    it "should fail if chocolatey is missing" do
-      @provider.expects(:chocolatey).with('freeze').raises(NoMethodError)
-      @provider.expects(:which).with('chocolatey').returns(nil)
-      expect { @provider.method(:lazy_chocolatey).call("freeze") }.to raise_error(NoMethodError)
-    end
-
-    it "should output a useful error message if chocolatey is missing" do
-      @provider.expects(:chocolatey).with('freeze').raises(NoMethodError)
-      @provider.expects(:which).with('chocolatey').returns(nil)
-      expect { @provider.method(:lazy_chocolatey).call("freeze") }.
-        to raise_error(NoMethodError, 'Could not locate the chocolatey command.')
-    end
-
-  end
-
+  
+		describe "when uninstalling" do
+			it "should call the remove operation" do
+			@provider.expects(:chocolatey).with('uninstall', 'chocolatey')
+			@provider.uninstall
+			end
+		end
+		
 end
