@@ -3,7 +3,7 @@ chocolatey
 This is a chocolatey package provider. Use it like this:
 
     class rich::packages {
-      pkglist = [‘notepadplusplus’, ‘msysgit’]
+      $pkglist = [‘notepadplusplus’, ‘msysgit’]
 
       package { $pkglist:
         ensure   => installed,
