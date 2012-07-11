@@ -46,7 +46,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   
   def self.listcmd
-
+    #parse directories for list of installed application names and version
     Dir.entries(ENV['ChocolateyInstall'] + "/lib").collect { |dir| $index = dir.index('.'); "#{dir[0..$index -1]}==#{dir[$index + 1..-1]}" }
   end
 
