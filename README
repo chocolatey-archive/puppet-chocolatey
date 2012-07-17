@@ -1,4 +1,3 @@
-chocolatey
 
 This is a chocolatey package provider.  This is currently based on uncommited changes to the upstream chocolatey project pending approval in a PR.  These can be grabbed from rismoney/chocolatey to test this.  Those files are chocolatey.ps1 and chocolatey-version.ps1.  They can be found here - https://github.com/chocolatey/chocolatey/pull/119
 
@@ -8,10 +7,10 @@ This is a chocolatey package provider.  This is currently based on uncommited ch
 Use it like this:
 
     class rich::packages {
-      $pkglist = [‘notepadplusplus’, ‘msysgit’]
+      $pkglist = ['notepadplusplus', 'msysgit']
 
       package { $pkglist:
         ensure   => installed,
-        provider => ‘chocolatey’,
+        provider => 'chocolatey',
       }
     }
