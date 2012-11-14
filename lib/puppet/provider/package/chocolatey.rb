@@ -5,16 +5,17 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     confine    :operatingsystem => :windows
 
-  has_feature :installable, :uninstallable, :upgradeable, :versionable
+  has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
   chocopath = ENV['ChocolateyInstall'].to_s
   commands :chocolatey => chocopath + "/chocolateyInstall/chocolatey.cmd"
+
 
  def print() 
    notice("The value is: '${name}'")
  end
 
   def install
-    args = "install", @resource[:name]
+    args = "install", @resource[:name], resource[:install_options]
     chocolatey(*args)
   end
 
@@ -24,7 +25,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def update
-    args = "update", @resource[:name]
+    args = "update", @resource[:name], resource[:install_options]
     chocolatey(*args)
   end
 
@@ -35,9 +36,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   # It's a determination for one specific package, the package modeled by 
   # the resource the method is called on. 
   # Query provides the information for the single package identified by @Resource[:name]. 
-    
+
     def query
-    
+
     self.class.instances.each do |provider_chocolatey|
       # notice "provider_chocolatey.name=#{provider_chocolatey.name}  == resource:name #{@resource[:name]}"
       return provider_chocolatey.properties if @resource[:name] == provider_chocolatey.name
