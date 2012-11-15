@@ -97,6 +97,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
         hash = {}
 
         process.each_line { |line|
+          line.chomp!
           if match = regex.match(line)
             fields.zip(match.captures) { |field,value|
               hash[field] = value
