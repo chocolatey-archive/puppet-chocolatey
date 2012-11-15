@@ -40,7 +40,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     def query
 
     self.class.instances.each do |provider_chocolatey|
-      # notice "provider_chocolatey.name=#{provider_chocolatey.name}  == resource:name #{@resource[:name]}"
       return provider_chocolatey.properties if @resource[:name] == provider_chocolatey.name
     end
     return nil
@@ -61,12 +60,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
         hash = {}
 
         process.each_line { |line|
+          line.chomp!
           if match = regex.match(line)
             fields.zip(match.captures) { |field,value|
               hash[field] = value
           }
             name = hash[:name]
-            #notice "name #{name}"
+            version = hash[:ensure]
+            notice "name #{name}.#{version}"
             hash[:provider] = self.name
             packages << new(hash)
             hash = {}
