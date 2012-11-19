@@ -15,6 +15,7 @@ Use it like this:
 * this is now versionable so ensure =>  '1.0' will work
 * this is upgradeable 
 * supports latest (checks upstream), absent (uninstall)
+* supports install_options for pre-release, other cli
 
 
 
