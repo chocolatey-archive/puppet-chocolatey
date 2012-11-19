@@ -1,13 +1,22 @@
-
 This is a chocolatey package provider.  
 
 Use it like this:
 
     class rich::packages {
-      $pkglist = ['notepadplusplus', 'msysgit']
+      $pkg = 'notepadplusplus'
 
-      package { $pkglist:
-        ensure   => installed,
-        provider => 'chocolatey',
+      package { $pkg:
+        ensure          => installed,
+        provider        => 'chocolatey',
+        install_options => '-pre'
       }
     }
+
+* this is now versionable so ensure =>  '1.0' will work
+* this is upgradeable 
+* supports latest (checks upstream), absent (uninstall)
+
+
+
+
+
