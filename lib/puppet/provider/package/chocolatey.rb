@@ -1,3 +1,6 @@
+# authored by Rich Siegel (rismoney@gmail.com)
+# with help from some of the other pkg providers of course
+
 require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
@@ -15,17 +18,26 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
  end
 
   def install
-    args = "install", @resource[:name], resource[:install_options]
+    should = @resource.should(:ensure)
+    case should
+    when true, false, Symbol
+      args = "install", @resource[:name][/\A\S*/], resource[:install_options]
+    else
+      # Add the package version
+      args = "install", @resource[:name][/\A\S*/], "-version", resource[:ensure], resource[:install_options]
+    end
+
+
     chocolatey(*args)
   end
 
   def uninstall
-    args = "uninstall", @resource[:name]
+    args = "uninstall", @resource[:name][/\A\S*/]
     chocolatey(*args)
   end
 
   def update
-    args = "update", @resource[:name], resource[:install_options]
+    args = "update", @resource[:name][/\A\S*/], resource[:install_options]
     chocolatey(*args)
   end
 
@@ -40,7 +52,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     def query
 
     self.class.instances.each do |provider_chocolatey|
-      return provider_chocolatey.properties if @resource[:name] == provider_chocolatey.name
+      return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
     end
     return nil
   end
@@ -83,7 +95,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def latestcmd
-    [command(:chocolatey), ' version ' + @resource[:name] + ' ^| % { \"{0}=={1}\" -f $_.Name, $_.Latest }']
+    [command(:chocolatey), ' version ' + @resource[:name][/\A\S*/] + ' ^| % { \"{0}=={1}\" -f $_.Name, $_.Latest }']
   end
 
   def latest
@@ -93,7 +105,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       output = execpipe(latestcmd()) do |process|
         puts "#{output}"
         regex = %r{^([^=]+)==([^=]+)$}
-        fields = [:name, :latest]
+        fields = [:name[/\A\S*/], :latest]
         hash = {}
 
         process.each_line { |line|
