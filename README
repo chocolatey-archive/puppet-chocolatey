@@ -1,3 +1,8 @@
+puppet-chocolatey
+=====================
+
+** Member of the rismoney suite of Windows Puppet Providers **
+
 This is a chocolatey package provider.  
 
 Use it like this:
