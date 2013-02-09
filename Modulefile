@@ -1,10 +1,10 @@
 name    'rismoney-chocolatey'
 version '0.0.1'
 source 'https://github.com/rismoney/puppet-chocolatey'
-author 'rismoeny'
+author 'rismoney'
 license 'APACHE2'
-summary 'Chocolatey package provider'
-description 'Chocolatey package provider'
+summary 'Chocolatey package provider for puppet'
+description 'Chocolatey package provider for puppet'
 project_page 'https://github.com/rismoney/puppet-chocolatey'
 
 ## Add dependencies, if any:
