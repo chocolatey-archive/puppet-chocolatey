@@ -12,11 +12,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   chocopath = ENV['ChocolateyInstall'].to_s
   commands :chocolatey => chocopath + "/chocolateyInstall/chocolatey.cmd"
 
-
- def print() 
-   notice("The value is: '${name}'")
- end
-
   def install
     should = @resource.should(:ensure)
     case should
@@ -79,7 +74,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           }
             name = hash[:name]
             version = hash[:ensure]
-            notice "name #{name}.#{version}"
             hash[:provider] = self.name
             packages << new(hash)
             hash = {}
@@ -116,7 +110,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           }
             latest = hash[:latest]
             hash[:provider] = latest
-            notice "latest #{latest}"
             hash = {}
             return latest
           else
