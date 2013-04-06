@@ -104,13 +104,13 @@ describe provider do
 
       packages[0].properties.should == {
         :provider => :chocolatey,
-        :ensure => "1.23\n",
+        :ensure => "1.23",
         :name => 'package1'
       }
 
       packages[1].properties.should == {
         :provider => :chocolatey,
-        :ensure => "2.00\n",
+        :ensure => "2.00",
         :name => 'package2'
       }
 			

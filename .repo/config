@@ -1,0 +1,3 @@
+# vim: set ts=2 sw=2 ai et ruler:
+[push]
+  default = tracking # push to tracking branch by default
