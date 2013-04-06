@@ -1,3 +1,4 @@
+# vim: set ts=2 sw=2 ai et ruler:
 require 'spec_helper'
 require 'stringio'
 
@@ -13,7 +14,6 @@ describe provider do
       :provider => :chocolatey
     )
     @provider = provider.new(@resource)
-		
 
     # Stub all file and config tests
     provider.stubs(:healthcheck)
@@ -35,7 +35,6 @@ describe provider do
     @provider.should respond_to(:latest)
   end
 
-
   describe "when installing" do
     it "should use a command without versioned package" do
       @resource[:ensure] = :latest
@@ -43,33 +42,29 @@ describe provider do
       @provider.install
     end
   end
-  
-	describe "when uninstalling" do
-		it "should call the remove operation" do
-			@provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
-			@provider.uninstall
-		end
-	end
-		
-		
-	describe "when updating" do
-    it "should use a command without versioned package" do
-      @provider.expects(:chocolatey).with('update', 'chocolatey', nil)
-      @provider.update
-    end
-  end
-	
-	describe "when uninstalling" do
+
+  describe "when uninstalling" do
     it "should call the remove operation" do
       @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
       @provider.uninstall
     end
   end
-	
-	
+
+  describe "when updating" do
+    it "should use a command without versioned package" do
+      @provider.expects(:chocolatey).with('update', 'chocolatey', nil)
+      @provider.update
+    end
+  end
+
+  describe "when uninstalling" do
+    it "should call the remove operation" do
+      @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
+      @provider.uninstall
+    end
+  end
+
   describe "query" do
-
-
     it "should return a hash when chocolatey and the package are present" do
       provider.expects(:instances).returns [provider.new({
         :ensure   => "1.2.5",
@@ -88,18 +83,16 @@ describe provider do
       provider.expects(:instances).returns []
       @provider.query.should == nil
     end
-
   end
-	
-	describe "when fetching a package list" do
 
+  describe "when fetching a package list" do
     it "should invoke provider listcmd" do
       provider.expects(:listcmd)
       provider.instances
     end
 
     it "should query chocolatey" do
-			provider.expects(:execpipe).with() do |args|
+      provider.expects(:execpipe).with() do |args|
         args[1] =~ /version all -lo.*\.Found/
       end
       provider.instances
@@ -122,7 +115,6 @@ describe provider do
         :ensure => "2.00",
         :name => 'package2'
       }
-			
     end
 
     it "should return nil on error" do
@@ -136,7 +128,4 @@ describe provider do
       provider.instances.should == []
     end
   end
-
-
-	
 end
