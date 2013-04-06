@@ -93,9 +93,15 @@ describe provider do
 	
 	describe "when fetching a package list" do
 
+    it "should invoke provider listcmd" do
+      provider.expects(:listcmd)
+      provider.instances
+    end
+
     it "should query chocolatey" do
-      commands=ENV['ChocolateyInstall'] + "/chocolateyInstall/chocolatey.cmd"
-			provider.expects(:execpipe).with([commands, ' version all -lo ^| % { \"{0}=={1}\" -f $_.Name, $_.Found }'])
+			provider.expects(:execpipe).with() do |args|
+        args[1] =~ /version all -lo.*\.Found/
+      end
       provider.instances
     end
 
