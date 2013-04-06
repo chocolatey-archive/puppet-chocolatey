@@ -39,14 +39,14 @@ describe provider do
   describe "when installing" do
     it "should use a command without versioned package" do
       @resource[:ensure] = :latest
-      @provider.expects(:chocolatey).with('install', 'chocolatey')
+      @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
       @provider.install
     end
   end
   
 	describe "when uninstalling" do
 		it "should call the remove operation" do
-			@provider.expects(:chocolatey).with('uninstall', 'chocolatey')
+			@provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
 			@provider.uninstall
 		end
 	end
@@ -54,14 +54,14 @@ describe provider do
 		
 	describe "when updating" do
     it "should use a command without versioned package" do
-      @provider.expects(:chocolatey).with('update', 'chocolatey')
+      @provider.expects(:chocolatey).with('update', 'chocolatey', nil)
       @provider.update
     end
   end
 	
 	describe "when uninstalling" do
     it "should call the remove operation" do
-      @provider.expects(:chocolatey).with('uninstall', 'chocolatey')
+      @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
       @provider.uninstall
     end
   end
