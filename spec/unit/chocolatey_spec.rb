@@ -5,6 +5,8 @@ provider = Puppet::Type.type(:package).provider(:chocolatey)
 
 describe provider do
   before(:each) do
+    ENV['ChocolateyInstall'] = 'c:\blah'
+
     @resource = Puppet::Type.type(:package).new(
       :name     => "chocolatey",
       :ensure   => :present,
@@ -90,6 +92,7 @@ describe provider do
   end
 	
 	describe "when fetching a package list" do
+
     it "should query chocolatey" do
       commands=ENV['ChocolateyInstall'] + "/chocolateyInstall/chocolatey.cmd"
 			provider.expects(:execpipe).with([commands, ' version all -lo ^| % { \"{0}=={1}\" -f $_.Name, $_.Found }'])
