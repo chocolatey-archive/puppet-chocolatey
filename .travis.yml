@@ -1,0 +1,21 @@
+---
+# http://about.travis-ci.org/docs/user/getting-started/
+
+rvm:
+  - 1.8.7
+  - 1.9.3
+
+# http://about.travis-ci.org/docs/user/database-setup/#Using-ENV-variables-and-before_script-steps
+env:
+  - PUPPET_VERSION=2.7.21
+  - PUPPET_VERSION=3.1.1
+
+before_script:
+  - 'bundle install'
+
+script:
+  - 'rake spec'
+
+# http://about.travis-ci.org/docs/user/notifications/#Email-notifications
+notifications:
+  email: false
