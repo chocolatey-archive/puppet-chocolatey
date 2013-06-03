@@ -10,6 +10,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
   chocopath = ENV['ChocolateyInstall'].to_s
+  if chocopath.empty?
+    chocopath = 'C:\Chocolatey'  
+  end
   commands :chocolatey => chocopath + "/chocolateyInstall/chocolatey.cmd"
 
   def install
