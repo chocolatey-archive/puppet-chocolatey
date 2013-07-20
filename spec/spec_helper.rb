@@ -5,6 +5,7 @@ end
 
 # require dependencies
 gems = [
+  'minitest/autorun', # http://docs.seattlerb.org/minitest/
   'test/unit',   # https://github.com/freerange/mocha#bundler
   'mocha/setup', # http://gofreerange.com/mocha/docs/Mocha/Configuration.html
   'jumanjiman_spec_helper',
