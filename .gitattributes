@@ -12,3 +12,4 @@
 # Ensure line endings are consistent.
 # @see https://help.github.com/articles/dealing-with-line-endings#per-repository-settings
 *.rb  text eol=lf
+*.md  text eol=lf
