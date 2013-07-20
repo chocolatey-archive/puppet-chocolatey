@@ -8,3 +8,7 @@
 # Use built-in patterns to generate smarter diff text.
 # @see http://urbanautomaton.com/blog/2011/07/28/git-grep-and-language-specific-diffs/
 *.rb  diff=ruby
+
+# Ensure line endings are consistent.
+# @see https://help.github.com/articles/dealing-with-line-endings#per-repository-settings
+*.rb  text eol=lf
