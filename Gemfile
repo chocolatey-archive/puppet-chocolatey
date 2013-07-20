@@ -26,3 +26,10 @@ gem 'puppet', puppet_version
 
 # https://github.com/jumanjiman/jumanjiman_spec_helper
 gem 'jumanjiman_spec_helper'
+
+# https://github.com/travis-ci/travis
+gem 'travis'
+
+# http://about.travis-ci.org/docs/user/travis-lint/
+# https://github.com/travis-ci/travis-lint
+gem 'travis-lint'
