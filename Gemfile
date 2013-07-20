@@ -16,7 +16,7 @@ gem 'rspec'
 gem 'rspec-core'
 gem 'rspec-expectations'
 gem 'rspec-mocks'
-gem 'minitest'
+gem 'minitest', '~> 5.0.0'
 
 # https://github.com/freerange/mocha#bundler
 gem 'mocha', :require => false
