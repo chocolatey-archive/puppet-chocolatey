@@ -36,3 +36,9 @@ if $::kernel == Windows {
 * this is *upgradeable*
 * supports `latest` (checks upstream), `absent` (uninstall)
 * supports `install_options` for pre-release, other cli
+
+
+Contributing
+------------
+
+See CONTRIBUTING.md at the https://github.com/chocolatey/puppet-chocolatey
