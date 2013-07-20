@@ -5,26 +5,24 @@ puppet-chocolatey
 
 ** Member of the rismoney suite of Windows Puppet Providers **
 
-This is a chocolatey package provider.  
+This is a [Puppet](http://docs.puppetlabs.com/) package provider for
+[chocolatey](https://github.com/chocolatey/chocolatey).
 
 Use it like this:
 
-    class rich::packages {
-      $pkg = 'notepadplusplus'
+```puppet
+class rich::packages {
+  $pkg = 'notepadplusplus'
 
-      package { $pkg:
-        ensure          => installed,
-        provider        => 'chocolatey',
-        install_options => '-pre'
-      }
-    }
+  package { $pkg:
+    ensure          => installed,
+    provider        => 'chocolatey',
+    install_options => '-pre'
+  }
+}
+```
 
-* this is now versionable so ensure =>  '1.0' will work
-* this is upgradeable 
-* supports latest (checks upstream), absent (uninstall)
-* supports install_options for pre-release, other cli
-
-
-
-
-
+* this is *versionable* so `ensure =>  '1.0'` works
+* this is *upgradeable*
+* supports `latest` (checks upstream), `absent` (uninstall)
+* supports `install_options` for pre-release, other cli
