@@ -8,7 +8,9 @@ rvm:
 # http://about.travis-ci.org/docs/user/database-setup/#Using-ENV-variables-and-before_script-steps
 env:
   - PUPPET_VERSION=2.7.21
+  - PUPPET_VERSION=2.7.22
   - PUPPET_VERSION=3.1.1
+  - PUPPET_VERSION=3.2.2
 
 before_script:
   - 'bundle install'
