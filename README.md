@@ -1,7 +1,7 @@
 puppet-chocolatey
 =====================
 
-[![Build Status](https://travis-ci.org/rismoney/puppet-chocolatey.png?branch=master)](https://travis-ci.org/rismoney/puppet-chocolatey)
+[![Build Status](https://travis-ci.org/chocolatey/puppet-chocolatey.png?branch=master)](https://travis-ci.org/chocolatey/puppet-chocolatey)
 
 ** Member of the rismoney suite of Windows Puppet Providers **
 
