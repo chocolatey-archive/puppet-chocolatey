@@ -22,6 +22,16 @@ class rich::packages {
 }
 ```
 
+If you want to set this provider as the site-wide default,
+add to your `site.pp`:
+
+```puppet
+if $::kernel == Windows {
+  # default package provider
+  Package { provider => chocolatey }
+}
+```
+
 * this is *versionable* so `ensure =>  '1.0'` works
 * this is *upgradeable*
 * supports `latest` (checks upstream), `absent` (uninstall)
