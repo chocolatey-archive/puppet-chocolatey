@@ -5,18 +5,21 @@ end
 
 # require dependencies
 gems = [
-  'test/unit',   # https://github.com/freerange/mocha#bundler
+  'minitest/autorun', # http://docs.seattlerb.org/minitest/
+  'minitest/unit', # https://github.com/freerange/mocha#bundler
   'mocha/setup', # http://gofreerange.com/mocha/docs/Mocha/Configuration.html
   'jumanjiman_spec_helper',
   'puppet',
 ]
 begin
   gems.each {|gem| require gem}
-rescue Exception => e
+rescue => e
+  # http://goo.gl/r3nFG
   # emphasize dependency failures in case a task spews lots of output
-  puts horizontal_rule(e.message.length)
-  puts e.message
-  puts horizontal_rule(e.message.length)
+  warn horizontal_rule(e.message.length)
+  warn e.class
+  warn e.message
+  warn horizontal_rule(e.message.length)
   exit(1)
 end
 

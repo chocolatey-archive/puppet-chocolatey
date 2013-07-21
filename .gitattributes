@@ -1,0 +1,15 @@
+######################################################################
+# gitattributes(5) describes the format and usage of this file.
+#
+# @see https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
+# @see http://git-scm.com/book/ch7-2.html
+######################################################################
+
+# Use built-in patterns to generate smarter diff text.
+# @see http://urbanautomaton.com/blog/2011/07/28/git-grep-and-language-specific-diffs/
+*.rb  diff=ruby
+
+# Ensure line endings are consistent.
+# @see https://help.github.com/articles/dealing-with-line-endings#per-repository-settings
+*.rb  text eol=lf
+*.md  text eol=lf
