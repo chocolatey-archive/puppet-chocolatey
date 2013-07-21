@@ -8,7 +8,7 @@ else
 end
 
 # https://github.com/jimweirich/rake
-gem 'rake', '10.0.3'
+gem 'rake', '~> 10.0'
 
 # https://github.com/rspec/rspec
 # https://www.relishapp.com/rspec/rspec-core/v/2-0/docs
