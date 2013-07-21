@@ -26,7 +26,7 @@ If you want to set this provider as the site-wide default,
 add to your `site.pp`:
 
 ```puppet
-if $::kernel == Windows {
+if $::kernel == windows {
   # default package provider
   Package { provider => chocolatey }
 }
