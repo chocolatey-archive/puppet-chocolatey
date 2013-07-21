@@ -1,12 +1,28 @@
 puppet-chocolatey
-=====================
+=================
 
 [![Build Status](https://travis-ci.org/chocolatey/puppet-chocolatey.png?branch=master)](https://travis-ci.org/chocolatey/puppet-chocolatey)
 
 ** Member of the rismoney suite of Windows Puppet Providers **
 
 This is a [Puppet](http://docs.puppetlabs.com/) package provider for
-[chocolatey](https://github.com/chocolatey/chocolatey).
+[chocolatey](https://github.com/chocolatey/chocolatey), which is
+like apt-get, but for Windows.
+
+
+Installation
+------------
+
+Install this module via any of these approaches:
+
+* [puppet forge](http://forge.puppetlabs.com/rismoney/chocolatey)
+* git-submodule ([tutorial](http://goo.gl/e9aXh))
+* [librarian-puppet](https://github.com/rodjek/librarian-puppet)
+* [r10k](https://github.com/adrienthebo/r10k)
+
+
+Usage
+-----
 
 Use it like this:
 
