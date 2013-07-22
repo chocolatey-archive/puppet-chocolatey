@@ -5,3 +5,7 @@
 [remote "upstream"]
 url = git@github.com:chocolatey/puppet-chocolatey.git
 fetch = +refs/heads/*:refs/remotes/upstream/*
+
+[remote "rismoney"]
+url = git@github.com:rismoney/puppet-chocolatey.git
+fetch = +refs/heads/*:refs/remotes/rismoney/*
