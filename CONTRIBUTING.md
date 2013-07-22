@@ -4,6 +4,7 @@ Contributing
 tl;dr
 -----
 
+* Fork https://github.com/chocolatey/puppet-chocolatey
 * Always work in a feature branch.
 * Submit a pull request.
 * Check the build status at
@@ -26,6 +27,10 @@ Setup your environment:
 Run tests locally:
 
     bundle exec rake spec
+
+Run a single test locally:
+
+    bundle exec 'ruby -S rspec spec/unit/chocolatey_spec.rb'
 
 Stay up-to-date with upstream:
 
