@@ -13,3 +13,11 @@ fetch = +refs/heads/*:refs/remotes/rismoney/*
 [remote "jumanjiman"]
 url = git@github.com:jumanjiman/puppet-chocolatey.git
 fetch = +refs/heads/*:refs/remotes/jumanjiman/*
+
+[alias]
+# maintainer should use these when reviewing PRs
+authors  = shortlog -sn
+behind   = !git log ..upstream/master --oneline
+ahead    = !git log upstream/master.. --oneline
+unmerged = !git cherry upstream/master
+files    = !git diff --name-only upstream/master..
