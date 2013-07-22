@@ -57,4 +57,4 @@ if $::kernel == windows {
 Contributing
 ------------
 
-See CONTRIBUTING.md at the https://github.com/chocolatey/puppet-chocolatey
+See [CONTRIBUTING.md](https://github.com/chocolatey/puppet-chocolatey/blob/master/CONTRIBUTING.md)

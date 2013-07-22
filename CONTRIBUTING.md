@@ -4,6 +4,7 @@ Contributing
 tl;dr
 -----
 
+* Fork https://github.com/chocolatey/puppet-chocolatey
 * Always work in a feature branch.
 * Submit a pull request.
 * Check the build status at
@@ -11,6 +12,9 @@ tl;dr
 
 Are you new to open-source? Read this blog post:
 http://gun.io/blog/how-to-github-fork-branch-and-pull-request/
+
+If you are adding functionality or fixing a bug, please add a test!
+
 
 Good things to know
 -------------------
@@ -20,12 +24,16 @@ Setup your environment:
     # Install dependencies.
     bundle install --path=~/.bundle || bundle update
 
-    # Default rake task adds upstream remote.
+    # Default rake task adds upstream remote and local git aliases.
     bundle exec rake
 
 Run tests locally:
 
     bundle exec rake spec
+
+Run a single test locally:
+
+    bundle exec 'ruby -S rspec spec/unit/chocolatey_spec.rb'
 
 Stay up-to-date with upstream:
 
@@ -51,3 +59,24 @@ Syntax:
 * MyClass.my_method(my_arg) not my_method( my_arg ) or my_method my_arg.
 * a = b and not a=b.
 * Follow the conventions you see used in the source already.
+
+
+Maintainer tips
+---------------
+
+Use local git aliases to review branches:
+
+    # Which authors have contributed to this repo?
+    git authors
+
+    # Which commits from upstream am I missing?
+    git behind
+
+    # Which commits are ahead of upstream?
+    git ahead
+
+    # Which files does this branch change?
+    git files
+
+    # Find commits not merged upstream.
+    git unmerged
