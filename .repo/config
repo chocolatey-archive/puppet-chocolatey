@@ -9,3 +9,7 @@ fetch = +refs/heads/*:refs/remotes/upstream/*
 [remote "rismoney"]
 url = git@github.com:rismoney/puppet-chocolatey.git
 fetch = +refs/heads/*:refs/remotes/rismoney/*
+
+[remote "jumanjiman"]
+url = git@github.com:jumanjiman/puppet-chocolatey.git
+fetch = +refs/heads/*:refs/remotes/jumanjiman/*
