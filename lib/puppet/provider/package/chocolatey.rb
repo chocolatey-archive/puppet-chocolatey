@@ -93,7 +93,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           if line.empty?; next; end
           # Example: ( latest        : 2013.08.19.155043 )
           values = line.split(':').collect(&:strip).delete_if(&:empty?)
-          notice "latest #{values[1]}"
           return values[1]
         end
       end
