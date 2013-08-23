@@ -33,3 +33,8 @@ gem 'travis'
 # http://about.travis-ci.org/docs/user/travis-lint/
 # https://github.com/travis-ci/travis-lint
 gem 'travis-lint'
+
+
+if File.exists? "#{__FILE__}.local"
+  eval(File.read("#{__FILE__}.local"), binding)
+end
