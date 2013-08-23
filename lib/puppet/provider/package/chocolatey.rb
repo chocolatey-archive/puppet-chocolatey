@@ -9,7 +9,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     confine    :operatingsystem => :windows
 
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
-  commands :chocolatey => "#{ENV['ChocolateyInstall']}\\chocolateyInstall\\chocolatey.cmd"
+  chocopath = ENV['ChocolateyInstall'] || 'C:\Chocolatey'
+  commands :chocolatey => chocopath + "\\chocolateyInstall\\chocolatey.cmd"
 
 
  def print()
@@ -48,7 +49,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   # the resource the method is called on. 
   # Query provides the information for the single package identified by @Resource[:name]. 
 
-    def query
+  def query
     self.class.instances.each do |provider_chocolatey|
       return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
     end
