@@ -50,13 +50,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     def query
     self.class.instances.each do |provider_chocolatey|
+      p provider_chocolatey
       return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
     end
     return nil
   end
 
   def self.listcmd
-    [command(:chocolatey), ' version all -lo | findstr /R "^[^name]" | findstr /R "^[^---]"']
+    [command(:chocolatey), ' version all -lo | findstr /V "^name +found" | findstr /V "^--- + -----"']
   end
 
   def self.instances
