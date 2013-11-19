@@ -93,13 +93,13 @@ describe provider do
 
     it "should query chocolatey" do
       provider.expects(:execpipe).with() do |args|
-        args[1] =~ /version all -lo.*\.Found/
+        args[1] =~ /version all -lo.*/
       end
       provider.instances
     end
 
     it "should return installed packages with their versions" do
-      provider.expects(:execpipe).yields(StringIO.new(%Q(package1==1.23\n\package2==2.00\n)))
+      provider.expects(:execpipe).yields(StringIO.new(%Q(package1 1.23\n\package2 2.00\n)))
       packages = (provider.instances)
 
       packages.length.should == 2
@@ -122,10 +122,5 @@ describe provider do
       provider.instances.should be_nil
     end
 
-    it "should warn on invalid input" do
-      provider.expects(:execpipe).yields(StringIO.new("blah"))
-      provider.expects(:warning).with("Failed to match line blah")
-      provider.instances.should == []
-    end
   end
 end
