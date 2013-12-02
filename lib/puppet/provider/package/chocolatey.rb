@@ -5,12 +5,11 @@ require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
   desc "Package management using Chocolatey on Windows"
-
-    confine    :operatingsystem => :windows
+  confine    :operatingsystem => :windows
 
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
-  commands :chocolatey => "#{ENV['ChocolateyInstall']}\\chocolateyInstall\\chocolatey.cmd"
-
+  chocopath = ENV['ChocolateyInstall'] || 'C:\Chocolatey'
+  commands :chocolatey => chocopath + "\\chocolateyInstall\\chocolatey.cmd"
 
  def print()
    notice("The value is: '${name}'")
@@ -26,6 +25,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args = "install", @resource[:name][/\A\S*/], "-version", resource[:ensure], resource[:install_options]
     end
 
+    if @resource[:source]
+      args << "-source" << resource[:source]
+    end
 
     chocolatey(*args)
   end
@@ -37,18 +39,23 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def update
     args = "update", @resource[:name][/\A\S*/], resource[:install_options]
+
+    if @resource[:source]
+      args << "-source" << resource[:source]
+    end
+
     chocolatey(*args)
   end
 
   # from puppet-dev mailing list
-  # Puppet will call the query method on the instance of the package 
-  # provider resource when checking if the package is installed already or 
+  # Puppet will call the query method on the instance of the package
+  # provider resource when checking if the package is installed already or
   # not.
-  # It's a determination for one specific package, the package modeled by 
-  # the resource the method is called on. 
-  # Query provides the information for the single package identified by @Resource[:name]. 
+  # It's a determination for one specific package, the package modeled by
+  # the resource the method is called on.
+  # Query provides the information for the single package identified by @Resource[:name].
 
-    def query
+  def query
     self.class.instances.each do |provider_chocolatey|
       return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
     end

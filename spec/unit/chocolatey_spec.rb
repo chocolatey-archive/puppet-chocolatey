@@ -35,10 +35,30 @@ describe provider do
     @provider.should respond_to(:latest)
   end
 
+  context "parameter :source" do
+    it "should default to nil" do
+      @resource[:source].should be_nil
+    end
+
+    it "should accept c:\\packages" do
+      @resource[:source] = 'c:\packages'
+    end
+
+    it "should accept http://somelocation/packages" do
+      @resource[:source] = 'http://somelocation/packages'
+    end
+  end
+
   describe "when installing" do
     it "should use a command without versioned package" do
       @resource[:ensure] = :latest
       @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
+      @provider.install
+    end
+
+    it "should use source if it is specified" do
+      @resource[:source] = 'c:\packages'
+      @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
       @provider.install
     end
   end
@@ -53,6 +73,12 @@ describe provider do
   describe "when updating" do
     it "should use a command without versioned package" do
       @provider.expects(:chocolatey).with('update', 'chocolatey', nil)
+      @provider.update
+    end
+
+    it "should use source if it is specified" do
+      @resource[:source] = 'c:\packages'
+      @provider.expects(:chocolatey).with('update','chocolatey', nil, '-source', 'c:\packages')
       @provider.update
     end
   end
