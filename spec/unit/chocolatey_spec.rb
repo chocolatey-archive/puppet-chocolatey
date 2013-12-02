@@ -83,13 +83,6 @@ describe provider do
     end
   end
 
-  describe "when uninstalling" do
-    it "should call the remove operation" do
-      @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
-      @provider.uninstall
-    end
-  end
-
   describe "query" do
     it "should return a hash when chocolatey and the package are present" do
       provider.expects(:instances).returns [provider.new({
