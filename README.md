@@ -33,7 +33,7 @@ class rich::packages {
   package { $pkg:
     ensure          => installed,
     provider        => 'chocolatey',
-    install_options => '-pre',
+    install_options => ['-pre','-params','-mypkgparam'],
     source          => 'https://myfeed.example.com/api/v2',
   }
 }
