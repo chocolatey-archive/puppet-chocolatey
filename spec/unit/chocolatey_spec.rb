@@ -83,6 +83,13 @@ describe provider do
     end
   end
 
+  describe "when getting latest" do
+    it "should use source if it is specified" do
+      @resource[:source] = 'c:\packages'
+	  @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+    end
+  end
+	
   describe "query" do
     it "should return a hash when chocolatey and the package are present" do
       provider.expects(:instances).returns [provider.new({

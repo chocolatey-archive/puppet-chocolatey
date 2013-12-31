@@ -86,7 +86,16 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def latestcmd
-    [command(:chocolatey), ' version ' + @resource[:name][/\A\S*/] + ' | findstr /R "latest" | findstr /V "latestCompare" ']
+	
+	args = "version", @resource[:name][/\A\S*/]
+	
+    if @resource[:source]
+      args << "-source" << resource[:source]
+    end
+
+	args << '| findstr /R "latest" | findstr /V "latestCompare"'
+	
+	[command(:chocolatey), *args]
   end
 
   def latest
