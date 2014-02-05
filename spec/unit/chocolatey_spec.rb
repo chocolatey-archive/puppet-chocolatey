@@ -5,11 +5,14 @@ require 'stringio'
 provider = Puppet::Type.type(:package).provider(:chocolatey)
 
 describe provider do
+
+  let (:chocolatey) {'c:\blah\chocolatey.cmd'}
+
   before(:each) do
     ENV['ChocolateyInstall'] = 'c:\blah'
 
     @resource = Puppet::Type.type(:package).new(
-      :name     => "chocolatey",
+      :name     => 'chocolatey',
       :ensure   => :present,
       :provider => :chocolatey
     )

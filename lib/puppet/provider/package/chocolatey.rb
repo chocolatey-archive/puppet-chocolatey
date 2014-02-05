@@ -8,8 +8,15 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   confine    :operatingsystem => :windows
 
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
-  chocopath = ENV['ChocolateyInstall'] || 'C:\Chocolatey'
-  commands :chocolatey => chocopath + "\\chocolateyInstall\\chocolatey.cmd"
+
+
+  def self.chocolatey_command
+    chocopath = ENV['ChocolateyInstall'] || 'C:\Chocolatey'
+
+    chocopath + "\\chocolateyInstall\\chocolatey.cmd"
+  end
+
+  commands :chocolatey => chocolatey_command
 
  def print()
    notice("The value is: '${name}'")
