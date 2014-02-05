@@ -112,7 +112,8 @@ describe provider do
 
     it "should query chocolatey" do
       provider.expects(:execpipe).with() do |args|
-        args[1] =~ /version all -lo.*/
+        args[1] =~ /list/
+        args[2] =~ /-lo/
       end
       provider.instances
     end
