@@ -63,7 +63,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def self.listcmd
-    [command(:chocolatey), ' version all -lo | findstr /V "^name +found" | findstr /V "^--- + -----"']
+    [command(:chocolatey), ' list -lo | findstr /V "^name +found" | findstr /V "^--- + -----"']
   end
 
   def self.instances
