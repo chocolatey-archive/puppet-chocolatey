@@ -71,10 +71,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     begin
       execpipe(listcmd()) do |process|
-
         process.each_line do |line|
           line.chomp!
-          if line.empty?; next; end
+          if line.empty? or line.match(/Reading environment variables.*/); next; end
           values = line.split(' ')
           packages << new({ :name => values[0], :ensure => values[1], :provider => self.name })
         end
