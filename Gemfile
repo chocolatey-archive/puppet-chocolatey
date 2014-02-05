@@ -1,10 +1,19 @@
 # vim: set ts=2 sw=2 ai et syntax=ruby:
 source 'https://rubygems.org'
 
+def location_for(place, fake_version = nil)
+  if place =~ /^(git:[^#]*)#(.*)/
+    [fake_version, { :git => $1, :branch => $2, :require => false }].compact
+  elsif place =~ /^file:\/\/(.*)/
+    ['>= 0', { :path => File.expand_path($1), :require => false }]
+  else
+    [place, { :require => false }]
+  end
+end
+
+puppet_version = ['>= 2.7']
 if ENV.key?('PUPPET_VERSION')
   puppet_version = "= #{ENV['PUPPET_VERSION']}"
-else
-  puppet_version = ['>= 2.7']
 end
 
 # https://github.com/jimweirich/rake
@@ -22,7 +31,9 @@ gem 'minitest', '~> 5.0.0'
 gem 'mocha', :require => false
 
 # https://github.com/puppetlabs/puppet
-gem 'puppet', puppet_version
+gem "puppet", *location_for(ENV['PUPPET_LOCATION'] || puppet_version)
+gem "facter", *location_for(ENV['FACTER_LOCATION'] || '~> 1.6')
+gem "hiera", *location_for(ENV['HIERA_LOCATION'] || '~> 1.0')
 
 # see http://projects.puppetlabs.com/issues/21698
 platforms :mswin, :mingw do
