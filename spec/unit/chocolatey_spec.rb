@@ -71,6 +71,12 @@ describe provider do
       @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
       @provider.uninstall
     end
+
+    it "should use source if it is specified" do
+      @resource[:source] = 'c:\packages'
+      @provider.expects(:chocolatey).with('uninstall','chocolatey', '-source', 'c:\packages')
+      @provider.uninstall
+    end
   end
 
   describe "when updating" do
