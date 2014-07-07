@@ -5,13 +5,18 @@ require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
   desc "Package management using Chocolatey on Windows"
-
-    confine    :operatingsystem => :windows
+  confine    :operatingsystem => :windows
 
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
-  chocopath = ENV['ChocolateyInstall'] || 'C:\Chocolatey'
-  commands :chocolatey => chocopath + "\\chocolateyInstall\\chocolatey.cmd"
+  
+  
+  def self.chocolatey_command
+    chocopath = ENV['ChocolateyInstall'] || ('C:\ProgramData\chocolatey' if File.directory?('C:\ProgramData\chocolatey')) || 'C:\Chocolatey'
 
+    chocopath + "\\chocolateyInstall\\chocolatey.cmd"
+  end
+  
+  commands :chocolatey => chocopath + "\\chocolateyInstall\\chocolatey.cmd"
 
  def print()
    notice("The value is: '${name}'")
