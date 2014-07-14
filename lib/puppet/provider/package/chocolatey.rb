@@ -63,6 +63,33 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   # Query provides the information for the single package identified by @Resource[:name].
 
   def query
+    if @resource[:source] == 'webpi'
+      begin
+        in_list = false
+        execpipe([command(:chocolatey), "list", "-lo", "-source", "webpi"]) do |process|
+          process.each_line do |line|
+            line.chomp!
+            # After hitting the first dashed line, in the list of installed
+            # products
+            if line =~ /^-----/; in_list = true; next; end
+
+            if !in_list or line.empty?; next; end
+
+            # Current Chocolatey releases don't support -lo, so make sure not
+            # to read uninstalled products. This is to catch
+            # `--Available Products`, but just checking the dashes in case it
+            # might be localised
+            if line =~ /^--/; return nil; end
+
+            values = line.split(' ', 2)
+            return { :name => values[0], :ensure => values[1], :provider => self.class.name } if values[0] == @resource[:name]
+          end
+        end
+      rescue Puppet::ExecutionFailure
+        return nil
+      end
+    end
+
     self.class.instances.each do |provider_chocolatey|
       return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
     end
