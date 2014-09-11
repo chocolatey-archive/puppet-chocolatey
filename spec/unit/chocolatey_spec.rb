@@ -54,7 +54,7 @@ describe provider do
 
   describe "when installing" do
     it "should use a command without versioned package" do
-      @resource[:ensure] = :latest
+      @resource[:ensure] = :present
       @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
       @provider.install
     end
@@ -74,12 +74,29 @@ describe provider do
   end
 
   describe "when updating" do
-    it "should use a command without versioned package" do
+    it "should use `chocolatey update` when ensure latest and package present" do
+      provider.stubs(:instances).returns [provider.new({
+        :ensure   => "1.2.3",
+        :name     => "chocolatey",
+        :provider => :chocolatey,
+      })]
       @provider.expects(:chocolatey).with('update', 'chocolatey', nil)
       @provider.update
     end
 
+    it "should use `chocolatey install` when ensure latest and package absent" do
+       provider.stubs(:instances).returns []
+       @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
+       @provider.update
+    end
+
+
     it "should use source if it is specified" do
+       provider.expects(:instances).returns [provider.new({
+        :ensure   => "latest",
+        :name     => "chocolatey",
+        :provider => :chocolatey,
+      })]
       @resource[:source] = 'c:\packages'
       @provider.expects(:chocolatey).with('update','chocolatey', nil, '-source', 'c:\packages')
       @provider.update
