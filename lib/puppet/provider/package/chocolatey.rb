@@ -51,7 +51,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << "-source" << resource[:source]
     end
 
-    chocolatey(*args)
+    if self.query
+      chocolatey(*args)
+    else
+      self.install
+    end 
   end
 
   # from puppet-dev mailing list
@@ -105,7 +109,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def latest
-    packages = []
+    package_ver = ''
 
     begin
       output = execpipe(latestcmd()) do |process|
@@ -115,13 +119,13 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           if line.empty?; next; end
           # Example: ( latest        : 2013.08.19.155043 )
           values = line.split(':').collect(&:strip).delete_if(&:empty?)
-          return values[1]
+          package_ver = values[1]
         end
       end
     rescue Puppet::ExecutionFailure
       return nil
     end
-    packages
+    package_ver
   end
 
 end
