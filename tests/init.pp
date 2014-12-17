@@ -4,6 +4,5 @@
   package { $pkg:
     ensure          => 'latest',
     provider        => 'chocolatey',
- 
   }
 #}
