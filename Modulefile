@@ -1,5 +1,5 @@
 name    'rismoney-chocolatey'
-version '0.0.3'
+version '0.4'
 source 'https://github.com/rismoney/puppet-chocolatey'
 author 'rismoney'
 license 'APACHE2'
