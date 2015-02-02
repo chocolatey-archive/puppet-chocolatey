@@ -16,6 +16,12 @@ if ENV.key?('PUPPET_VERSION')
   puppet_version = "= #{ENV['PUPPET_VERSION']}"
 end
 
+gem 'beaker',
+    :git => 'https://github.com/puppetlabs/beaker.git',
+    :branch => 'MAINT-fix_vagrantfile_syntax_error',
+    :require => false
+gem 'beaker-rspec',                                                            :require => false
+
 # https://github.com/jimweirich/rake
 gem 'rake', '~> 10.0'
 
@@ -25,7 +31,7 @@ gem 'rspec'
 gem 'rspec-core'
 gem 'rspec-expectations'
 gem 'rspec-mocks'
-gem 'minitest', '~> 5.0.0'
+gem 'minitest', '~> 5.4.0'
 
 # https://github.com/freerange/mocha#bundler
 gem 'mocha', :require => false
