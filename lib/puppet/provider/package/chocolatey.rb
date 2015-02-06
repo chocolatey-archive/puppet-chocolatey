@@ -105,7 +105,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 	args = "version", @resource[:name][/\A\S*/]
 	
     if @resource[:source]
-      args << "-source" << resource[:source]
+      args << "-source" << @resource[:source]
     end
 
 	args << '| findstr /R "latest" | findstr /V "latestCompare"'
