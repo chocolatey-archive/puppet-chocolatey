@@ -23,4 +23,5 @@ matrix:
 
 # http://about.travis-ci.org/docs/user/notifications/#Email-notifications
 notifications:
-  email: false
+  email:
+    - chocolatey-build-status@googlegroups.com
