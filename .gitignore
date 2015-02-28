@@ -5,6 +5,8 @@
 *.old
 *.gem
 *.rbc
+.rspec_system
+.vagrant
 .bundle
 .config
 .yardoc
@@ -16,6 +18,7 @@ coverage
 doc/
 lib/bundler/man
 pkg
+vendor
 rdoc
 spec/reports
 test/tmp
