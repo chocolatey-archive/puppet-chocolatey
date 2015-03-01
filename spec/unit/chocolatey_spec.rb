@@ -50,6 +50,10 @@ describe provider do
     it "should accept http://somelocation/packages" do
       @resource[:source] = 'http://somelocation/packages'
     end
+
+    it "should accept \\unc\share\packages" do
+      @resource[:source] = '\\unc\share\packages'
+    end
   end
 
   context "when installing" do
