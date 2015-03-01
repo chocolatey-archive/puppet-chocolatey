@@ -16,8 +16,9 @@ Travis | AppVeyor
     * [Beginning with Chocolatey provider](#beginning-with-chocolatey-provider)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
+8. [Attributions](#attributions)
 
 ## Overview
 
@@ -112,3 +113,7 @@ Works with Windows only.
 ## Development
 
 See [CONTRIBUTING.md](https://github.com/chocolatey/puppet-chocolatey/blob/master/CONTRIBUTING.md)
+
+## Attributions
+
+A special thanks goes out to [Rich Siegel](https://github.com/rismoney) who wrote the original provider and continues to contribute to the development of this provider.
