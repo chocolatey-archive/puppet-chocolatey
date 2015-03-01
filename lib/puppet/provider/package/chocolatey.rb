@@ -118,8 +118,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     package_ver = ''
 
     begin
-      output = execpipe(latestcmd()) do |process|
-
+      execpipe(latestcmd()) do |process|
         process.each_line do |line|
           line.chomp!
           if line.empty?; next; end
