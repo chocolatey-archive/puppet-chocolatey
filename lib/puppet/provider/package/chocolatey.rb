@@ -81,7 +81,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def self.listcmd
-    [command(:chocolatey), "list", "-lo"]
+    args = []
+    args << 'list'
+    args << '-lo'
+    if choco_exe?
+      args << '-r'
+    end
+
+    [command(:chocolatey), *args]
   end
 
   def self.instances
