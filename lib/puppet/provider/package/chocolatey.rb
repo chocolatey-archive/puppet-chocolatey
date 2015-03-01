@@ -1,14 +1,9 @@
-# authored by Rich Siegel (rismoney@gmail.com)
-# with help from some of the other pkg providers of course
-
 require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
   desc "Package management using Chocolatey on Windows"
   confine    :operatingsystem => :windows
-
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
-
 
   def self.chocolatey_command
     chocopath = ENV['ChocolateyInstall'] || ('C:\Chocolatey' if File.directory?('C:\Chocolatey')) || 'C:\ProgramData\chocolatey'
@@ -18,9 +13,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   commands :chocolatey => chocolatey_command
 
- def print()
-   notice("The value is: '${name}'")
- end
+  def print()
+    notice("The value is: '${name}'")
+  end
 
   def install
     should = @resource.should(:ensure)
@@ -60,7 +55,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       chocolatey(*args)
     else
       self.install
-    end 
+    end
   end
 
   # from puppet-dev mailing list
@@ -101,16 +96,15 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def latestcmd
-	
-	args = "version", @resource[:name][/\A\S*/]
-	
+    args = "version", @resource[:name][/\A\S*/]
+
     if @resource[:source]
       args << "-source" << @resource[:source]
     end
 
-	args << '| findstr /R "latest" | findstr /V "latestCompare"'
-	
-	[command(:chocolatey), *args]
+    args << '| findstr /R "latest" | findstr /V "latestCompare"'
+
+    [command(:chocolatey), *args]
   end
 
   def latest

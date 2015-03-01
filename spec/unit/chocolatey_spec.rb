@@ -174,6 +174,5 @@ describe provider do
       provider.expects(:execpipe).raises(Puppet::ExecutionFailure.new("ERROR!"))
       provider.instances.should be_nil
     end
-
   end
 end
