@@ -3,12 +3,12 @@ clone_depth: 5
 init:
 - git config --global user.email "chocolatey@realdimensions.net"
 - git config --global user.name "Chocolatey yo"
-- gem install bundler
-- bundle config --global --jobs 4
-- bundle install
 nuget:
   disable_publish_on_pr: true
 build_script:
+- gem install bundler --no-ri --no-rdoc
+- bundle config --global --jobs 4
+- bundle install
 - bundle exec rake spec
 test: off
 deploy: off
