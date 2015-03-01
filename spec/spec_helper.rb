@@ -27,6 +27,9 @@ RSpec.configure do |c|
   # https://github.com/jumanjiman/jumanjiman_spec_helper#shared-contexts
   c.include JumanjimanSpecHelper::EnvironmentContext
 
+  # set the environment variable before files are loaded, otherwise it is too late
+  ENV['ChocolateyInstall'] = 'c:\blah'
+
   # https://www.relishapp.com/rspec/rspec-core/v/2-12/docs/mock-framework-integration/mock-with-mocha!
   c.mock_framework = :mocha
 

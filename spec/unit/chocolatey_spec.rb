@@ -9,8 +9,6 @@ describe provider do
   let (:chocolatey) {'c:\blah\chocolatey.cmd'}
 
   before(:each) do
-    ENV['ChocolateyInstall'] = 'c:\blah'
-
     @resource = Puppet::Type.type(:package).new(
       :name     => 'chocolatey',
       :ensure   => :present,
