@@ -12,9 +12,13 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     chocopath
   end
+
+  # this ultimately determines if we are on the C# version of choco
+  def self.choco_exe?
+    return false
   end
 
-  commands :chocolatey => chocolatey_command
+  commands :chocolatey => chocolatey_command, :choco_exe? => choco_exe?
 
   def print()
     notice("The value is: '${name}'")
