@@ -6,7 +6,7 @@ provider = Puppet::Type.type(:package).provider(:chocolatey)
 
 describe provider do
 
-  let (:chocolatey) {'c:\blah\chocolatey.cmd'}
+  let (:chocolatey) {'c:\blah\bin\choco.exe'}
 
   before(:each) do
     @resource = Puppet::Type.type(:package).new(
@@ -114,7 +114,9 @@ describe provider do
   context "when getting latest" do
     it "should use source if it is specified" do
       @resource[:source] = 'c:\packages'
-	  @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+      @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+      #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
+      #@provider.latest
     end
   end
 
