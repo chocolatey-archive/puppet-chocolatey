@@ -8,7 +8,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def self.chocolatey_command
     chocopath = ENV['ChocolateyInstall'] || ('C:\Chocolatey' if File.directory?('C:\Chocolatey')) || 'C:\ProgramData\chocolatey'
 
-    chocopath + "\\chocolateyInstall\\chocolatey.cmd"
+    chocopath + "\\bin\\choco.exe"
+
+    chocopath
+  end
   end
 
   commands :chocolatey => chocolatey_command
