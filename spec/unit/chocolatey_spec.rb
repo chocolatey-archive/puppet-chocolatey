@@ -52,7 +52,7 @@ describe provider do
     end
   end
 
-  describe "when installing" do
+  context "when installing" do
     it "should use a command without versioned package" do
       @resource[:ensure] = :present
       @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
@@ -66,7 +66,7 @@ describe provider do
     end
   end
 
-  describe "when uninstalling" do
+  context "when uninstalling" do
     it "should call the remove operation" do
       @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
       @provider.uninstall
@@ -79,7 +79,7 @@ describe provider do
     end
   end
 
-  describe "when updating" do
+  context "when updating" do
     it "should use `chocolatey update` when ensure latest and package present" do
       provider.stubs(:instances).returns [provider.new({
         :ensure   => "1.2.3",
@@ -109,14 +109,14 @@ describe provider do
     end
   end
 
-  describe "when getting latest" do
+  context "when getting latest" do
     it "should use source if it is specified" do
       @resource[:source] = 'c:\packages'
 	  @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
     end
   end
-	
-  describe "query" do
+
+  context "query" do
     it "should return a hash when chocolatey and the package are present" do
       provider.expects(:instances).returns [provider.new({
         :ensure   => "1.2.5",
@@ -137,7 +137,7 @@ describe provider do
     end
   end
 
-  describe "when fetching a package list" do
+  context "when fetching a package list" do
     it "should invoke provider listcmd" do
       provider.expects(:listcmd)
       provider.instances
