@@ -3,7 +3,13 @@ require 'puppet/provider/package'
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
   desc "Package management using Chocolatey on Windows"
   confine    :operatingsystem => :windows
-  has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
+  has_feature :installable
+  has_feature :uninstallable
+  has_feature :upgradeable
+  has_feature :versionable
+  has_feature :install_options
+  has_feature :uninstall_options
+  #has_feature :holdable
 
   def initialize(value={})
     super(value)
