@@ -57,34 +57,38 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     should = @resource.should(:ensure)
     case should
     when true, false, Symbol
-      args = "install", @resource[:name][/\A\S*/], resource[:install_options]
+      args = 'install', @resource[:name][/\A\S*/]
     else
       # Add the package version
-      args = "install", @resource[:name][/\A\S*/], "-version", resource[:ensure], resource[:install_options]
+      args = 'install', @resource[:name][/\A\S*/], '-version', @resource[:ensure]
     end
 
+    args << @resource[:install_options]
+
     if @resource[:source]
-      args << "-source" << resource[:source]
+      args << '-source' << @resource[:source]
     end
 
     chocolatey(*args)
   end
 
   def uninstall
-    args = "uninstall", @resource[:name][/\A\S*/]
+    args = 'uninstall', @resource[:name][/\A\S*/]
 
     if @resource[:source]
-      args << "-source" << resource[:source]
+      args << '-source' << @resource[:source]
     end
 
     chocolatey(*args)
   end
 
   def update
-    args = "update", @resource[:name][/\A\S*/], resource[:install_options]
+      args = 'update', @resource[:name][/\A\S*/]
+
+    args << @resource[:install_options]
 
     if @resource[:source]
-      args << "-source" << resource[:source]
+      args << '-source' << @resource[:source]
     end
 
     if self.query
@@ -139,10 +143,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def latestcmd
-    args = "version", @resource[:name][/\A\S*/]
+    args = 'version', @resource[:name][/\A\S*/]
 
     if @resource[:source]
-      args << "-source" << @resource[:source]
+      args << '-source' << @resource[:source]
     end
 
     args << '| findstr /R "latest" | findstr /V "latestCompare"'
