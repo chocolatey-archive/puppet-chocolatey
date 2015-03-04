@@ -5,6 +5,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   confine    :operatingsystem => :windows
   has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
 
+  def initialize(value={})
+    super(value)
+    @compiled_choco = nil
+  end
+
   def self.chocolatey_command
     chocopath = ENV['ChocolateyInstall'] || ('C:\Chocolatey' if File.directory?('C:\Chocolatey')) || 'C:\ProgramData\chocolatey'
 
@@ -13,9 +18,22 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     chocopath
   end
 
+  def self.compiled_choco=(value)
+    @compiled_choco = value
+  end
+
   # this ultimately determines if we are on the C# version of choco
+  # so commands can be adjusted accordingly
+  # it is stubbed for now
   def self.choco_exe?
-    return false
+    # call `choco -v` one time here and cache the result
+    # - new choco will output a single value e.g. `0.9.9`
+    # - old choco is going to return the default output e.g. `Please call chocolatey ?`
+    if @compiled_choco.nil?
+      @compiled_choco = true
+    end
+
+    @compiled_choco
   end
 
   commands :chocolatey => chocolatey_command, :choco_exe? => choco_exe?
