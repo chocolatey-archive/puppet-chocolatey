@@ -121,8 +121,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   # Query provides the information for the single package identified by @Resource[:name].
 
   def query
-    self.class.instances.each do |provider_chocolatey|
-      return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
+    self.class.instances.each do |package|
+      return package.properties if @resource[:name][/\A\S*/].downcase == package.name.downcase
     end
 
     return nil
