@@ -79,6 +79,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def uninstall
     args = 'uninstall', @resource[:name][/\A\S*/]
 
+    if choco_exe?
+      args << '-y'
+    end
 
     args << @resource[:uninstall_options]
 

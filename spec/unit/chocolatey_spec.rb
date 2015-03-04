@@ -114,15 +114,38 @@ describe provider do
   end
 
   context "when uninstalling" do
-    it "should call the remove operation" do
-      @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
-      @provider.uninstall
+    context "with compiled choco client" do
+      before :each do
+         @provider.class.compiled_choco = true
+      end
+
+      it "should call the remove operation" do
+        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-y', nil)
+        @provider.uninstall
+      end
+
+      it "should use source if it is specified" do
+        @resource[:source] = 'c:\packages'
+        @provider.expects(:chocolatey).with('uninstall','chocolatey','-y', nil, '-source', 'c:\packages')
+        @provider.uninstall
+      end
     end
 
-    it "should use source if it is specified" do
-      @resource[:source] = 'c:\packages'
-      @provider.expects(:chocolatey).with('uninstall','chocolatey', '-source', 'c:\packages')
-      @provider.uninstall
+    context "with posh choco client" do
+      before :each do
+         @provider.class.compiled_choco = false
+      end
+
+      it "should call the remove operation" do
+        @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
+        @provider.uninstall
+      end
+
+      it "should use source if it is specified" do
+        @resource[:source] = 'c:\packages'
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', nil, '-source', 'c:\packages')
+        @provider.uninstall
+      end
     end
   end
 
