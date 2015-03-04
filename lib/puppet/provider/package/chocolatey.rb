@@ -63,6 +63,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args = 'install', @resource[:name][/\A\S*/], '-version', @resource[:ensure]
     end
 
+    if choco_exe?
+      args << '-y'
+    end
+
     args << @resource[:install_options]
 
     if @resource[:source]

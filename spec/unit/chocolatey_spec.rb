@@ -51,6 +51,12 @@ describe provider do
     @provider.should respond_to(:latest)
   end
 
+  context "when working with new compiled choco" do
+    it "should set choco_exe? true" do
+      @provider.class.choco_exe?.should be_true
+    end
+  end
+
   context "parameter :source" do
     it "should default to nil" do
       @resource[:source].should be_nil
@@ -70,16 +76,40 @@ describe provider do
   end
 
   context "when installing" do
-    it "should use a command without versioned package" do
-      @resource[:ensure] = :present
-      @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
-      @provider.install
+    context "with compiled choco client" do
+      before :each do
+        @provider.class.compiled_choco = true
+      end
+
+      it "should use a command without versioned package" do
+        @resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
+        @provider.install
+      end
+
+      it "should use source if it is specified" do
+        @resource[:source] = 'c:\packages'
+        @provider.expects(:chocolatey).with('install','chocolatey','-y', nil, '-source', 'c:\packages')
+        @provider.install
+      end
     end
 
-    it "should use source if it is specified" do
-      @resource[:source] = 'c:\packages'
-      @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
-      @provider.install
+    context "with posh choco client" do
+      before :each do
+         @provider.class.compiled_choco = false
+      end
+
+      it "should use a command without versioned package" do
+        @resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
+        @provider.install
+      end
+
+      it "should use source if it is specified" do
+        @resource[:source] = 'c:\packages'
+        @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
+        @provider.install
+      end
     end
   end
 
