@@ -20,6 +20,21 @@ describe provider do
     provider.stubs(:healthcheck)
   end
 
+  it "should find chocolatey install location based on ChocolateyInstall environment variable" do
+    # this is a placeholder, it is already set in spec_helper
+    ENV['ChocolateyInstall'] = 'c:\blah'
+    @provider.class.chocolatey_command.should == 'c:\blah'
+  end
+
+  it "should find chocolatey install location based on default location" do
+    ENV['ChocolateyInstall'] = nil
+    @provider.class.chocolatey_command.should == ENV['ALLUSERSPROFILE'] + '\chocolatey'
+
+    # set it back not to mess up other tests
+    ENV['ChocolateyInstall'] = 'c:\blah'
+    @provider.class.chocolatey_command
+  end
+
   it "should have an install method" do
     @provider.should respond_to(:install)
   end
