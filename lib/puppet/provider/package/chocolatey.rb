@@ -75,6 +75,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def uninstall
     args = 'uninstall', @resource[:name][/\A\S*/]
 
+
+    args << @resource[:uninstall_options]
+
     if @resource[:source]
       args << '-source' << @resource[:source]
     end
