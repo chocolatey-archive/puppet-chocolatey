@@ -93,7 +93,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def update
+    if choco_exe?
+      args = 'upgrade', @resource[:name][/\A\S*/], '-y'
+    else
       args = 'update', @resource[:name][/\A\S*/]
+    end
 
     args << @resource[:install_options]
 
