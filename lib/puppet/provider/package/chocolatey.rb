@@ -163,13 +163,19 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def latestcmd
-    args = 'version', @resource[:name][/\A\S*/]
+    if choco_exe?
+      args = 'upgrade', '--noop', @resource[:name][/\A\S*/], '-r'
+    else
+      args = 'version', @resource[:name][/\A\S*/]
+    end
 
     if @resource[:source]
       args << '-source' << @resource[:source]
     end
 
-    args << '| findstr /R "latest" | findstr /V "latestCompare"'
+    unless choco_exe?
+      args << '| findstr /R "latest" | findstr /V "latestCompare"'
+    end
 
     [command(:chocolatey), *args]
   end
@@ -182,9 +188,16 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
         process.each_line do |line|
           line.chomp!
           if line.empty?; next; end
-          # Example: ( latest        : 2013.08.19.155043 )
-          values = line.split(':').collect(&:strip).delete_if(&:empty?)
-          package_ver = values[1]
+          if choco_exe?
+            # we'll only get here if there is output, -r doesn't
+            # provide any output UNLESS there is an upgrade available
+            values = line.split('|')
+            package_ver = values[2]
+          else
+            # Example: ( latest        : 2013.08.19.155043 )
+            values = line.split(':').collect(&:strip).delete_if(&:empty?)
+            package_ver = values[1]
+          end
         end
       end
     rescue Puppet::ExecutionFailure

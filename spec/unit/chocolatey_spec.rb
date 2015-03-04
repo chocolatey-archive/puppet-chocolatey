@@ -218,11 +218,38 @@ describe provider do
   end
 
   context "when getting latest" do
-    it "should use source if it is specified" do
-      @resource[:source] = 'c:\packages'
-      @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
-      #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
-      #@provider.latest
+    context "with compiled choco client" do
+      before :each do
+        @provider.class.compiled_choco = true
+      end
+
+      it "should use choco.exe arguments" do
+        @provider.send(:latestcmd).should == [nil, 'upgrade', '--noop', 'chocolatey','-r']
+      end
+
+      it "should use source if it is specified" do
+        @resource[:source] = 'c:\packages'
+        @provider.send(:latestcmd).should == [nil, 'upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
+        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
+        #@provider.latest
+      end
+    end
+
+    context "with posh choco client" do
+      before :each do
+        @provider.class.compiled_choco = false
+      end
+
+      it "should use posh arguments" do
+        @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
+      end
+
+      it "should use source if it is specified" do
+        @resource[:source] = 'c:\packages'
+        @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
+        #@provider.latest
+      end
     end
   end
 
