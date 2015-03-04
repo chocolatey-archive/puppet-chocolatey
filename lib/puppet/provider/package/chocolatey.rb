@@ -124,6 +124,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     self.class.instances.each do |provider_chocolatey|
       return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
     end
+
     return nil
   end
 
@@ -157,6 +158,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     rescue Puppet::ExecutionFailure
       return nil
     end
+
     packages
   end
 
@@ -188,6 +190,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     rescue Puppet::ExecutionFailure
       return nil
     end
+
     package_ver
   end
 
