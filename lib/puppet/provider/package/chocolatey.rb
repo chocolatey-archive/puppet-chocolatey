@@ -146,7 +146,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
         process.each_line do |line|
           line.chomp!
           if line.empty? or line.match(/Reading environment variables.*/); next; end
-          values = line.split(' ')
+          if choco_exe?
+            values = line.split('|')
+          else
+            values = line.split(' ')
+          end
           packages << new({ :name => values[0], :ensure => values[1], :provider => self.name })
         end
       end
