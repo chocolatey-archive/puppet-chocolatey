@@ -8,7 +8,7 @@ describe provider do
 
   let (:chocolatey) {'c:\blah\bin\choco.exe'}
 
-  before(:each) do
+  before :each do
     @resource = Puppet::Type.type(:package).new(
       :name     => 'chocolatey',
       :ensure   => :present,
@@ -64,7 +64,7 @@ describe provider do
       @resource[:source] = 'http://somelocation/packages'
     end
 
-    it "should accept \\unc\share\packages" do
+    it 'should accept \\unc\share\packages' do
       @resource[:source] = '\\unc\share\packages'
     end
   end
