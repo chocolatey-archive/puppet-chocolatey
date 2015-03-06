@@ -4,5 +4,5 @@
 # It sets variables according to platform.
 #
 class chocolatey::params {
-  $install_location = ENV['ALLUSERSPROFILE'] + '/chocolatey'
+  $install_location = ENV['ALLUSERSPROFILE'] + '\chocolatey'
 }
