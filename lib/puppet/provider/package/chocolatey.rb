@@ -84,8 +84,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:uninstall_options]
 
-    if @resource[:source]
-      args << '-source' << @resource[:source]
+    unless choco_exe?
+      if @resource[:source]
+        args << '-source' << @resource[:source]
+      end
     end
 
     chocolatey(*args)

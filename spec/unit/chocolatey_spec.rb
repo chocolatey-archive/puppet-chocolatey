@@ -124,9 +124,9 @@ describe provider do
         @provider.uninstall
       end
 
-      it "should use source if it is specified" do
+      it "should use ignore source if it is specified" do
         @resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey','-y', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('uninstall','chocolatey','-y', nil)
         @provider.uninstall
       end
     end
