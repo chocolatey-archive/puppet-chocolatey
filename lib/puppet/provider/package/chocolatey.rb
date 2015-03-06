@@ -46,7 +46,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     @compiled_choco
   end
 
-  commands :chocolatey => chocolatey_command, :choco_exe? => choco_exe?
+  def choco_exe?
+    self.class.choco_exe?
+  end
+
+  commands :chocolatey => chocolatey_command
 
   def print()
     notice("The value is: '${name}'")
