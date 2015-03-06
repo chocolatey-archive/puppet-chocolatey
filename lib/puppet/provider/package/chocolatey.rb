@@ -194,8 +194,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           line.chomp!
           if line.empty?; next; end
           if choco_exe?
-            # we'll only get here if there is output, -r doesn't
-            # provide any output UNLESS there is an upgrade available
             values = line.split('|')
             package_ver = values[2]
           else
