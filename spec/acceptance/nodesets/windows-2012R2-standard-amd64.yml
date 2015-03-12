@@ -10,6 +10,7 @@ HOSTS:
     ip: '10.255.33.129'
     communicator: bitvise
     is_cygwin: false
+    vb_gui: true
 CONFIG:
   log_level: verbose
   type: git

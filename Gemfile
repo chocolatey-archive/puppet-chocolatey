@@ -17,8 +17,8 @@ if ENV.key?('PUPPET_VERSION')
 end
 
 gem 'beaker',
-    :git => 'https://github.com/puppetlabs/beaker.git',
-    :branch => 'MAINT-fix_vagrantfile_syntax_error',
+    :git => 'https://github.com/petems/beaker.git',
+    :branch => 'MAINT-non_cygwin_windows_fixes',
     :require => false
 gem 'beaker-rspec',                                                            :require => false
 
