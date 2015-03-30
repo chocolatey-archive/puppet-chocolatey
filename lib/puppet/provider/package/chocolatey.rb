@@ -148,7 +148,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     packages = []
 
     begin
-      execpipe(listcmd()) do |process|
+      execpipe(listcmd) do |process|
         process.each_line do |line|
           line.chomp!
           if line.empty? or line.match(/Reading environment variables.*/); next; end
@@ -189,7 +189,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     package_ver = ''
 
     begin
-      execpipe(latestcmd()) do |process|
+      execpipe(latestcmd) do |process|
         process.each_line do |line|
           line.chomp!
           if line.empty?; next; end
