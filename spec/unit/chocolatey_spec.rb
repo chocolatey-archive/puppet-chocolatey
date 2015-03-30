@@ -26,7 +26,7 @@ describe provider do
     @provider.class.chocolatey_command.should == 'c:\blah\bin\choco.exe'
   end
 
-  it "should find chocolatey install location based on default location" do
+  it "should find chocolatey install location based on default location", :if => Puppet.features.microsoft_windows? do
     ENV['ChocolateyInstall'] = nil
     @provider.class.chocolatey_command.should == ENV['ALLUSERSPROFILE'] + '\chocolatey\bin\choco.exe'
 
@@ -52,7 +52,7 @@ describe provider do
   end
 
   context "when working with new compiled choco" do
-    it "should set choco_exe? true" do
+    it "should set choco_exe? true", :if => Puppet.features.microsoft_windows? do
       @provider.class.choco_exe?.should be_true
     end
   end
