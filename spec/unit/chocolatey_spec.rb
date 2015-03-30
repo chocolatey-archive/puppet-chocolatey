@@ -52,7 +52,9 @@ describe provider do
   end
 
   context "when working with new compiled choco" do
-    it "should set choco_exe? true", :if => Puppet.features.microsoft_windows? do
+    it "should set choco_exe? true" do
+      Puppet::Util::Execution.stubs(:execpipe).yields StringIO.new("0.9.9.4\n")
+
       @provider.class.choco_exe?.should be_true
     end
   end

@@ -34,16 +34,32 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   # this ultimately determines if we are on the C# version of choco
   # so commands can be adjusted accordingly
-  # it is stubbed for now
   def self.choco_exe?
     # call `choco -v` one time here and cache the result
     # - new choco will output a single value e.g. `0.9.9`
-    # - old choco is going to return the default output e.g. `Please call chocolatey ?`
+    # - old choco is going to return the default output e.g. `Please run chocolatey /?`
     if @compiled_choco.nil?
-      @compiled_choco = true
+      execpipe(choco_ver_cmd) do |process|
+        process.each_line do |line|
+          line.chomp!
+          if line.empty?; next; end
+          if line.match(/Please run chocolatey.*/)
+            @compiled_choco = false
+          else
+            @compiled_choco = true
+          end
+        end
+      end
     end
 
     @compiled_choco
+  end
+
+  def self.choco_ver_cmd
+    args = []
+    args << '-v'
+
+    [command(:chocolatey), *args]
   end
 
   def choco_exe?
