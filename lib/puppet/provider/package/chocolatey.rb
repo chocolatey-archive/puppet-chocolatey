@@ -1,66 +1,136 @@
-# authored by Rich Siegel (rismoney@gmail.com)
-# with help from some of the other pkg providers of course
-
 require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
   desc "Package management using Chocolatey on Windows"
   confine    :operatingsystem => :windows
+  has_feature :installable
+  has_feature :uninstallable
+  has_feature :upgradeable
+  has_feature :versionable
+  has_feature :install_options
+  has_feature :uninstall_options
+  #has_feature :holdable
 
-  has_feature :installable, :uninstallable, :upgradeable, :versionable, :install_options
-
+  def initialize(value={})
+    super(value)
+    @compiled_choco = nil
+  end
 
   def self.chocolatey_command
-    chocopath = ENV['ChocolateyInstall'] || ('C:\Chocolatey' if File.directory?('C:\Chocolatey')) || 'C:\ProgramData\chocolatey'
+    # must determine how to get to params in ruby
+    #default_location = $chocolatey::params::install_location || ENV['ALLUSERSPROFILE'] + '\chocolatey'
+    chocopath = ENV['ChocolateyInstall'] ||
+        ('C:\Chocolatey' if File.directory?('C:\Chocolatey')) ||
+        ENV['ALLUSERSPROFILE'] + '\chocolatey'
 
-    chocopath + "\\chocolateyInstall\\chocolatey.cmd"
+    chocopath += '\bin\choco.exe'
+
+    chocopath
+  end
+
+  def self.compiled_choco=(value)
+    @compiled_choco = value
+  end
+
+  # this ultimately determines if we are on the C# version of choco
+  # so commands can be adjusted accordingly
+  def self.choco_exe?
+    # call `choco -v` one time here and cache the result
+    # - new choco will output a single value e.g. `0.9.9`
+    # - old choco is going to return the default output e.g. `Please run chocolatey /?`
+    if @compiled_choco.nil?
+      execpipe(choco_ver_cmd) do |process|
+        process.each_line do |line|
+          line.chomp!
+          if line.empty?; next; end
+          if line.match(/Please run chocolatey.*/)
+            @compiled_choco = false
+          else
+            @compiled_choco = true
+          end
+        end
+      end
+    end
+
+    @compiled_choco
+  end
+
+  def self.choco_ver_cmd
+    args = []
+    args << '-v'
+
+    [command(:chocolatey), *args]
+  end
+
+  def choco_exe?
+    self.class.choco_exe?
   end
 
   commands :chocolatey => chocolatey_command
 
- def print()
-   notice("The value is: '${name}'")
- end
+  def print()
+    notice("The value is: '${name}'")
+  end
 
   def install
     should = @resource.should(:ensure)
     case should
     when true, false, Symbol
-      args = "install", @resource[:name][/\A\S*/], resource[:install_options]
+      args = 'install', @resource[:name][/\A\S*/]
     else
       # Add the package version
-      args = "install", @resource[:name][/\A\S*/], "-version", resource[:ensure], resource[:install_options]
+      args = 'install', @resource[:name][/\A\S*/], '-version', @resource[:ensure]
     end
 
+    if choco_exe?
+      args << '-dvy'
+    end
+
+    args << @resource[:install_options]
+
     if @resource[:source]
-      args << "-source" << resource[:source]
+      args << '-source' << @resource[:source]
     end
 
     chocolatey(*args)
   end
 
   def uninstall
-    args = "uninstall", @resource[:name][/\A\S*/]
+    args = 'uninstall', @resource[:name][/\A\S*/]
 
-    if @resource[:source]
-      args << "-source" << resource[:source]
+    if choco_exe?
+      args << '-dvfy'
+    end
+
+    args << @resource[:uninstall_options]
+
+    unless choco_exe?
+      if @resource[:source]
+        args << '-source' << @resource[:source]
+      end
     end
 
     chocolatey(*args)
   end
 
   def update
-    args = "update", @resource[:name][/\A\S*/], resource[:install_options]
+    if choco_exe?
+      args = 'upgrade', @resource[:name][/\A\S*/], '-dvy'
+    else
+      args = 'update', @resource[:name][/\A\S*/]
+    end
+
+    args << @resource[:install_options]
 
     if @resource[:source]
-      args << "-source" << resource[:source]
+      args << '-source' << @resource[:source]
     end
 
     if self.query
       chocolatey(*args)
     else
       self.install
-    end 
+    end
   end
 
   # from puppet-dev mailing list
@@ -72,64 +142,87 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   # Query provides the information for the single package identified by @Resource[:name].
 
   def query
-    self.class.instances.each do |provider_chocolatey|
-      return provider_chocolatey.properties if @resource[:name][/\A\S*/] == provider_chocolatey.name
+    self.class.instances.each do |package|
+      return package.properties if @resource[:name][/\A\S*/].downcase == package.name.downcase
     end
+
     return nil
   end
 
   def self.listcmd
-    [command(:chocolatey), "list", "-lo"]
+    args = []
+    args << 'list'
+    args << '-lo'
+    if choco_exe?
+      args << '-r'
+    end
+
+    [command(:chocolatey), *args]
   end
 
   def self.instances
     packages = []
 
     begin
-      execpipe(listcmd()) do |process|
+      execpipe(listcmd) do |process|
         process.each_line do |line|
           line.chomp!
           if line.empty? or line.match(/Reading environment variables.*/); next; end
-          values = line.split(' ')
+          if choco_exe?
+            values = line.split('|')
+          else
+            values = line.split(' ')
+          end
           packages << new({ :name => values[0], :ensure => values[1], :provider => self.name })
         end
       end
     rescue Puppet::ExecutionFailure
       return nil
     end
+
     packages
   end
 
   def latestcmd
-	
-	args = "version", @resource[:name][/\A\S*/]
-	
-    if @resource[:source]
-      args << "-source" << @resource[:source]
+    if choco_exe?
+      args = 'upgrade', '--noop', @resource[:name][/\A\S*/], '-r'
+    else
+      args = 'version', @resource[:name][/\A\S*/]
     end
 
-	args << '| findstr /R "latest" | findstr /V "latestCompare"'
-	
-	[command(:chocolatey), *args]
+    if @resource[:source]
+      args << '-source' << @resource[:source]
+    end
+
+    unless choco_exe?
+      args << '| findstr /R "latest" | findstr /V "latestCompare"'
+    end
+
+    [command(:chocolatey), *args]
   end
 
   def latest
     package_ver = ''
 
     begin
-      output = execpipe(latestcmd()) do |process|
-
+      execpipe(latestcmd) do |process|
         process.each_line do |line|
           line.chomp!
           if line.empty?; next; end
-          # Example: ( latest        : 2013.08.19.155043 )
-          values = line.split(':').collect(&:strip).delete_if(&:empty?)
-          package_ver = values[1]
+          if choco_exe?
+            values = line.split('|')
+            package_ver = values[2]
+          else
+            # Example: ( latest        : 2013.08.19.155043 )
+            values = line.split(':').collect(&:strip).delete_if(&:empty?)
+            package_ver = values[1]
+          end
         end
       end
     rescue Puppet::ExecutionFailure
       return nil
     end
+
     package_ver
   end
 

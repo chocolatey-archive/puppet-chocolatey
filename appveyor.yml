@@ -1,0 +1,23 @@
+version: 1.0.{build}
+clone_depth: 5
+init:
+- git config --global user.email "chocolatey@realdimensions.net"
+- git config --global user.name "Chocolatey yo"
+- ruby --version
+nuget:
+  disable_publish_on_pr: true
+build_script:
+- gem install bundler --no-ri --no-rdoc
+- bundle config --global --jobs 4
+- bundle install
+test_script:
+- bundle exec rspec spec
+deploy: off
+notifications:
+- provider: Email
+  to:
+  - chocolatey-build-status@googlegroups.com
+  subject: AppVeyor - Chocolatey Puppet Provider Build Notification
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: true

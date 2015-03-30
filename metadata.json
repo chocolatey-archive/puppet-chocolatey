@@ -1,14 +1,39 @@
 {
-  "name": "rismoney-chocolatey",
+  "name": "chocolatey-chocolatey",
   "version": "0.4.0",
-  "author": "rismoney",
-  "summary": "Chocolatey package provider for puppet",
-  "license": "APACHE2",
-  "source": "https://github.com/rismoney/puppet-chocolatey",
-  "issues_url": "https://github.com/rismoney/puppet-chocolatey/issues",
-  "project_page": "https://github.com/rismoney/puppet-chocolatey",
-  "description": "Chocolatey package provider for puppet",
+  "author": "chocolatey",
+  "summary": "The Chocolatey package provider for Puppet",
+  "license": "Apache-2.0",
+  "source": "https://github.com/chocolatey/puppet-chocolatey",
+  "project_page": "https://github.com/chocolatey/puppet-chocolatey",
+  "issues_url": "https://github.com/chocolatey/puppet-chocolatey/issues",
+  "description": "The Chocolatey package provider for Puppet",
+  "tags": [
+    "microsoft",
+    "windows",
+    "powershell",
+    ".NET Framework",
+    ".Net",
+    "dot_net",
+    "chocolatey",
+    "package",
+    "package manager"
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Windows",
+      "operatingsystemrelease": [
+        "Server 2003",
+        "Server 2003 R2",
+        "Server 2008",
+        "Server 2008 R2",
+        "Server 2012",
+        "Server 2012 R2",
+        "7",
+        "8"
+      ]
+    }
+  ],
   "dependencies": [
-  
   ]
 }
