@@ -192,6 +192,16 @@ package { 'notepadplusplus':
 }
 ```
 
+### Install options with spaces
+
+```puppet
+package {'launchy':
+  ensure          => installed,
+  provider        => 'chocolatey',
+  install_options => ['-override', '-installArgs', '"', '/VERYSILENT', '/NORESTART', '"'],
+}
+```
+
 ## Reference
 
 * Chocolatey provider (`lib/puppet/provider/package/chocolatey.rb`)
