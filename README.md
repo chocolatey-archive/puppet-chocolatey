@@ -86,8 +86,10 @@ from tools and portable software to natively installed applications.
 
 Chocolatey requires the following components
  * Powershell v2+
-  * intalled on most systems by default
+   * intalled on most systems by default
  * .NET Framework v4+
+
+**NOTE**: The module does not yet offer an installation option for Chocolatey, so you will need to install that as well.
 
 ### Beginning with Chocolatey provider
 
@@ -100,16 +102,7 @@ Install this module via any of these approaches:
 
 ## Usage
 
-Use it like this:
-
-```puppet
-package { 'notepadplusplus':
-  ensure          => installed,
-  provider        => 'chocolatey',
-  install_options => ['-pre','-params','-mypkgparam'],
-  source          => 'https://myfeed.example.com/api/v2',
-}
-```
+### Set Chocolatey as Default Windows Provider
 
 If you want to set this provider as the site-wide default,
 add to your `site.pp`:
@@ -128,11 +121,76 @@ case $operatingsystem {
 }
 ```
 
+### With All Options
+
+```puppet
+package { 'notepadplusplus':
+  ensure            => installed|latest|'1.0.0'|absent,
+  provider          => 'chocolatey',
+  install_options   => ['-pre','-params','"','param1','param2','"'],
+  uninstall_options => ['-r'],
+  source            => 'https://myfeed.example.com/api/v2',
+}
+```
+
 * this is *versionable* so `ensure =>  '1.0'` works
 * this is *upgradeable*
 * supports `latest` (checks upstream), `absent` (uninstall)
 * supports `install_options` for pre-release, other cli
 * supports 'pinnable'
+
+### Simple install
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => installed,
+  provider => 'chocolatey',
+}
+```
+
+### Ensure always the newest version available
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => latest,
+  provider => 'chocolatey',
+}
+```
+
+### Ensure specific version
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => '6.7.5',
+  provider => 'chocolatey',
+}
+```
+
+### Specify custom source
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => '6.7.5',
+  provider => 'chocolatey',
+  source   => 'C:\local\folder\packages',
+}
+```
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => '6.7.5',
+  provider => 'chocolatey',
+  source   => '\\unc\source\packages',
+}
+```
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => '6.7.5',
+  provider => 'chocolatey',
+  source   => 'https://custom.nuget.odata.feed//api/v2',
+}
+```
 
 ## Reference
 
