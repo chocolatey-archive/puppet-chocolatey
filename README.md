@@ -188,7 +188,15 @@ package { 'notepadplusplus':
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
-  source   => 'https://custom.nuget.odata.feed//api/v2',
+  source   => 'https://custom.nuget.odata.feed/api/v2/',
+}
+```
+
+```puppet
+package { 'notepadplusplus':
+  ensure   => '6.7.5',
+  provider => 'chocolatey',
+  source   => 'C:\local\folder\packages;https://chocolatey.org/api/v2/',
 }
 ```
 
