@@ -20,7 +20,7 @@ describe provider do
     provider.stubs(:healthcheck)
   end
 
-  it "should find chocolatey install location based on ChocolateyInstall environment variable" do
+  it "should find chocolatey install location based on ChocolateyInstall environment variable", :if => Puppet.features.microsoft_windows? do
     # this is a placeholder, it is already set in spec_helper
     ENV['ChocolateyInstall'] = 'c:\blah'
     @provider.class.chocolatey_command.should == 'c:\blah\bin\choco.exe'
