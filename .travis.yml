@@ -3,7 +3,6 @@
 language: ruby
 
 rvm:
-  - 2.1.5
   - 2.0.0
   - 1.9.3
 
@@ -18,7 +17,7 @@ script:
 # @see http://about.travis-ci.org/docs/user/build-configuration/#The-Build-Matrix
 matrix:
   exclude:
-    - rvm: 2.1.5
+    - rvm: 2.0.0
       env: PUPPET_VERSION=3.4.0
 
 # http://about.travis-ci.org/docs/user/notifications/#Email-notifications
