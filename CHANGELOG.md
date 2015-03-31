@@ -1,3 +1,6 @@
+2015-03-31 Release 0.5.1
+- Fixes [#54](https://github.com/chocolatey/puppet-chocolatey/issues/54) - Blocking: Linux masters throw error if module is present
+
 2015-03-30 Release 0.5.0
 - Provider enhancements
 - Better docs
