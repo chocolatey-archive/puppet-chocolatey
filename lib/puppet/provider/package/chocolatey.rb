@@ -178,7 +178,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           else
             values = line.split(' ')
           end
-          packages << new({ :name => values[0], :ensure => values[1], :provider => self.name })
+          packages << new({ :name => values[0].downcase, :ensure => values[1], :provider => self.name })
         end
       end
     rescue Puppet::ExecutionFailure
