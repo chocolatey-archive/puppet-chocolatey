@@ -89,7 +89,8 @@ Chocolatey requires the following components
    * intalled on most systems by default
  * .NET Framework v4+
 
-**NOTE**: The module does not yet offer an installation option for Chocolatey, so you will need to install that as well.
+**NOTE**: The module does not yet offer an installation option for Chocolatey,
+so you will need to install that as well.
 
 ### Beginning with Chocolatey provider
 
@@ -137,7 +138,7 @@ package { 'notepadplusplus':
 * this is *upgradeable*
 * supports `latest` (checks upstream), `absent` (uninstall)
 * supports `install_options` for pre-release, other cli
-* supports 'pinnable'
+* **soon**: supports 'holdable'
 
 ### Simple install
 
@@ -210,12 +211,120 @@ package {'launchy':
 }
 ```
 
+### Install options with quotes
+The underlying installer may need quotes passed to it. This is possible, but not as intuitive.
+You'll need a set of quotes surrounding the argument and a double set of quotes surrounding the
+item that must be quoted.
+
+```puppet
+package {'mysql':
+  ensure          => latest,
+  provider        => 'chocolatey',
+  install_options => ['-override', '-installArgs', '"', '/INSTALLDIR=',
+    '""', 'C:\Program Files\somewhere', '""', '"'
+  ],
+}
+```
+
 ## Reference
 
 * Chocolatey provider (`lib/puppet/provider/package/chocolatey.rb`)
 * params.pp (`manifests/params.pp`)
 * install.pp (`manifests/install.pp`)
 * config.pp (`manifests/config.pp`)
+
+### Chocolatey Provider
+Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
+
+This provider supports the `install_options` and `uninstall_options` attributes,
+which allow command-line flags to be passed to the choco command. These options
+should be specified as documented below.
+
+ * Required binaries: `choco.exe`, usually found in `C:\Program Data\chocolatey\bin\choco.exe`.
+   * The binary is searched for using the Environment Variable `ChocolateyInstall`, then by two known locations (`C:\Chocolatey\bin\choco.exe` and `C:\ProgramData\chocolatey\bin\choco.exe`).
+   * On Windows 2003 you should install Chocolatey to `C:\Chocolatey` or somewhere besides the default. **NOTE**: the root of `C:\` is not a secure location by default, so you may want to update the security on the folder.
+ * Supported features: `install_options`, `installable`, `uninstall_options`,
+`uninstallable`, `upgradeable`, `versionable`.
+
+### Properties/Parameters
+
+#### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the package should be in. You can choose which package to retrieve by
+specifying a version number or `latest` as the ensure value. This defaults to
+`installed`.
+
+Valid options: `present` (also called `installed`), `absent`, `latest` or a version
+number.
+
+#### `install_options`
+An array of additional options to pass when installing a package. These options are
+package-specific, and should be documented by the software vendor. One commonly
+implemented option is `INSTALLDIR`:
+
+```puppet
+package {'launchy':
+  ensure          => installed,
+  provider        => 'chocolatey',
+  install_options => ['-installArgs', '"', '/VERYSILENT', '/NORESTART', '"'],
+}
+```
+
+The above method of single quotes in an array is the only method you should use
+in passing `install_options` with the Chocolatey provider. There are other ways
+to do it, but they are passed through to Chocolatey in ways that may not be
+sufficient.
+
+This is the **only** place in Puppet where backslash separators should be used.
+Note that backslashes in double-quoted strings *must* be double-escaped and
+backslashes in single-quoted strings *may* be double-escaped.
+
+#### `name`
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The package name. This is the name that the packaging system uses internally.
+
+#### `provider`
+The specific backend to use for the `package` resource. Chocolatey is not the
+default provider for Windows so it must be specified (or by using a resource
+default, shown in Usage). Valid options for this provider are `'chocolatey'`.
+
+#### `source`
+Where to find the package file. Chocolatey maintains default sources in its
+configuration file that it will use by default. Use this to override the default
+source(s).
+
+Chocolatey accepts different values for source, including accept paths to local
+files/folders stored on the target system, URLs (to OData feeds), and network
+drive paths. Puppet will not automatically retrieve source files for you, and
+usually just passes the value of source to the package installation command.
+
+You can use a `file` resource if you need to manually copy package files to the
+target system.
+
+#### `uninstall_options`
+An array of additional options to pass when uninstalling a package. These options
+are package-specific, and should be documented by the software vendor.
+
+```puppet
+package {'launchy':
+  ensure          => absent,
+  provider        => 'chocolatey',
+  uninstall_options => ['-uninstallargs', '"', '/VERYSILENT', '/NORESTART', '"'],
+}
+```
+
+The above method of single quotes in an array is the only method you should use
+in passing `uninstall_options` with the Chocolatey provider. There are other ways
+to do it, but they are passed through to Chocolatey in ways that may not be
+sufficient.
+
+This is the **only** place in Puppet where backslash separators should be used.
+Note that backslashes in double-quoted strings *must* be double-escaped and
+backslashes in single-quoted strings *may* be double-escaped.
+
 
 ## Limitations
 
