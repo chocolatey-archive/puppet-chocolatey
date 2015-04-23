@@ -78,6 +78,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def install
+    Puppet.warning('The rismoney/chocolatey module has been replaced with chocolatey/chocolatey. Please use that instead.')
     should = @resource.should(:ensure)
     case should
     when true, false, Symbol
@@ -101,6 +102,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def uninstall
+    Puppet.warning('The rismoney/chocolatey module has been replaced with chocolatey/chocolatey. Please use that instead.')
     args = 'uninstall', @resource[:name][/\A\S*/]
 
     if choco_exe?
@@ -119,6 +121,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def update
+    Puppet.warning('The rismoney/chocolatey module has been replaced with chocolatey/chocolatey. Please use that instead.')
     if choco_exe?
       args = 'upgrade', @resource[:name][/\A\S*/], '-dvy'
     else

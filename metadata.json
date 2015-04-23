@@ -1,7 +1,7 @@
 {
-  "name": "chocolatey-chocolatey",
+  "name": "rismoney-chocolatey",
   "version": "0.5.2",
-  "author": "chocolatey",
+  "author": "rismoney",
   "summary": "The Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
   "source": "https://github.com/chocolatey/puppet-chocolatey",
