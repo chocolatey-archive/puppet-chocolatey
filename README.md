@@ -1,6 +1,8 @@
-# puppet-chocolatey
+# puppet-chocolatey [DEPRECATED]
 
-## NOTICE: This provider is deprecated. Please use [chocolatey/chocolatey](https://forge.puppetlabs.com/chocolatey/chocolatey) now instead.
+## NOTICE: This provider is deprecated.
+
+Please use [chocolatey/chocolatey](https://forge.puppetlabs.com/chocolatey/chocolatey) now instead.
 
 ** Member of the rismoney suite of Windows Puppet Providers **
 

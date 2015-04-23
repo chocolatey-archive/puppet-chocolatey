@@ -1,3 +1,6 @@
+2015-04-23 Release 0.5.3:
+- Fix to readme for rismoney/chocolatey deprecation
+
 2015-04-23 Release 0.5.2:
 - Update ReadMe
 - Add support for Windows 10.
