@@ -237,7 +237,7 @@ package {'mysql':
 Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
 
 This provider supports the `install_options` and `uninstall_options` attributes,
-which allow command-line flags to be passed to the choco command. These options
+which allow command-line options to be passed to the choco command. These options
 should be specified as documented below.
 
  * Required binaries: `choco.exe`, usually found in `C:\Program Data\chocolatey\bin\choco.exe`.

@@ -1,3 +1,8 @@
+2015-04-23 Release 0.5.2:
+- Update ReadMe
+- Add support for Windows 10.
+- Fixes [#56](https://github.com/chocolatey/puppet-chocolatey/pull/56) - Avoiding puppet returning 2 instead of 0 when there are no changes to be done.
+
 2015-03-31 Release 0.5.1
 - Fixes [#54](https://github.com/chocolatey/puppet-chocolatey/issues/54) - Blocking: Linux masters throw error if module is present
 
