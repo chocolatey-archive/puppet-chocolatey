@@ -23,7 +23,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       chocopath = ENV['ChocolateyInstall'] ||
           ('C:\Chocolatey' if File.directory?('C:\Chocolatey')) ||
           ('C:\ProgramData\chocolatey' if File.directory?('C:\ProgramData\chocolatey')) ||
-          "#{ENV['ALLUSERSPROFILE']}\chocolatey"
+          "#{ENV['ALLUSERSPROFILE']}\\chocolatey"
 
       chocopath += '\bin\choco.exe'
     else
