@@ -22,8 +22,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def self.chocolatey_command
     if Puppet::Util::Platform.windows?
-      # must determine how to get to params in ruby
-      #default_location = $chocolatey::params::install_location || ENV['ALLUSERSPROFILE'] + '\chocolatey'
+      #default_location = $::choco_installpath || ENV['ALLUSERSPROFILE'] + '\chocolatey'
       chocopath = ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\bin\choco.exe')) ||
           (ENV['ChocolateyInstall'] if ENV['ChocolateyInstall'] && file_exists?("#{ENV['ChocolateyInstall']}\\bin\\choco.exe")) ||
           ('C:\Chocolatey' if file_exists?('C:\Chocolatey\bin\choco.exe')) ||
