@@ -203,6 +203,9 @@ package { 'notepadplusplus':
 
 ### Install options with spaces
 
+Spaces in arguments **must always** be covered with a separation. The example
+below covers `-installArgs "/VERYSILENT /NORESTART"`.
+
 ```puppet
 package {'launchy':
   ensure          => installed,
@@ -211,20 +214,56 @@ package {'launchy':
 }
 ```
 
-### Install options with quotes
-The underlying installer may need quotes passed to it. This is possible, but not as intuitive.
-You'll need a set of quotes surrounding the argument and a double set of quotes surrounding the
-item that must be quoted.
+### Install options with quotes / spaces
+The underlying installer may need quotes passed to it. This is possible, but not
+as intuitive.  The example below covers passing
+`/INSTALLDIR="C:\Program Files\somewhere"`.
+
+For this to be passed through with Chocolatey, you will need a set of double
+quotes surrounding the argument and two sets of double quotes surrounding the
+item that must be quoted (see [how to pass/options/switches](https://github.com/chocolatey/choco/wiki/CommandsReference#how-to-pass-options--switches)). This makes the
+string look like `-installArgs "/INSTALLDIR=""C:\Program Files\somewhere"""` for
+proper use with Chocolatey.
+
+Then for Puppet to handle that appropriately, we must split on ***every*** space.
+Yes, on **every** space we must split the string or the result will come out
+incorrectly. So this means it will look like the following:
+
+```puppet
+install_options => ['-installArgs',
+  '"/INSTALLDIR=""C:\Program', 'Files\somewhere"""']
+```
+
+Make sure you have all of the right quotes - start it off with a single double
+quote, then two double quotes, then close it all by closing the two double
+quotes and then the single double quote or a possible three double quotes at
+the end.
 
 ```puppet
 package {'mysql':
   ensure          => latest,
   provider        => 'chocolatey',
-  install_options => ['-override', '-installArgs', '"', '/INSTALLDIR=',
-    '""', 'C:\Program Files\somewhere', '""', '"'
-  ],
+  install_options => ['-override', '-installArgs',
+    '"/INSTALLDIR=""C:\Program', 'Files\somewhere"""'],
 }
+
 ```
+
+You can split it up a bit for readability if it suits you:
+
+```puppet
+package {'mysql':
+  ensure          => latest,
+  provider        => 'chocolatey',
+  install_options => ['-override', '-installArgs', '"'
+    '/INSTALLDIR=""C:\Program', 'Files\somewhere""',
+    '"'],
+}
+
+```
+
+**Note:** The above is for Chocolatey v0.9.9+. You may need to look for an
+alternative method to pass args if you have 0.9.8.x and below.
 
 ## Reference
 
