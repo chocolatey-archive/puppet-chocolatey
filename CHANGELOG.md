@@ -1,3 +1,8 @@
+2015-05-22 Release 0.5.3:
+- Fix manifest issue
+- Fix choco path issue
+- Update ReadMe - fix/clarify how options with quotes need to be passed.
+
 2015-04-23 Release 0.5.2:
 - Update ReadMe
 - Add support for Windows 10.
