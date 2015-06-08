@@ -1,3 +1,6 @@
+2015-06-08 Release 1.0.0:
+- No change, bumping to 1.0.0
+
 2015-05-22 Release 0.5.3:
 - Fix manifest issue
 - Fix choco path issue
