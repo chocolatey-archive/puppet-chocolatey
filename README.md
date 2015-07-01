@@ -268,9 +268,9 @@ alternative method to pass args if you have 0.9.8.x and below.
 ## Reference
 
 * Chocolatey provider (`lib/puppet/provider/package/chocolatey.rb`)
-* params.pp (`manifests/params.pp`)
-* install.pp (`manifests/install.pp`)
-* config.pp (`manifests/config.pp`)
+* params.pp (`manifests/params.pp`) - THIS IS A SKELETON RIGHT NOW. DO NOT USE.
+* install.pp (`manifests/install.pp`) - THIS IS A SKELETON RIGHT NOW. DO NOT USE.
+* config.pp (`manifests/config.pp`) - THIS IS A SKELETON RIGHT NOW. DO NOT USE.
 
 ### Chocolatey Provider
 Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
