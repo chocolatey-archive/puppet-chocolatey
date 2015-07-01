@@ -1,3 +1,6 @@
+2015-07-01 Release 1.0.1:
+- Fixes [#66](https://github.com/chocolatey/puppet-chocolatey/issues/66) - Check for choco existence more comprehensively
+
 2015-06-08 Release 1.0.0:
 - No change, bumping to 1.0.0
 
