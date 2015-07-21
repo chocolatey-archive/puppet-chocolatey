@@ -1,26 +1,19 @@
 ---
-# http://about.travis-ci.org/docs/user/getting-started/
+sudo: false
 language: ruby
-
-rvm:
-  - 2.0.0
-  - 1.9.3
-
-# http://about.travis-ci.org/docs/user/database-setup/#Using-ENV-variables-and-before_script-steps
-env:
-  - PUPPET_VERSION=3.4.0
-  - PUPPET_VERSION=3.7.5
-
-script:
-  - 'rake spec'
-
-# @see http://about.travis-ci.org/docs/user/build-configuration/#The-Build-Matrix
+bundler_args: --without system_tests
+script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--color --format documentation'"
 matrix:
-  exclude:
-    - rvm: 2.0.0
-      env: PUPPET_VERSION=3.4.0
-
-# http://about.travis-ci.org/docs/user/notifications/#Email-notifications
+  fast_finish: true
+  include:
+  - rvm: 1.9.3
+    env: PUPPET_GEM_VERSION="~> 3.0"
+  - rvm: 2.0.0
+    env: PUPPET_GEM_VERSION="~> 3.0"
+  - rvm: 2.1.5
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 1.9.3
+    env: PUPPET_GEM_VERSION="3.0.0"
 notifications:
   email:
     - chocolatey-build-status@googlegroups.com
