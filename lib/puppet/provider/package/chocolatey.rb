@@ -231,4 +231,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     package_ver
   end
 
+  def hold
+    #placeholder for hold feature
+  end
+
 end
