@@ -38,13 +38,9 @@ group :development do
   #gem 'rspec-expectations'
   #gem 'rspec-mocks'
   #gem 'minitest', '~> 5.0.0'
-  # https://github.com/travis-ci/travis
-  # gem 'travis'
-  # http://about.travis-ci.org/docs/user/travis-lint/
-  # https://github.com/travis-ci/travis-lint
-  #gem 'travis-lint'
+  gem 'travis', '~>1.8',         :require => false
   # https://github.com/jumanjiman/jumanjiman_spec_helper
-  gem 'jumanjiman_spec_helper'
+  gem 'jumanjiman_spec_helper',  :require => false
 end
 
 

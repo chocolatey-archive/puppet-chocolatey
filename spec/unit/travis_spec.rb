@@ -7,7 +7,7 @@ describe '.travis.yml' do
   end
 
   it 'is a valid travis-ci configuration' do
-    %x!travis-lint!
+    %x!travis lint!
     $?.success?.should be_true
   end
 end
