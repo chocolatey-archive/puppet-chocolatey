@@ -10,7 +10,6 @@
   "description": "The Chocolatey package provider for Puppet",
   "tags": [
     "microsoft",
-    "windows",
     "powershell",
     ".NET Framework",
     ".Net",
