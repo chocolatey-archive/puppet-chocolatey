@@ -10,7 +10,6 @@
   "description": "The Chocolatey package provider for Puppet",
   "tags": [
     "microsoft",
-    "windows",
     "powershell",
     ".NET Framework",
     ".Net",
@@ -18,6 +17,16 @@
     "chocolatey",
     "package",
     "package manager"
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": ">= 2.7.0"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">= 2.7.0"
+    }
   ],
   "operatingsystem_support": [
     {

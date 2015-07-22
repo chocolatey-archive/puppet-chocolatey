@@ -1,66 +1,113 @@
 # vim: set ts=2 sw=2 ai et syntax=ruby:
-source 'https://rubygems.org'
+source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
-def location_for(place, fake_version = nil)
-  if place =~ /^(git:[^#]*)#(.*)/
-    [fake_version, { :git => $1, :branch => $2, :require => false }].compact
-  elsif place =~ /^file:\/\/(.*)/
-    ['>= 0', { :path => File.expand_path($1), :require => false }]
+# Determines what type of gem is requested based on place_or_version.
+def gem_type(place_or_version)
+  if place_or_version =~ /^git:/
+    :git
+  elsif place_or_version =~ /^file:/
+    :file
   else
-    [place, { :require => false }]
+    :gem
   end
 end
 
-puppet_version = ['>= 2.7']
-if ENV.key?('PUPPET_VERSION')
-  puppet_version = "= #{ENV['PUPPET_VERSION']}"
+# Find a location or specific version for a gem. place_or_version can be a
+# version, which is most often used. It can also be git, which is specified as
+# `git://somewhere.git#branch`. You can also use a file source location, which
+# is specified as `file://some/location/on/disk`.
+def location_for(place_or_version, fake_version = nil)
+  if place_or_version =~ /^(git[:@][^#]*)#(.*)/
+    [fake_version, { :git => $1, :branch => $2, :require => false }].compact
+  elsif place_or_version =~ /^file:\/\/(.*)/
+    ['>= 0', { :path => File.expand_path($1), :require => false }]
+  else
+    [place_or_version, { :require => false }]
+  end
 end
 
-# https://github.com/jimweirich/rake
-gem 'rake', '~> 10.0'
-
-# https://github.com/rspec/rspec
-# https://www.relishapp.com/rspec/rspec-core/v/2-0/docs
-gem 'rspec'
-gem 'rspec-core'
-gem 'rspec-expectations'
-gem 'rspec-mocks'
-gem 'minitest', '~> 5.0.0'
-
-# https://github.com/freerange/mocha#bundler
-gem 'mocha', :require => false
-
-# https://github.com/puppetlabs/puppet
-gem "puppet", *location_for(ENV['PUPPET_LOCATION'] || puppet_version)
-gem "facter", *location_for(ENV['FACTER_LOCATION'] || '~> 1.6')
-gem "hiera", *location_for(ENV['HIERA_LOCATION'] || '~> 1.0')
-
-# see http://projects.puppetlabs.com/issues/21698
-platforms :mswin, :mingw do
-  gem "sys-admin", "~> 1.5.6", :require => false
-  gem "win32-api", "~> 1.4.8", :require => false
-  gem "win32-dir", "~> 0.3.7", :require => false
-  gem "win32-eventlog", "~> 0.5.3", :require => false
-  gem "win32-process", "~> 0.6.5", :require => false
-  gem "win32-security", "~> 0.1.4", :require => false
-  gem "win32-service", "~> 0.7.2", :require => false
-  gem "win32-taskscheduler", "~> 0.2.2", :require => false
-  gem "win32console", "~> 1.3.2", :require => false
-  gem "windows-api", "~> 0.4.2", :require => false
-  gem "windows-pr", "~> 1.2.1", :require => false
-  gem "minitar", "~> 0.5.4", :require => false
+group :development do
+  gem 'pry',                     :require => false
+  gem 'rake', '~> 10.0',         :require => false
+  gem 'rspec', '~>2.14.1',       :require => false
+  gem 'puppet-lint',             :require => false
+  gem 'puppetlabs_spec_helper',  :require => false
+  gem 'puppet_facts',            :require => false
+  gem 'mocha', '~>0.10.5',       :require => false
+  #gem 'rspec-core'
+  #gem 'rspec-expectations'
+  #gem 'rspec-mocks'
+  #gem 'minitest', '~> 5.0.0'
+  gem 'travis', '~>1.8',         :require => false
+  # https://github.com/jumanjiman/jumanjiman_spec_helper
+  gem 'jumanjiman_spec_helper',  :require => false
 end
 
-# https://github.com/jumanjiman/jumanjiman_spec_helper
-gem 'jumanjiman_spec_helper'
+#gem 'ruby-prof', :require => false
 
-# https://github.com/travis-ci/travis
-gem 'travis'
+# The recommendation is for PROJECT_GEM_VERSION, although there are older ways
+# of referencing these. Add them all for compatibility reasons. We'll remove
+# later when no issues are known. We'll prefer them in the right order.
+puppetversion = ENV['PUPPET_GEM_VERSION'] || ENV['PUPPET_LOCATION'] || ENV['PUPPET_VERSION'] || '>= 0'
+gem 'puppet', *location_for(puppetversion)
 
-# http://about.travis-ci.org/docs/user/travis-lint/
-# https://github.com/travis-ci/travis-lint
-gem 'travis-lint'
+# Only explicitly specify Facter/Hiera if a version has been specified.
+# Otherwise it can lead to strange bundler behavior. If you are seeing weird
+# gem resolution behavior, try setting `DEBUG_RESOLVER` environment variable
+# to `1` and then run bundle install.
+facterversion = ENV['FACTER_GEM_VERSION'] || ENV['GEM_FACTER_VERSION'] || ENV['FACTER_LOCATION']
+gem 'facter', *location_for(facterversion) if facterversion
+hieraversion = ENV['HIERA_GEM_VERSION'] || ENV['GEM_HIERA_VERSION'] || ENV['HIERA_LOCATION']
+gem 'hiera', *location_for(hieraversion) if hieraversion
 
+# For Windows dependencies, these could be required based on the version of
+# Puppet you are requiring. Anything greater than v3.5.0 is going to have
+# Windows-specific dependencies dictated by the gem itself. The other scenario
+# is when you are faking out Puppet to use a local file path / git path.
+explicitly_require_windows_gems = false
+puppet_gem_location = gem_type(puppetversion)
+# This is not a perfect answer to the version check
+if puppet_gem_location != :gem || puppetversion < '3.5.0'
+  if Gem::Platform.local.os == 'mingw32'
+    explicitly_require_windows_gems = true
+  end
+end
+
+if explicitly_require_windows_gems
+  # This also means Puppet Gem less than 3.5.0 - this has been tested back
+  # to 3.0.0. Any further back is likely not supported.
+  if puppet_gem_location == :gem
+    gem 'ffi', '1.9.0',               :require => false
+    gem 'win32-eventlog', '0.5.3',    :require => false
+    gem 'win32-process', '0.6.5',     :require => false
+    gem 'win32-security', '~> 0.1.2', :require => false
+    gem 'win32-service', '0.7.2',     :require => false
+    gem 'minitar', '0.5.4',           :require => false
+  else
+    gem 'ffi', '~> 1.9.0',            :require => false
+    gem 'win32-eventlog', '~> 0.5',   :require => false
+    gem 'win32-process', '~> 0.6',    :require => false
+    gem 'win32-security', '~> 0.1',   :require => false
+    gem 'win32-service', '~> 0.7',    :require => false
+    gem 'minitar', '~> 0.5.4',        :require => false
+  end
+
+  gem 'win32-dir', '~> 0.3',          :require => false
+  gem 'win32console', '1.3.2',        :require => false if RUBY_VERSION =~ /^1\./
+
+  # Puppet less than 3.7.0 requires these.
+  # Puppet 3.5.0+ will control the actual requirements.
+  # These are listed in formats that work with all versions of
+  # Puppet from 3.0.0 to 3.6.x. After that, these were no longer used.
+  # We do not want to allow newer versions than what came out after
+  # 3.6.x to be used as they constitute some risk in breaking older
+  # functionality. So we set these to exact versions.
+  gem 'sys-admin', '1.5.6',           :require => false
+  gem 'win32-api', '1.4.8',           :require => false
+  gem 'win32-taskscheduler', '0.2.2', :require => false
+  gem 'windows-api', '0.4.3',         :require => false
+  gem 'windows-pr',  '1.2.3',         :require => false
+end
 
 if File.exists? "#{__FILE__}.local"
   eval(File.read("#{__FILE__}.local"), binding)
