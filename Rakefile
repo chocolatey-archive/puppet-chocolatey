@@ -1,4 +1,7 @@
 # vim: set ts=2 sw=2 ai et ruler:
+require 'rake'
+require 'rspec/core/rake_task'
+require 'puppetlabs_spec_helper/rake_tasks'
 
 # lock dependencies and load paths, but lazy-load gems
 require 'bundler/setup'
@@ -6,10 +9,10 @@ require 'jumanjiman_spec_helper/bundle'
 JumanjimanSpecHelper::Bundle.setup
 
 # add namespaced rake tasks
-require 'jumanjiman_spec_helper/git'
+#require 'jumanjiman_spec_helper/git'
 
 # always keep clone config up-to-date
-JumanjimanSpecHelper::Git.update_git_config
+#JumanjimanSpecHelper::Git.update_git_config
 
 task :default do |t|
   puts %x!rake -T!
