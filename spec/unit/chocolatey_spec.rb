@@ -1,37 +1,40 @@
 # vim: set ts=2 sw=2 ai et ruler:
 require 'spec_helper'
 require 'stringio'
+require 'puppet/provider/package/chocolatey'
 
 provider = Puppet::Type.type(:package).provider(:chocolatey)
 
 describe provider do
-
-  let (:chocolatey) {'c:\blah\bin\choco.exe'}
+  let (:resource) { Puppet::Type.type(:package).new(:provider => :chocolatey, :name => "chocolatey") }
 
   before :each do
-    @resource = Puppet::Type.type(:package).new(
-      :name     => 'chocolatey',
-      :ensure   => :present,
-      :provider => :chocolatey
-    )
-    @provider = provider.new(@resource)
+    @provider = provider.new(resource)
+    resource.provider = @provider
+    #provider.resource = resource
 
     # Stub all file and config tests
     provider.stubs(:healthcheck)
   end
 
+  it "should be an instance of Puppet::Type::Package::ProviderChocolatey" do
+    @provider.must be_an_instance_of Puppet::Type::Package::ProviderChocolatey
+  end
+
   it "should find chocolatey install location based on ChocolateyInstall environment variable", :if => Puppet.features.microsoft_windows? do
+    @provider.class.expects(:file_exists?).with('C:\ProgramData\chocolatey\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with('c:\blah\bin\choco.exe').returns(true)
     # this is a placeholder, it is already set in spec_helper
     ENV['ChocolateyInstall'] = 'c:\blah'
     @provider.class.chocolatey_command.should == 'c:\blah\bin\choco.exe'
   end
 
   it "should find chocolatey install location based on default location", :if => Puppet.features.microsoft_windows? do
-    ENV['ChocolateyInstall'] = nil
-    @provider.class.chocolatey_command.should == ENV['ALLUSERSPROFILE'] + '\chocolatey\bin\choco.exe'
-
-    # set it back not to mess up other tests
-    ENV['ChocolateyInstall'] = 'c:\blah'
+    @provider.class.expects(:file_exists?).with('C:\ProgramData\chocolatey\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with('c:\blah\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with('C:\Chocolatey\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with("#{ENV['ALLUSERSPROFILE']}\\chocolatey\\bin\\choco.exe").returns(true)
+    @provider.class.chocolatey_command.should == "#{ENV['ALLUSERSPROFILE']}\\chocolatey\\bin\\choco.exe"
     @provider.class.chocolatey_command
   end
 
@@ -61,19 +64,19 @@ describe provider do
 
   context "parameter :source" do
     it "should default to nil" do
-      @resource[:source].should be_nil
+      resource[:source].should be_nil
     end
 
     it "should accept c:\\packages" do
-      @resource[:source] = 'c:\packages'
+      resource[:source] = 'c:\packages'
     end
 
     it "should accept http://somelocation/packages" do
-      @resource[:source] = 'http://somelocation/packages'
+      resource[:source] = 'http://somelocation/packages'
     end
 
     it 'should accept \\unc\share\packages' do
-      @resource[:source] = '\\unc\share\packages'
+      resource[:source] = '\\unc\share\packages'
     end
   end
 
@@ -84,13 +87,13 @@ describe provider do
       end
 
       it "should use a command without versioned package" do
-        @resource[:ensure] = :present
+        resource[:ensure] = :present
         @provider.expects(:chocolatey).with('install', 'chocolatey','-dvy', nil)
         @provider.install
       end
 
       it "should use source if it is specified" do
-        @resource[:source] = 'c:\packages'
+        resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('install','chocolatey','-dvy', nil, '-source', 'c:\packages')
         @provider.install
       end
@@ -102,13 +105,13 @@ describe provider do
       end
 
       it "should use a command without versioned package" do
-        @resource[:ensure] = :present
+        resource[:ensure] = :present
         @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
         @provider.install
       end
 
       it "should use source if it is specified" do
-        @resource[:source] = 'c:\packages'
+        resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
         @provider.install
       end
@@ -127,7 +130,7 @@ describe provider do
       end
 
       it "should use ignore source if it is specified" do
-        @resource[:source] = 'c:\packages'
+        resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('uninstall','chocolatey','-dvfy', nil)
         @provider.uninstall
       end
@@ -144,7 +147,7 @@ describe provider do
       end
 
       it "should use source if it is specified" do
-        @resource[:source] = 'c:\packages'
+        resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('uninstall','chocolatey', nil, '-source', 'c:\packages')
         @provider.uninstall
       end
@@ -179,7 +182,7 @@ describe provider do
           :name     => "chocolatey",
           :provider => :chocolatey,
         })]
-        @resource[:source] = 'c:\packages'
+        resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('upgrade','chocolatey', '-dvy', nil, '-source', 'c:\packages')
         @provider.update
       end
@@ -212,7 +215,7 @@ describe provider do
           :name     => "chocolatey",
           :provider => :chocolatey,
         })]
-        @resource[:source] = 'c:\packages'
+        resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('update','chocolatey', nil, '-source', 'c:\packages')
         @provider.update
       end
@@ -220,18 +223,26 @@ describe provider do
   end
 
   context "when getting latest" do
+    let (:choco_command) {
+      if Puppet.features.microsoft_windows?
+        @provider.class.chocolatey_command
+      else
+        nil
+      end
+    }
+
     context "with compiled choco client" do
       before :each do
         @provider.class.compiled_choco = true
       end
 
       it "should use choco.exe arguments" do
-        @provider.send(:latestcmd).should == [nil, 'upgrade', '--noop', 'chocolatey','-r']
+        @provider.send(:latestcmd).should == [choco_command, 'upgrade', '--noop', 'chocolatey','-r']
       end
 
       it "should use source if it is specified" do
-        @resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).should == [nil, 'upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
+        resource[:source] = 'c:\packages'
+        @provider.send(:latestcmd).should == [choco_command, 'upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
         #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
         #@provider.latest
       end
@@ -243,12 +254,12 @@ describe provider do
       end
 
       it "should use posh arguments" do
-        @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
+        @provider.send(:latestcmd).should == [choco_command, 'version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
       end
 
       it "should use source if it is specified" do
-        @resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).should == [nil, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+        resource[:source] = 'c:\packages'
+        @provider.send(:latestcmd).should == [choco_command, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
         #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
         #@provider.latest
       end

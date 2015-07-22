@@ -43,6 +43,7 @@ group :development do
   gem 'jumanjiman_spec_helper',  :require => false
 end
 
+#gem 'ruby-prof', :require => false
 
 # The recommendation is for PROJECT_GEM_VERSION, although there are older ways
 # of referencing these. Add them all for compatibility reasons. We'll remove
