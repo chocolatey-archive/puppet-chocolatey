@@ -18,6 +18,7 @@ Travis | AppVeyor
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 6. [Limitations - OS compatibility, etc.](#limitations)
+    * [Known Issues](#known-issues)
 7. [Development - Guide for contributing to the module](#development)
 8. [Attributions](#attributions)
 
@@ -368,6 +369,12 @@ backslashes in single-quoted strings *may* be double-escaped.
 ## Limitations
 
 Works with Windows only.
+
+### Known Issues
+
+1. This module doesn't support side by side scenarios. This is ticketed as [#74](https://github.com/chocolatey/puppet-chocolatey/issues/74).
+2. This module may have issues upgrading Chocolatey itself using the package resource. See [#65](https://github.com/chocolatey/puppet-chocolatey/issues/65) and [#60](https://github.com/chocolatey/puppet-chocolatey/issues/60)
+3. Other known issues/enhancements can be found on the [issues list](https://github.com/chocolatey/puppet-chocolatey/issues).
 
 ## Development
 
