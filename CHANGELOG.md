@@ -1,3 +1,6 @@
+2015-07-23 Release 1.0.2:
+- Fixes [#71](https://github.com/chocolatey/puppet-chocolatey/issues/71) - Allow `ensure => $version` to work with already installed packages
+
 2015-07-01 Release 1.0.1:
 - Fixes [#66](https://github.com/chocolatey/puppet-chocolatey/issues/66) - Check for choco existence more comprehensively
 
