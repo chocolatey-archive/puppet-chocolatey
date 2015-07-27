@@ -5,5 +5,5 @@
 #
 # NOTE: CURRENTLY NON-FUNCTIONAL
 class chocolatey::params {
-  $install_location = 'c:/ProgramData/chocolatey'
+  $install_location = $::choco_installpath,
 }
