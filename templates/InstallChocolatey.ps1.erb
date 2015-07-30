@@ -14,7 +14,8 @@
 # ==============================================================================
 
 # variables
-$url = "https://chocolatey.org/api/v2/package/chocolatey/"
+$url = '<%= @download_url %>'
+$unzipMethod = '<%= @unzip_type %>'
 if ($env:TEMP -eq $null) {
   $env:TEMP = Join-Path $env:SystemDrive 'temp'
 }
@@ -37,19 +38,22 @@ param (
 # download the package
 Download-File $url $file
 
-# download 7zip
-Write-Host "Download 7Zip commandline tool"
-$7zaExe = Join-Path $tempDir '7za.exe'
+if ($unzipMethod -eq '7zip') {
+  # download 7zip
+  Write-Host "Download 7Zip commandline tool"
+  $7zaExe = Join-Path $tempDir '7za.exe'
 
-Download-File 'https://chocolatey.org/7za.exe' "$7zaExe"
+  Download-File 'https://chocolatey.org/7za.exe' "$7zaExe"
 
-# unzip the package
-Write-Host "Extracting $file to $tempDir..."
-Start-Process "$7zaExe" -ArgumentList "x -o`"$tempDir`" -y `"$file`"" -Wait -NoNewWindow
-#$shellApplication = new-object -com shell.application
-#$zipPackage = $shellApplication.NameSpace($file)
-#$destinationFolder = $shellApplication.NameSpace($tempDir)
-#$destinationFolder.CopyHere($zipPackage.Items(),0x10)
+  # unzip the package
+  Write-Host "Extracting $file to $tempDir..."
+  Start-Process "$7zaExe" -ArgumentList "x -o`"$tempDir`" -y `"$file`"" -Wait -NoNewWindow
+} else {
+  $shellApplication = new-object -com shell.application
+  $zipPackage = $shellApplication.NameSpace($file)
+  $destinationFolder = $shellApplication.NameSpace($tempDir)
+  $destinationFolder.CopyHere($zipPackage.Items(),0x10)
+}
 
 # call chocolatey install
 Write-Host "Installing chocolatey on this machine"
