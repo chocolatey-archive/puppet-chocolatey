@@ -2,9 +2,10 @@
 #
 # This class is called from chocolatey for install.
 class chocolatey::install (
-  $chocolatey_download_url = 'https://chocolatey.org/api/v2/package/chocolatey/',
-  $use_7zip                = false,
-  $choco_install_location  = 'C:\ProgramData\chocolatey'
+  $chocolatey_download_url = $chocolatey::params::download_url,
+  $use_7zip                = $chocolatey::params::use_7zip,
+  $choco_install_location  = $chocolatey::params::install_location,
+  $choco_install_timeout   = $chocolatey::params::install_timeout
 ){
   # todo:
   # - allow custom installation directory to be specified
@@ -13,8 +14,8 @@ class chocolatey::install (
 
   $download_url = $chocolatey_download_url
   $unzip_type   = $use_7zip ? {
-    true     => '7zip',
-    default  => 'windows'
+    true      => '7zip',
+    default   => 'windows'
   }
 
   # call for the custom fact to be set
@@ -23,7 +24,7 @@ class chocolatey::install (
     command  => template('chocolatey/InstallChocolatey.ps1.erb'),
     creates  => "${choco_install_location}\\bin\\choco.exe",
     provider => powershell,
-    timeout  => 1500,
+    timeout  => $choco_install_timeout,
   }
 
   # we'll need a trick to update path once we run
