@@ -7,9 +7,7 @@ class chocolatey::install (
   $choco_install_location  = $chocolatey::params::install_location,
   $choco_install_timeout   = $chocolatey::params::install_timeout
 ){
-  # todo:
-  # - allow custom installation directory to be specified
-  #   - set the fact that sets the chocolateyInstall Variable in the path
+  #todo:
   # - restrict based on osfamily?
 
   $download_url = $chocolatey_download_url
@@ -18,7 +16,24 @@ class chocolatey::install (
     default   => 'windows'
   }
 
-  # call for the custom fact to be set
+  # These are specifically necessary to ensure that we know the path
+  # has been updated in the current run. They are typically a noop.
+
+  windows_env { 'chocolatey_ChocolateyInstall_env':
+    ensure    => present,
+    variable  => 'ChocolateyInstall',
+    mergemode => 'clobber',
+    value     => $choco_install_location,
+    notify    => Exec['install_chocolatey_official'],
+  }
+
+  windows_env { 'chocolatey_PATH_env':
+    ensure    => present,
+    variable  => 'PATH',
+    mergemode => 'prepend',
+    value     => "${choco_install_location}\\bin",
+    notify    => Exec['install_chocolatey_official'],
+  }
 
   exec { 'install_chocolatey_official':
     command  => template('chocolatey/InstallChocolatey.ps1.erb'),
@@ -26,7 +41,4 @@ class chocolatey::install (
     provider => powershell,
     timeout  => $choco_install_timeout,
   }
-
-  # we'll need a trick to update path once we run
-
 }
