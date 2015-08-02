@@ -46,12 +46,16 @@
   ],
   "dependencies": [
     {
-      "name": "puppetlabs-stdlib",
+      "name": "puppetlabs/stdlib",
       "version_requirement": ">= 1.0.0"
     },
     {
-      "name": "puppetlabs-powershell",
+      "name": "puppetlabs/powershell",
       "version_requirement": ">= 1.0.1"
+    },
+    {
+      "name": "badgerious/windows_env",
+      "version_requirement": ">= 2.2.1"
     }
   ]
 }
