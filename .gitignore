@@ -18,7 +18,8 @@ coverage
 doc/
 lib/bundler/man
 pkg
-vendor
+vendor/
+spec/fixtures/
 rdoc
 spec/reports
 test/tmp
