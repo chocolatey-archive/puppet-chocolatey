@@ -1,4 +1,5 @@
 require 'facter'
+require 'rspec/its'
 
 describe 'choco_install_path fact' do
   subject(:fact) { Facter.fact(:choco_install_path) }

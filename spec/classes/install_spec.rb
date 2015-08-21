@@ -1,7 +1,16 @@
 require 'spec_helper'
 
 RSpec.describe 'chocolatey' do
+
+  let(:facts) {
+    {
+      :choco_version      => '0.9.9.8',
+      :choco_install_path => 'C:\ProgramData\chocolatey',
+    }
+  }
+
   context 'contains install.pp with' do
+
     it { is_expected.to contain_windows_env('chocolatey_ChocolateyInstall_env').with_ensure('present') }
     it { is_expected.to contain_windows_env('chocolatey_ChocolateyInstall_env').with_variable('ChocolateyInstall') }
     it { is_expected.to contain_windows_env('chocolatey_ChocolateyInstall_env').that_notifies('Exec[install_chocolatey_official]') }

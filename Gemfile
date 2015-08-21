@@ -27,20 +27,17 @@ def location_for(place_or_version, fake_version = nil)
 end
 
 group :development do
-  gem 'pry',                     :require => false
-  gem 'rake', '~> 10.0',         :require => false
-  gem 'rspec', '~>2.14.1',       :require => false
-  gem 'puppet-lint',             :require => false
-  gem 'puppetlabs_spec_helper',  :require => false
-  gem 'puppet_facts',            :require => false
-  gem 'mocha', '~>0.10.5',       :require => false
-  #gem 'rspec-core'
-  #gem 'rspec-expectations'
-  #gem 'rspec-mocks'
-  #gem 'minitest', '~> 5.0.0'
-  gem 'travis', '~>1.8',         :require => false
-  # https://github.com/jumanjiman/jumanjiman_spec_helper
-  gem 'jumanjiman_spec_helper',  :require => false
+  gem 'pry',                          :require => false
+  gem 'rake', '~> 10.0',              :require => false
+  gem 'rspec', '>= 3', '< 3.2.0',     :require => false # https://github.com/rspec/rspec-core/issues/1864
+  gem 'rspec-its',                    :require => false
+  gem 'puppet-lint',                  :require => false
+  gem 'puppetlabs_spec_helper',       :require => false
+  gem 'puppet_facts',                 :require => false
+  gem 'mocha', '~>0.10.5',            :require => false
+  gem 'metadata-json-lint', '~> 0.0', :require => false
+  gem 'travis', '~>1.8',              :require => false
+  #gem 'rspec-puppet-facts',          :require => false
 end
 
 #gem 'ruby-prof', :require => false
