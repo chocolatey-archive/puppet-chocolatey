@@ -19,7 +19,7 @@ class chocolatey::config {
     exec { "chocolatey_autouninstaller_${_enable_autouninstaller}":
       path    => $::path,
       command => "${_choco_exe_path} feature -r ${_enable_autouninstaller} -n autoUninstaller",
-      unless  => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /X /I /C:\"autoUninstaller - [${_enable_autouninstaller}d]\"",
+      unless  => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /X /I \"autoUninstaller.*\\[${_enable_autouninstaller}d\\]\"",
     }
   }
 }
