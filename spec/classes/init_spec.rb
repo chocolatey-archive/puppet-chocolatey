@@ -14,6 +14,7 @@ describe 'chocolatey' do
       it { is_expected.to contain_class('chocolatey') }
       it { is_expected.to contain_class('chocolatey::params') }
       it { is_expected.to contain_class('chocolatey::install') }
+      it { is_expected.to contain_class('chocolatey::config') }
     end
   end
 end
