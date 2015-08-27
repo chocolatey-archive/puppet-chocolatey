@@ -24,14 +24,14 @@ class chocolatey::install {
     ensure    => present,
     variable  => 'PATH',
     mergemode => 'prepend',
-    value     => "${chocolatey::choco_install_location}\\bin",
+    value     => "${::chocolatey::choco_install_location}\\bin",
     notify    => Exec['install_chocolatey_official'],
   }
 
   exec { 'install_chocolatey_official':
     command  => template('chocolatey/InstallChocolatey.ps1.erb'),
-    creates  => "${chocolatey::choco_install_location}\\bin\\choco.exe",
+    creates  => "${::chocolatey::choco_install_location}\\bin\\choco.exe",
     provider => powershell,
-    timeout  => $::chocolatey::choco_install_timeout,
+    timeout  => $::chocolatey::choco_install_timeout_seconds,
   }
 }

@@ -31,8 +31,8 @@ RSpec.describe 'chocolatey' do
 
 
     [1500, 35].each do |param_value|
-      context "choco_install_timeout => #{param_value}" do
-        let(:params) {{ :choco_install_timeout => param_value }}
+      context "choco_install_timeout_seconds => #{param_value}" do
+        let(:params) {{ :choco_install_timeout_seconds => param_value }}
 
         it { is_expected.to contain_exec('install_chocolatey_official').with_timeout("#{param_value}") }
       end
