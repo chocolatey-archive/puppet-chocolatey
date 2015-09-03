@@ -3,8 +3,6 @@
 # This class is called from chocolatey for install.
 class chocolatey::install {
   assert_private()
-  #todo:
-  # - restrict based on osfamily?
 
   $download_url = $::chocolatey::chocolatey_download_url
   $unzip_type   = $::chocolatey::use_7zip ? {
