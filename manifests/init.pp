@@ -17,10 +17,16 @@ class chocolatey (
   validate_integer($choco_install_timeout_seconds)
   validate_bool($enable_autouninstaller)
 
-  class { '::chocolatey::install': } ->
-  class { '::chocolatey::config': }
+  if (versioncmp($::serverversion, '3.4.0') >= 0) or (versioncmp($::clientversion, '3.4.0') >= 0) {
+    class { '::chocolatey::install': } ->
+    class { '::chocolatey::config': }
 
-  #todo: check version of Puppet before this construct.
-  contain '::chocolatey::install'
-  contain '::chocolatey::config'
+    contain '::chocolatey::install'
+    contain '::chocolatey::config'
+  } else {
+    anchor {'before_chocolatey':} ->
+    class { '::chocolatey::install': } ->
+    class { '::chocolatey::config': } ->
+    anchor {'after_chocolatey':}
+  }
 }
