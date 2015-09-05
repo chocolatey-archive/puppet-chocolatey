@@ -1,4 +1,4 @@
-# == Class chocolatey::config
+# chocolatey::config - Private class used for configuration
 class chocolatey::config {
   assert_private()
 

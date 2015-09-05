@@ -1,4 +1,4 @@
-# == Class chocolatey::params
+# chocolatey::params - Default parameters
 class chocolatey::params {
   $install_location         = $::choco_install_path # default is C:\ProgramData\chocolatey
   $download_url             = 'https://chocolatey.org/api/v2/package/chocolatey/'

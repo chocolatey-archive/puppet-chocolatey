@@ -1,6 +1,4 @@
-# == Class chocolatey::install
-#
-# This class is called from chocolatey for install.
+# chocolatey::install - Private class used for install of Chocolatey
 class chocolatey::install {
   assert_private()
 
