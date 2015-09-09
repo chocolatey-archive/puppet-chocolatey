@@ -9,8 +9,7 @@ RSpec.describe 'chocolatey' do
     }
   }
 
-  context 'contains install.pp with' do
-
+  context 'contains install.pp' do
     it { is_expected.to contain_windows_env('chocolatey_ChocolateyInstall_env').with_ensure('present') }
     it { is_expected.to contain_windows_env('chocolatey_ChocolateyInstall_env').with_variable('ChocolateyInstall') }
     it { is_expected.to contain_windows_env('chocolatey_ChocolateyInstall_env').that_notifies('Exec[install_chocolatey_official]') }
