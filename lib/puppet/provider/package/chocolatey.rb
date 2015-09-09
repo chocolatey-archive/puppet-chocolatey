@@ -1,7 +1,23 @@
 require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
-  desc "Package management using Chocolatey on Windows"
+
+  desc "Manages packages using Chocolatey (Windows package manager).
+
+    The syntax for Chocolatey using the puppet provider is a much
+    closer match to *nix package managers, bringing a more agnostic
+    approach to package management across platforms. Chocolatey packages
+    usually contain all of the logic to install software silently on a
+    Windows machine, much like RPM (yum) or DPKG (apt).
+
+    Installs can be as simple as
+
+      package {'git':
+        ensure => latest,
+      }
+
+    See the ReadMe for more information."
+
   confine     :operatingsystem => :windows
   has_feature :installable
   has_feature :uninstallable
@@ -22,8 +38,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def self.chocolatey_command
     if Puppet::Util::Platform.windows?
-      # must determine how to get to params in ruby
-      #default_location = $chocolatey::params::install_location || ENV['ALLUSERSPROFILE'] + '\chocolatey'
+      #default_location = $::choco_installpath || ENV['ALLUSERSPROFILE'] + '\chocolatey'
       chocopath = ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\bin\choco.exe')) ||
           (ENV['ChocolateyInstall'] if ENV['ChocolateyInstall'] && file_exists?("#{ENV['ChocolateyInstall']}\\bin\\choco.exe")) ||
           ('C:\Chocolatey' if file_exists?('C:\Chocolatey\bin\choco.exe')) ||

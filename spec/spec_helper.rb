@@ -13,7 +13,6 @@ gems = [
   #'minitest/autorun', # http://docs.seattlerb.org/minitest/
   #'minitest/unit', # https://github.com/freerange/mocha#bundler
   'mocha', # http://gofreerange.com/mocha/docs/Mocha/Configuration.html
-  'jumanjiman_spec_helper',
   'puppet',
 ]
 begin
@@ -29,9 +28,6 @@ rescue => e
 end
 
 RSpec.configure do |c|
-  # https://github.com/jumanjiman/jumanjiman_spec_helper#shared-contexts
-  c.include JumanjimanSpecHelper::EnvironmentContext
-
   # set the environment variable before files are loaded, otherwise it is too late
   ENV['ChocolateyInstall'] = 'c:\blah'
 
@@ -39,6 +35,10 @@ RSpec.configure do |c|
   c.mock_framework = :mocha
   # see output for all failures
   c.fail_fast = false
+  c.expect_with :rspec do |e|
+    e.syntax = [:should, :expect]
+  end
+  c.raise_errors_for_deprecations!
 
   c.after :suite do
     #result = RubyProf.stop

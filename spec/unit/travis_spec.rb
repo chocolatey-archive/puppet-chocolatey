@@ -3,11 +3,11 @@ require 'spec_helper'
 
 describe '.travis.yml' do
   it 'exists' do
-    File.exist?(subject).should be_true
+    File.exist?(subject).should be_truthy
   end
 
   it 'is a valid travis-ci configuration' do
     %x!travis lint!
-    $?.success?.should be_true
+    $?.success?.should be_truthy
   end
 end

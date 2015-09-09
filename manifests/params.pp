@@ -1,9 +1,8 @@
-# == Class chocolatey::params
-#
-# This class is meant to be called from chocolatey.
-# It sets variables according to platform.
-#
-# NOTE: CURRENTLY NON-FUNCTIONAL
+# chocolatey::params - Default parameters
 class chocolatey::params {
-  $install_location = 'c:/ProgramData/chocolatey'
+  $install_location         = $::choco_install_path # default is C:\ProgramData\chocolatey
+  $download_url             = 'https://chocolatey.org/api/v2/package/chocolatey/'
+  $use_7zip                 = false
+  $install_timeout_seconds  = 1500
+  $enable_autouninstaller   = true
 }

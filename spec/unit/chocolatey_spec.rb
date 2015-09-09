@@ -58,7 +58,7 @@ describe provider do
     it "should set choco_exe? true" do
       Puppet::Util::Execution.stubs(:execpipe).yields StringIO.new("0.9.9.4\n")
 
-      @provider.class.choco_exe?.should be_true
+      @provider.class.choco_exe?.must be_truthy
     end
   end
 
@@ -75,7 +75,7 @@ describe provider do
       resource[:source] = 'http://somelocation/packages'
     end
 
-    it 'should accept \\unc\share\packages' do
+    it "should accept \\\\unc\\share\\packages" do
       resource[:source] = '\\unc\share\packages'
     end
   end

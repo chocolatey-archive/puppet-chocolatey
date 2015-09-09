@@ -27,20 +27,17 @@ def location_for(place_or_version, fake_version = nil)
 end
 
 group :development do
-  gem 'pry',                     :require => false
-  gem 'rake', '~> 10.0',         :require => false
-  gem 'rspec', '~>2.14.1',       :require => false
-  gem 'puppet-lint',             :require => false
-  gem 'puppetlabs_spec_helper',  :require => false
-  gem 'puppet_facts',            :require => false
-  gem 'mocha', '~>0.10.5',       :require => false
-  #gem 'rspec-core'
-  #gem 'rspec-expectations'
-  #gem 'rspec-mocks'
-  #gem 'minitest', '~> 5.0.0'
-  gem 'travis', '~>1.8',         :require => false
-  # https://github.com/jumanjiman/jumanjiman_spec_helper
-  gem 'jumanjiman_spec_helper',  :require => false
+  gem 'pry',                          :require => false
+  gem 'rake', '~> 10.0',              :require => false
+  gem 'rspec', '>= 3', '< 3.2.0',     :require => false # https://github.com/rspec/rspec-core/issues/1864
+  gem 'rspec-its',                    :require => false
+  gem 'puppet-lint',                  :require => false
+  gem 'puppetlabs_spec_helper',       :require => false
+  gem 'puppet_facts',                 :require => false
+  gem 'mocha', '~>0.10.5',            :require => false
+  gem 'metadata-json-lint', '~> 0.0', :require => false
+  gem 'travis', '~>1.8',              :require => false
+  #gem 'rspec-puppet-facts',          :require => false
 end
 
 #gem 'ruby-prof', :require => false
@@ -71,29 +68,40 @@ if puppet_gem_location != :gem || puppetversion < '3.5.0'
   if Gem::Platform.local.os == 'mingw32'
     explicitly_require_windows_gems = true
   end
+
+  if puppet_gem_location == :gem
+    # If facterversion hasn't been specified and we are
+    # looking for a Puppet Gem version less than 3.5.0, we
+    # need to ensure we get a good Facter for specs.
+    gem "facter",">= 1.6.11","<= 1.7.5",:require => false unless facterversion
+    # If hieraversion hasn't been specified and we are
+    # looking for a Puppet Gem version less than 3.5.0, we
+    # need to ensure we get a good Hiera for specs.
+    gem "hiera",">= 1.0.0","<= 1.3.0",:require => false unless hieraversion
+  end
 end
 
 if explicitly_require_windows_gems
   # This also means Puppet Gem less than 3.5.0 - this has been tested back
   # to 3.0.0. Any further back is likely not supported.
   if puppet_gem_location == :gem
-    gem 'ffi', '1.9.0',               :require => false
-    gem 'win32-eventlog', '0.5.3',    :require => false
-    gem 'win32-process', '0.6.5',     :require => false
-    gem 'win32-security', '~> 0.1.2', :require => false
-    gem 'win32-service', '0.7.2',     :require => false
-    gem 'minitar', '0.5.4',           :require => false
+    gem 'ffi', '1.9.0',                 :require => false
+    gem 'win32-eventlog', '0.5.3',      :require => false
+    gem 'win32-process', '0.6.5',       :require => false
+    gem 'win32-security', '~> 0.1.2',   :require => false
+    gem 'win32-service', '0.7.2',       :require => false
+    gem 'minitar', '0.5.4',             :require => false
   else
-    gem 'ffi', '~> 1.9.0',            :require => false
-    gem 'win32-eventlog', '~> 0.5',   :require => false
-    gem 'win32-process', '~> 0.6',    :require => false
-    gem 'win32-security', '~> 0.1',   :require => false
-    gem 'win32-service', '~> 0.7',    :require => false
-    gem 'minitar', '~> 0.5.4',        :require => false
+    gem 'ffi', '~> 1.9.0',              :require => false
+    gem 'win32-eventlog', '~> 0.5',     :require => false
+    gem 'win32-process', '~> 0.6',      :require => false
+    gem 'win32-security', '~> 0.1',     :require => false
+    gem 'win32-service', '~> 0.7',      :require => false
+    gem 'minitar', '~> 0.5.4',          :require => false
   end
 
-  gem 'win32-dir', '~> 0.3',          :require => false
-  gem 'win32console', '1.3.2',        :require => false if RUBY_VERSION =~ /^1\./
+  gem 'win32-dir', '~> 0.3',            :require => false
+  gem 'win32console', '1.3.2',          :require => false if RUBY_VERSION =~ /^1\./
 
   # Puppet less than 3.7.0 requires these.
   # Puppet 3.5.0+ will control the actual requirements.
@@ -102,11 +110,11 @@ if explicitly_require_windows_gems
   # We do not want to allow newer versions than what came out after
   # 3.6.x to be used as they constitute some risk in breaking older
   # functionality. So we set these to exact versions.
-  gem 'sys-admin', '1.5.6',           :require => false
-  gem 'win32-api', '1.4.8',           :require => false
-  gem 'win32-taskscheduler', '0.2.2', :require => false
-  gem 'windows-api', '0.4.3',         :require => false
-  gem 'windows-pr',  '1.2.3',         :require => false
+  gem 'sys-admin', '1.5.6',             :require => false
+  gem 'win32-api', '1.4.8',             :require => false
+  gem 'win32-taskscheduler', '0.2.2',   :require => false
+  gem 'windows-api', '0.4.3',           :require => false
+  gem 'windows-pr',  '1.2.3',           :require => false
 end
 
 if File.exists? "#{__FILE__}.local"

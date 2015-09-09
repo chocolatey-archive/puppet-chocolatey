@@ -11,12 +11,17 @@ Travis | AppVeyor
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
     * [Why Chocolatey](#why-chocolatey)
-3. [Setup - The basics of getting started with Chocolatey](#setup)
+3. [Setup - The basics of getting started with chocolatey](#setup)
     * [What Chocolatey affects](#what-chocolatey-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with Chocolatey provider](#beginning-with-chocolatey-provider)
 4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [Reference](#reference)
+    * [Classes](#public-classes)
+    * [Facts](#facts)
+    * [Types/Providers](#typesproviders)
+    * [Package provider: Chocolatey](#package-provider-chocolatey)
+    * [Class: chocolatey](#class-chocolatey)
 6. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
 7. [Development - Guide for contributing to the module](#development)
@@ -46,21 +51,21 @@ Chocolatey is a nicer abstraction because it nearly mimics how package managers
 on other operating systems work. If you can imagine the built in provider for
 Windows versus Chocolatey, let's take a look at the use case of installing git:
 
-```puppet
+~~~puppet
 # Using built-in provider
 package { "Git version 1.8.4-preview20130916":
   ensure    => installed,
   source    => 'C:\temp\Git-1.8.4-preview20130916.exe',
   install_options => ['/VERYSILENT']
 }
-```
+~~~
 
-```puppet
+~~~puppet
 # Using Chocolatey (set as default for Windows)
 package { 'git':
   ensure   => latest,
 }
-```
+~~~
 
 The built-in provider has the following needs:
  * Package name must match ***exactly*** the name from installed programs. See [package name must be DisplayName](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#package-name-must-be-the-displayname)
@@ -90,9 +95,6 @@ Chocolatey requires the following components
    * intalled on most systems by default
  * .NET Framework v4+
 
-**NOTE**: The module does not yet offer an installation option for Chocolatey,
-so you will need to install that as well.
-
 ### Beginning with Chocolatey provider
 
 Install this module via any of these approaches:
@@ -100,18 +102,41 @@ Install this module via any of these approaches:
 * [puppet forge](http://forge.puppetlabs.com/chocolatey/chocolatey)
 * git-submodule ([tutorial](http://goo.gl/e9aXh))
 * [librarian-puppet](https://github.com/rodjek/librarian-puppet)
-* [r10k](https://github.com/adrienthebo/r10k)
+* [r10k](https://github.com/puppetlabs/r10k)
 
 ## Usage
+
+Ensure Chocolatey is install and configured:
+
+~~~puppet
+include chocolatey
+~~~
+
+### Override default Chocolatey install location
+
+~~~puppet
+class {'chocolatey':
+  choco_install_location => 'D:\secured\choco',
+}
+~~~
+
+### Use an internal chocolatey.nupkg for Chocolatey installation
+
+~~~puppet
+class {'chocolatey':
+  chocolatey_download_url => 'https://internalurl/to/chocolatey.nupkg',
+  use_7zip => false,
+  choco_install_timeout => 2700,
+}
+~~~
 
 ### Set Chocolatey as Default Windows Provider
 
 If you want to set this provider as the site-wide default,
 add to your `site.pp`:
 
-```puppet
-if $::kernel == windows {
-  # default package provider
+~~~puppet
+if $::kernel == 'windows' {
   Package { provider => chocolatey, }
 }
 
@@ -121,11 +146,11 @@ case $operatingsystem {
   'windows':
     Package { provider => chocolatey, }
 }
-```
+~~~
 
 ### With All Options
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure            => installed|latest|'1.0.0'|absent,
   provider          => 'chocolatey',
@@ -133,7 +158,7 @@ package { 'notepadplusplus':
   uninstall_options => ['-r'],
   source            => 'https://myfeed.example.com/api/v2',
 }
-```
+~~~
 
 * this is *versionable* so `ensure =>  '1.0'` works
 * this is *upgradeable*
@@ -143,77 +168,77 @@ package { 'notepadplusplus':
 
 ### Simple install
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => installed,
   provider => 'chocolatey',
 }
-```
+~~~
 
 ### Ensure always the newest version available
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => latest,
   provider => 'chocolatey',
 }
-```
+~~~
 
 ### Ensure specific version
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
 }
-```
+~~~
 
 ### Specify custom source
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
   source   => 'C:\local\folder\packages',
 }
-```
+~~~
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
   source   => '\\unc\source\packages',
 }
-```
+~~~
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
   source   => 'https://custom.nuget.odata.feed/api/v2/',
 }
-```
+~~~
 
-```puppet
+~~~puppet
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
   source   => 'C:\local\folder\packages;https://chocolatey.org/api/v2/',
 }
-```
+~~~
 
 ### Install options with spaces
 
 Spaces in arguments **must always** be covered with a separation. The example
 below covers `-installArgs "/VERYSILENT /NORESTART"`.
 
-```puppet
+~~~puppet
 package {'launchy':
   ensure          => installed,
   provider        => 'chocolatey',
   install_options => ['-override', '-installArgs', '"', '/VERYSILENT', '/NORESTART', '"'],
 }
-```
+~~~
 
 ### Install options with quotes / spaces
 The underlying installer may need quotes passed to it. This is possible, but not
@@ -230,29 +255,28 @@ Then for Puppet to handle that appropriately, we must split on ***every*** space
 Yes, on **every** space we must split the string or the result will come out
 incorrectly. So this means it will look like the following:
 
-```puppet
+~~~puppet
 install_options => ['-installArgs',
   '"/INSTALLDIR=""C:\Program', 'Files\somewhere"""']
-```
+~~~
 
 Make sure you have all of the right quotes - start it off with a single double
 quote, then two double quotes, then close it all by closing the two double
 quotes and then the single double quote or a possible three double quotes at
 the end.
 
-```puppet
+~~~puppet
 package {'mysql':
   ensure          => latest,
   provider        => 'chocolatey',
   install_options => ['-override', '-installArgs',
     '"/INSTALLDIR=""C:\Program', 'Files\somewhere"""'],
 }
-
-```
+~~~
 
 You can split it up a bit for readability if it suits you:
 
-```puppet
+~~~puppet
 package {'mysql':
   ensure          => latest,
   provider        => 'chocolatey',
@@ -260,20 +284,29 @@ package {'mysql':
     '/INSTALLDIR=""C:\Program', 'Files\somewhere""',
     '"'],
 }
-
-```
+~~~
 
 **Note:** The above is for Chocolatey v0.9.9+. You may need to look for an
 alternative method to pass args if you have 0.9.8.x and below.
 
 ## Reference
 
-* Chocolatey provider (`lib/puppet/provider/package/chocolatey.rb`)
-* params.pp (`manifests/params.pp`) - THIS IS A SKELETON RIGHT NOW. DO NOT USE.
-* install.pp (`manifests/install.pp`) - THIS IS A SKELETON RIGHT NOW. DO NOT USE.
-* config.pp (`manifests/config.pp`) - THIS IS A SKELETON RIGHT NOW. DO NOT USE.
+### Classes
+#### Public classes
+* [`chocolatey`](#class-chocolatey)
 
-### Chocolatey Provider
+#### Private classes
+* `chocolatey::install.pp`: Ensures Chocolatey is installed.
+* `chocolatey::config.pp`: Ensures Chocolatey is configured.
+
+### Facts
+* `chocolateyversion` - The version of the installed choco client.
+* `choco_install_path` - The location of the installed choco client.
+
+### Types/Providers
+* [Chocolatey provider](#package-provider-chocolatey)
+
+### Package Provider: Chocolatey
 Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
 
 This provider supports the `install_options` and `uninstall_options` attributes,
@@ -286,9 +319,9 @@ should be specified as documented below.
  * Supported features: `install_options`, `installable`, `uninstall_options`,
 `uninstallable`, `upgradeable`, `versionable`.
 
-### Properties/Parameters
+#### Properties/Parameters
 
-#### `ensure`
+##### `ensure`
 (**Property**: This attribute represents concrete state on the target system.)
 
 What state the package should be in. You can choose which package to retrieve by
@@ -298,18 +331,18 @@ specifying a version number or `latest` as the ensure value. This defaults to
 Valid options: `present` (also called `installed`), `absent`, `latest` or a version
 number.
 
-#### `install_options`
+##### `install_options`
 An array of additional options to pass when installing a package. These options are
 package-specific, and should be documented by the software vendor. One commonly
 implemented option is `INSTALLDIR`:
 
-```puppet
+~~~puppet
 package {'launchy':
   ensure          => installed,
   provider        => 'chocolatey',
   install_options => ['-installArgs', '"', '/VERYSILENT', '/NORESTART', '"'],
 }
-```
+~~~
 
 The above method of single quotes in an array is the only method you should use
 in passing `install_options` with the Chocolatey provider. There are other ways
@@ -320,18 +353,18 @@ This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
 
-#### `name`
+##### `name`
 (**Namevar**: If ommitted, this attribute's value will default to the resource's
 title.)
 
 The package name. This is the name that the packaging system uses internally.
 
-#### `provider`
+##### `provider`
 The specific backend to use for the `package` resource. Chocolatey is not the
 default provider for Windows so it must be specified (or by using a resource
 default, shown in Usage). Valid options for this provider are `'chocolatey'`.
 
-#### `source`
+##### `source`
 Where to find the package file. Chocolatey maintains default sources in its
 configuration file that it will use by default. Use this to override the default
 source(s).
@@ -344,17 +377,17 @@ usually just passes the value of source to the package installation command.
 You can use a `file` resource if you need to manually copy package files to the
 target system.
 
-#### `uninstall_options`
+##### `uninstall_options`
 An array of additional options to pass when uninstalling a package. These options
 are package-specific, and should be documented by the software vendor.
 
-```puppet
+~~~puppet
 package {'launchy':
   ensure          => absent,
   provider        => 'chocolatey',
   uninstall_options => ['-uninstallargs', '"', '/VERYSILENT', '/NORESTART', '"'],
 }
-```
+~~~
 
 The above method of single quotes in an array is the only method you should use
 in passing `uninstall_options` with the Chocolatey provider. There are other ways
@@ -365,10 +398,36 @@ This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
 
+### Class: chocolatey
+
+Used for managing installation and configuration of Chocolatey itself.
+
+#### Parameters
+
+##### `choco_install_location`
+
+Where Chocolatey install should be located. This needs to be an absolute path starting with a drive letter e.g. `c:\`. Defaults to the currently detected install location based on the `ChocolateyInstall` environment variable, falls back to `'C:\ProgramData\chocolatey'`.
+
+##### `use_7zip`
+
+Whether to use built-in shell or allow installer to download 7zip to extract `chocolatey.nupkg` during installation. Defaults to `true`.
+
+##### `choco_install_timeout_seconds`
+
+How long in seconds should be allowed for the install of Chocolatey (including .NET Framework 4 if necessary). Defaults to `1500` (25 minutes).
+
+##### `chocolatey_download_url`
+
+A url that will return `chocolatey.nupkg`. This must be a url, but not necessarily an OData feed. Any old url location will work. Defaults to `'https://chocolatey.org/api/v2/package/chocolatey/'`.
+
+##### `enable_autouninstaller`
+
+Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey to automatically manage the uninstall of software from Programs and Features without necessarily requiring a `chocolateyUninstall.ps1` file in the package. Defaults to `true`.
 
 ## Limitations
 
-Works with Windows only.
+1. Works with Windows only.
+2. If you override an existing install location of Chocolatey using `choco_install_location =>` in the Chocolatey class, it does not bring any of the existing packages with it. You will need to handle that through some other means.
 
 ### Known Issues
 
