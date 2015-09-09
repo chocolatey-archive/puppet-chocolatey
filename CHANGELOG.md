@@ -1,3 +1,7 @@
+2015-09-09 Release 1.1.0:
+- Install Chocolatey itself / ensure Chocolatey is installed (PUP-1691)
+- Adds custom facts for chocolateyversion and choco_install_path
+
 2015-07-23 Release 1.0.2:
 - Fixes [#71](https://github.com/chocolatey/puppet-chocolatey/issues/71) - Allow `ensure => $version` to work with already installed packages
 
