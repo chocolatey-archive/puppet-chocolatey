@@ -17,9 +17,9 @@ Travis | AppVeyor
     * [Beginning with Chocolatey provider](#beginning-with-chocolatey-provider)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference](#reference)
+    * [Classes](#public-classes)
+    * [Facts](#facts)
     * [Types/Providers](#typesproviders)
-    * [Public classes](#public-classes)
-    * [Private classes](#private-classes)
     * [Package provider: Chocolatey](#package-provider-chocolatey)
     * [Class: chocolatey](#class-chocolatey)
 6. [Limitations - OS compatibility, etc.](#limitations)
@@ -291,15 +291,20 @@ alternative method to pass args if you have 0.9.8.x and below.
 
 ## Reference
 
-### Types/Providers
-* [Chocolatey provider](#package-provider-chocolatey)
-
-### Public classes
+### Classes
+#### Public classes
 * [`chocolatey`](#class-chocolatey)
 
-### Private classes
+#### Private classes
 * `chocolatey::install.pp`: Ensures Chocolatey is installed.
 * `chocolatey::config.pp`: Ensures Chocolatey is configured.
+
+### Facts
+* `chocolateyversion` - The version of the installed choco client.
+* `choco_install_path` - The location of the installed choco client.
+
+### Types/Providers
+* [Chocolatey provider](#package-provider-chocolatey)
 
 ### Package Provider: Chocolatey
 Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
@@ -421,7 +426,8 @@ Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey
 
 ## Limitations
 
-Works with Windows only.
+1. Works with Windows only.
+2. If you override an existing install location of Chocolatey using `choco_install_location =>` in the Chocolatey class, it does not bring any of the existing packages with it. You will need to handle that through some other means.
 
 ### Known Issues
 
