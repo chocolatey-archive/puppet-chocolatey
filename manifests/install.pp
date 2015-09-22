@@ -2,7 +2,7 @@
 class chocolatey::install inherits chocolatey {
   assert_private()
 
-  $unzip_type   = $use_7zip ? {
+  $unzip_type   = $::use_7zip ? {
     true      => '7zip',
     default   => 'windows'
   }
@@ -13,7 +13,7 @@ class chocolatey::install inherits chocolatey {
     ensure    => present,
     variable  => 'ChocolateyInstall',
     mergemode => 'clobber',
-    value     => $choco_install_location,
+    value     => $::choco_install_location,
     notify    => Exec['install_chocolatey_official'],
   }
 
@@ -21,14 +21,14 @@ class chocolatey::install inherits chocolatey {
     ensure    => present,
     variable  => 'PATH',
     mergemode => 'prepend',
-    value     => "${choco_install_location}\\bin",
+    value     => "$::{choco_install_location}\\bin",
     notify    => Exec['install_chocolatey_official'],
   }
 
   exec { 'install_chocolatey_official':
     command  => template('chocolatey/InstallChocolatey.ps1.erb'),
-    creates  => "${choco_install_location}\\bin\\choco.exe",
+    creates  => "$::{choco_install_location}\\bin\\choco.exe",
     provider => powershell,
-    timeout  => $choco_install_timeout_seconds,
+    timeout  => $::choco_install_timeout_seconds,
   }
 }
