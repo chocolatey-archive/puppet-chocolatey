@@ -1,5 +1,5 @@
 # chocolatey::config - Private class used for configuration
-class chocolatey::config {
+class chocolatey::config inherits chocolatey {
   assert_private()
 
   # this will require a second converge when choco is not
@@ -9,9 +9,9 @@ class chocolatey::config {
   # user may link to - it could be an older version of
   # Chocolatey
   if versioncmp($::chocolateyversion, '0.9.9.0') >= 0 {
-    $_choco_exe_path = "${chocolatey::choco_install_location}\\bin\\choco.exe"
+    $_choco_exe_path = "$::{choco_install_location}\\bin\\choco.exe"
 
-    $_enable_autouninstaller = $chocolatey::enable_autouninstaller ? {
+    $_enable_autouninstaller = $::enable_autouninstaller ? {
       false => 'disable',
       default => 'enable'
     }
