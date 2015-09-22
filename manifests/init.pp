@@ -62,16 +62,12 @@ class chocolatey (
   validate_integer($choco_install_timeout_seconds)
   validate_bool($enable_autouninstaller)
 
-  if (versioncmp($::serverversion, '3.4.0') >= 0) or (versioncmp($::clientversion, '3.4.0') >= 0) {
-    class { '::chocolatey::install': } ->
-    class { '::chocolatey::config': }
+  # Anchor this as per #8040 - this ensures that classes won't float off and
+  # mess everything up.  You can read about this at:
+  # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
+  anchor { 'chocolatey::begin': } ->
+  class { '::chocolatey::install': } ->
+  class { '::chocolatey::config': } ->
+  anchor { 'chocolatey::end': }
 
-    contain '::chocolatey::install'
-    contain '::chocolatey::config'
-  } else {
-    anchor {'before_chocolatey':} ->
-    class { '::chocolatey::install': } ->
-    class { '::chocolatey::config': } ->
-    anchor {'after_chocolatey':}
-  }
 }
