@@ -1,5 +1,5 @@
 # chocolatey::config - Private class used for configuration
-class chocolatey::config {
+class chocolatey::config inherits chocolatey {
   assert_private()
 
   # this will require a second converge when choco is not
@@ -19,7 +19,7 @@ class chocolatey::config {
     exec { "chocolatey_autouninstaller_${_enable_autouninstaller}":
       path    => $::path,
       command => "${_choco_exe_path} feature -r ${_enable_autouninstaller} -n autoUninstaller",
-      unless  => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /X /I /C:\"autoUninstaller - [${_enable_autouninstaller}d]\"",
+      unless  => "cmd.exe /c ${chocolatey::choco_install_location}\\bin\\choco.exe feature list -r | findstr /X /I /C:\"autoUninstaller - [${_enable_autouninstaller}d]\"",
     }
   }
 }
