@@ -140,6 +140,14 @@ class {'chocolatey':
 }
 ~~~
 
+### Log chocolatey bootstrap installer script output
+
+~~~puppet
+class {'chocolatey':
+  log_output              => true,
+}
+~~~
+
 ### Set Chocolatey as Default Windows Provider
 
 If you want to set this provider as the site-wide default,

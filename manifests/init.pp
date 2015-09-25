@@ -25,6 +25,11 @@
 #     choco_install_timeout   => 2700,
 #   }
 #
+# @example Log chocolatey bootstrap installer script output
+#   class {'chocolatey':
+#     log_output              => true,
+#   }
+#
 # @example Disable autouninstaller (use when less than 0.9.9.8)
 #   class {'chocolatey':
 #     enable_autouninstaller => false,
