@@ -26,7 +26,7 @@ describe 'chocolatey' do
   end
 
   context "chocolatey_download_url =>" do
-    ['https://chocolatey.org/api/v2/package/chocolatey/','http://location'].each do |param_value|
+    ['https://chocolatey.org/api/v2/package/chocolatey/','http://location','file:///c:/somwhere/chocolatey.nupkg'].each do |param_value|
       context "#{param_value}" do
         let (:params) {{
           :chocolatey_download_url => param_value
@@ -38,13 +38,13 @@ describe 'chocolatey' do
       end
     end
 
-    ['\\\\ciflocation\\share','file:///c:/chocolatey.nupkg',false,'bob',3,"4",''].each do |param_value|
+    ['\\\\ciflocation\\share',false,'bob',3,"4",''].each do |param_value|
       context "#{param_value} (invalid scenario)" do
         let (:params) {{
           :chocolatey_download_url => param_value
         }}
 
-        let(:error_message) { /use a Http\/Https Url that downloads/ }
+        let(:error_message) { /use a Http\/Https\/File Url that downloads/ }
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
         }

@@ -125,8 +125,18 @@ class {'chocolatey':
 ~~~puppet
 class {'chocolatey':
   chocolatey_download_url => 'https://internalurl/to/chocolatey.nupkg',
-  use_7zip => false,
-  choco_install_timeout => 2700,
+  use_7zip                => false,
+  choco_install_timeout   => 2700,
+}
+~~~
+
+###  Use a file chocolatey.0.9.9.9.nupkg for installation
+
+~~~puppet
+class {'chocolatey':
+  chocolatey_download_url => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+  use_7zip                => false,
+  choco_install_timeout   => 2700,
 }
 ~~~
 

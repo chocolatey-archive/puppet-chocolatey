@@ -14,8 +14,15 @@
 # @example Use an internal Chocolatey.nupkg for installation
 #   class {'chocolatey':
 #     chocolatey_download_url => 'https://internalurl/to/chocolatey.nupkg',
-#     use_7zip => false,
-#     choco_install_timeout => 2700,
+#     use_7zip                => false,
+#     choco_install_timeout   => 2700,
+#   }
+#
+# @example Use a file chocolatey.0.9.9.9.nupkg for installation
+#   class {'chocolatey':
+#     chocolatey_download_url => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+#     use_7zip                => false,
+#     choco_install_timeout   => 2700,
 #   }
 #
 # @example Disable autouninstaller (use when less than 0.9.9.8)
@@ -51,8 +58,8 @@ class chocolatey (
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller
 ) inherits ::chocolatey::params {
 
-  validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/'],
-    "For chocolatey_download_url, if not using the default '${::chocolatey::params::download_url}', please use a Http/Https Url that downloads 'chocolatey.nupkg'."
+  validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],
+    "For chocolatey_download_url, if not using the default '${::chocolatey::params::download_url}', please use a Http/Https/File Url that downloads 'chocolatey.nupkg'."
   )
   validate_bool($use_7zip)
   validate_string($choco_install_location)
