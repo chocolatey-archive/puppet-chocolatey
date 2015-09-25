@@ -1,3 +1,8 @@
+2015-09-25 Release 1.1.1:
+- Add log_output for chocolatey bootstrap installer script
+- Ensure bootstrap enforces chocolatey.nupkg in libs folder
+- Allow file location for installing nupkg file.
+
 2015-09-09 Release 1.1.0:
 - Install Chocolatey itself / ensure Chocolatey is installed (PUP-1691)
 - Adds custom facts for chocolateyversion and choco_install_path
