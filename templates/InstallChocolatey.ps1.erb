@@ -15,6 +15,11 @@
 
 $ErrorActionPreference = 'Stop'
 
+# For some reason try/catch wrapping only ensures
+# that none of this script runs at all
+# https://tickets.puppetlabs.com/browse/MODULES-2634
+#try {
+
 # variables
 $url = '<%= @download_url %>'
 $unzipMethod = '<%= @unzip_type %>'
@@ -82,3 +87,10 @@ $chocoPkgDir = Join-Path $chocoPath 'lib\chocolatey'
 $nupkg = Join-Path $chocoPkgDir 'chocolatey.nupkg'
 if (![System.IO.Directory]::Exists($chocoPkgDir)) { [System.IO.Directory]::CreateDirectory($chocoPkgDir); }
 Copy-Item "$file" "$nupkg" -Force -ErrorAction SilentlyContinue
+
+#}
+#catch
+#{
+#  Write-Host "$($_.Exception.Message)"
+#  exit 1
+#}
