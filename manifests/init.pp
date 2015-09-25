@@ -50,12 +50,15 @@
 #   uninstall of software from Programs and Features without necessarily
 #   requiring a `chocolateyUninstall.ps1` file in the package. Defaults to
 #   `true`.
+# @param [Boolean] log_output Log output from the installer. Defaults to
+#   `false`.
 class chocolatey (
   $choco_install_location         = $::chocolatey::params::install_location,
   $use_7zip                       = $::chocolatey::params::use_7zip,
   $choco_install_timeout_seconds  = $::chocolatey::params::install_timeout_seconds,
   $chocolatey_download_url        = $::chocolatey::params::download_url,
-  $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller
+  $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
+  $log_output                     = false
 ) inherits ::chocolatey::params {
 
   validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],

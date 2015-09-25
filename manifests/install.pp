@@ -31,5 +31,6 @@ class chocolatey::install {
     creates  => "${::chocolatey::choco_install_location}\\bin\\choco.exe",
     provider => powershell,
     timeout  => $::chocolatey::choco_install_timeout_seconds,
+    logoutput=> $::chocolatey::log_output,
   }
 }

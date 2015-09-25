@@ -434,6 +434,10 @@ A url that will return `chocolatey.nupkg`. This must be a url, but not necessari
 
 Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey to automatically manage the uninstall of software from Programs and Features without necessarily requiring a `chocolateyUninstall.ps1` file in the package. Defaults to `true`.
 
+##### `log_output`
+
+Log output from the installer. Defaults to `false`.
+
 ## Limitations
 
 1. Works with Windows only.
