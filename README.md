@@ -448,6 +448,8 @@ Log output from the installer. Defaults to `false`.
 1. This module doesn't support side by side scenarios. This is ticketed as [#74](https://github.com/chocolatey/puppet-chocolatey/issues/74).
 2. This module may have issues upgrading Chocolatey itself using the package resource. See [#65](https://github.com/chocolatey/puppet-chocolatey/issues/65) and [#60](https://github.com/chocolatey/puppet-chocolatey/issues/60)
 3. Other known issues/enhancements can be found on the [issues list](https://github.com/chocolatey/puppet-chocolatey/issues).
+4. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Choco version 0.9.9.9+ help alleviate this issue.
+5. If there is an error in the installer (`InstallChocolatey.ps1.erb`), it may not show as an error. This may be an issue with the PowerShell provider and is still under investigation.
 
 ## Development
 
