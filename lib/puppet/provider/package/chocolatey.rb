@@ -88,6 +88,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     [command(:chocolatey), *args]
   end
 
+  def self.set_env_chocolateyinstall
+    ENV['ChocolateyInstall'] = PuppetX::Chocolatey::ChocolateyInstall.install_path
+  end
+
   def choco_exe?
     self.class.choco_exe?
   end
@@ -99,6 +103,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def install
+    self.class.set_env_chocolateyinstall
     args = []
     # also will need to address -sidebyside or -m in the install args to allow
     # multiple versions to be installed.
@@ -131,6 +136,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def uninstall
+    self.class.set_env_chocolateyinstall
     args = 'uninstall', @resource[:name][/\A\S*/]
 
     if choco_exe?
@@ -149,6 +155,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def update
+    self.class.set_env_chocolateyinstall
     if choco_exe?
       args = 'upgrade', @resource[:name][/\A\S*/], '-dvy'
     else
@@ -197,7 +204,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def self.instances
     packages = []
-
+    set_env_chocolateyinstall
     begin
       execpipe(listcmd) do |process|
         process.each_line do |line|
@@ -238,7 +245,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def latest
     package_ver = ''
-
+    self.class.set_env_chocolateyinstall
     begin
       execpipe(latestcmd) do |process|
         process.each_line do |line|
