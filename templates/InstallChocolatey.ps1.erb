@@ -30,13 +30,14 @@ $chocTempDir = Join-Path $env:TEMP "chocolatey"
 $tempDir = Join-Path $chocTempDir "chocInstall"
 if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
 $file = Join-Path $tempDir "chocolatey.zip"
+$chocErrorLog = Join-Path $tempDir "chocError.log"
 
 function Download-File {
 param (
   [string]$url,
   [string]$file
  )
-  Write-Host "Downloading $url to $file"
+  Write-Output "Downloading $url to $file"
   $downloader = new-object System.Net.WebClient
   $downloader.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials;
   $downloader.DownloadFile($url, $file)
@@ -47,13 +48,13 @@ Download-File $url $file
 
 if ($unzipMethod -eq '7zip') {
   # download 7zip
-  Write-Host "Download 7Zip commandline tool"
+  Write-Output "Download 7Zip commandline tool"
   $7zaExe = Join-Path $tempDir '7za.exe'
 
   Download-File 'https://chocolatey.org/7za.exe' "$7zaExe"
 
   # unzip the package
-  Write-Host "Extracting $file to $tempDir..."
+  Write-Output "Extracting $file to $tempDir..."
   Start-Process "$7zaExe" -ArgumentList "x -o`"$tempDir`" -y `"$file`"" -Wait -NoNewWindow
 } else {
   $shellApplication = new-object -com shell.application
@@ -63,13 +64,21 @@ if ($unzipMethod -eq '7zip') {
 }
 
 # call chocolatey install
-Write-Host "Installing chocolatey on this machine"
+Write-Output "Installing chocolatey on this machine"
 $toolsFolder = Join-Path $tempDir "tools"
 $chocInstallPS1 = Join-Path $toolsFolder "chocolateyInstall.ps1"
 
-& $chocInstallPS1
+if ($PSVersionTable.psversion.Major -gt 2) {
+  & $chocInstallPS1
+}
+else {
+  $output = Invoke-Expression $chocInstallPS1
+  $output
+  write-output "Any errors that occured during install or upgrade are logged here: $chocoErrorLog"
+  $error | out-file $chocErrorLog
+}
 
-Write-Host 'Ensuring chocolatey commands are on the path'
+Write-Output 'Ensuring chocolatey commands are on the path'
 $chocInstallVariableName = "ChocolateyInstall"
 $chocoPath = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
 if ($chocoPath -eq $null -or $chocoPath -eq '') {
@@ -82,7 +91,7 @@ if ($($env:Path).ToLower().Contains($($chocoBinPath).ToLower()) -eq $false) {
   $env:Path = [Environment]::GetEnvironmentVariable('Path',[System.EnvironmentVariableTarget]::Machine);
 }
 
-Write-Host 'Ensuring chocolatey.nupkg is in the lib folder'
+Write-Output 'Ensuring chocolatey.nupkg is in the lib folder'
 $chocoPkgDir = Join-Path $chocoPath 'lib\chocolatey'
 $nupkg = Join-Path $chocoPkgDir 'chocolatey.nupkg'
 if (![System.IO.Directory]::Exists($chocoPkgDir)) { [System.IO.Directory]::CreateDirectory($chocoPkgDir); }
