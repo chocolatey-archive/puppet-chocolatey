@@ -1,3 +1,8 @@
+2015-10-02 Release 1.1.2:
+- Ensure 0.9.9.9 compatibility ([#94](https://github.com/chocolatey/puppet-chocolatey/issues/94))
+- Fix - Mixed stale environment variables of existing choco install causing issues ([#86](https://github.com/chocolatey/puppet-chocolatey/issues/86))
+- Upgrade From POSH Version of Chocolatey Fails from Puppet ([#60](https://github.com/chocolatey/puppet-chocolatey/issues/60))
+
 2015-09-25 Release 1.1.1:
 - Add log_output for chocolatey bootstrap installer script
 - Ensure bootstrap enforces chocolatey.nupkg in libs folder
