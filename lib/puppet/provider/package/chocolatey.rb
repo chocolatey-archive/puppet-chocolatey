@@ -105,19 +105,18 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def install
     self.class.set_env_chocolateyinstall
     args = []
+
     # also will need to address -sidebyside or -m in the install args to allow
     # multiple versions to be installed.
-    if !choco_exe? || @resource[:name][/\A\S*/] =~ /\.config$/i
-      args << 'install'
-    else
-      args << 'upgrade'
-    end
+    args << 'install'
 
     should = @resource.should(:ensure)
     case should
     when true, false, Symbol
       args << @resource[:name][/\A\S*/]
     else
+      args.clear
+      args << 'upgrade'
       # Add the package version
       args << @resource[:name][/\A\S*/] << '-version' << @resource[:ensure]
     end
