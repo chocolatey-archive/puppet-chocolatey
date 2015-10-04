@@ -86,9 +86,15 @@ describe provider do
         @provider.class.compiled_choco = true
       end
 
-      it "should use a command without versioned package" do
+      it "should use install command without versioned package" do
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-dvy', nil)
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-dvy', nil)
+        @provider.install
+      end
+
+      it "should use upgrade command with versioned package" do
+        resource[:ensure] = '1.2.3'
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-version', '1.2.3', '-dvy', nil)
         @provider.install
       end
 
@@ -101,7 +107,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('upgrade','chocolatey','-dvy', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('install','chocolatey','-dvy', nil, '-source', 'c:\packages')
         @provider.install
       end
     end
@@ -111,9 +117,15 @@ describe provider do
          @provider.class.compiled_choco = false
       end
 
-      it "should use a command without versioned package" do
+      it "should use install command without versioned package" do
         resource[:ensure] = :present
         @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
+        @provider.install
+      end
+
+      it "should use update command with versioned package" do
+        resource[:ensure] = '1.2.3'
+        @provider.expects(:chocolatey).with('update', 'chocolatey', '-version', '1.2.3', nil)
         @provider.install
       end
 
@@ -121,6 +133,32 @@ describe provider do
         resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
         @provider.install
+      end
+    end
+  end
+
+  context "when holding" do
+    context "with compiled choco client" do
+      before :each do
+        @provider.class.compiled_choco = true
+      end
+
+      it "should use install command with held package" do
+        resource[:ensure] = :held
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-dvy', nil)
+        @provider.expects(:chocolatey).with('pin', 'add', '-n', 'chocolatey')
+        @provider.hold
+      end
+    end
+
+    context "with posh choco client" do
+      before :each do
+        @provider.class.compiled_choco = false
+      end
+
+      it "should throw an argument error with held package" do
+        resource[:ensure] = :held
+        expect { @provider.hold }.to raise_error(ArgumentError, "Only choco v0.9.9+ can use ensure => held")
       end
     end
   end
@@ -177,9 +215,9 @@ describe provider do
         @provider.update
       end
 
-      it "should use `chocolatey upgrade` when ensure latest and package absent" do
+      it "should use `chocolatey install` when ensure latest and package absent" do
         provider.stubs(:instances).returns []
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-dvy', nil)
+        @provider.expects(:chocolatey).with('install', 'chocolatey', '-dvy', nil)
         @provider.update
       end
 
