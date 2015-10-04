@@ -265,7 +265,6 @@ package { 'notepadplusplus':
 * supports `install_options` for pre-release, other cli
 * supports `uninstall_options` for pre-release, other cli
 * supports `holdable`, requires choco 0.9.9+
-* supports `package_settings`
 
 ### Simple install
 
