@@ -27,7 +27,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   has_feature :versionable
   has_feature :install_options
   has_feature :uninstall_options
-  #has_feature :holdable
+  has_feature :holdable
+  #has_feature :package_settings
 
   def initialize(value={})
     super(value)
@@ -104,6 +105,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def install
     self.class.set_env_chocolateyinstall
+
+    # always unhold on install
+    unhold if choco_exe?
+
     args = []
 
     # also will need to address -sidebyside or -m in the install args to allow
@@ -136,6 +141,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def uninstall
     self.class.set_env_chocolateyinstall
+
+    # always unhold on uninstall
+    unhold if choco_exe?
+
     args = 'uninstall', @resource[:name][/\A\S*/]
 
     if choco_exe?
@@ -155,6 +164,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
   def update
     self.class.set_env_chocolateyinstall
+
+    # always unhold on upgrade
+    unhold if choco_exe?
+
     if choco_exe?
       args = 'upgrade', @resource[:name][/\A\S*/], '-dvy'
     else
@@ -181,7 +194,6 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   # It's a determination for one specific package, the package modeled by
   # the resource the method is called on.
   # Query provides the information for the single package identified by @Resource[:name].
-
   def query
     self.class.instances.each do |package|
       return package.properties if @resource[:name][/\A\S*/].downcase == package.name.downcase
@@ -205,6 +217,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     packages = []
     set_env_chocolateyinstall
     begin
+      pins = []
+      pin_output = nil unless choco_exe?
+      #don't add -r yet, as there is an issue in 0.9.9.9/0.9.9.10 that returns full list plus pins
+      pin_output = Puppet::Util::Execution.execute([command(:chocolatey), 'pin', 'list']) if choco_exe?
+      unless pin_output.nil?
+        pin_output.split("\n").each { |pin| pins << pin.split('|')[0] }
+      end
+
       execpipe(listcmd) do |process|
         process.each_line do |line|
           line.chomp!
@@ -214,6 +234,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
           else
             values = line.split(' ')
           end
+          values[1] = :held if pins.include? values[0]
           packages << new({ :name => values[0].downcase, :ensure => values[1], :provider => self.name })
         end
       end
@@ -268,7 +289,20 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   end
 
   def hold
-    #placeholder for hold feature
+    raise ArgumentError, 'Only choco v0.9.9+ can use ensure => held' unless choco_exe?
+
+    install
+
+    args = 'pin', 'add', '-n', @resource[:name][/\A\S*/]
+
+    chocolatey(*args)
   end
+
+  def unhold
+    return unless choco_exe?
+
+    Puppet::Util::Execution.execute([command(:chocolatey), 'pin','remove', '-n', @resource[:name][/\A\S*/]], :failonfail => false)
+  end
+
 
 end

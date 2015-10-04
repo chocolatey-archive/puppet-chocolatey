@@ -81,6 +81,86 @@ Chocolatey's provider on the other hand:
  * Source is free to specify different Chocolatey feeds
  * Chocolatey makes `package` more platform agnostic since it looks exactly like other platforms.
 
+
+For reference, let's take a look at the [provider features available](https://docs.puppetlabs.com/references/latest/type.html#package-provider-features) as compared to the built-in provider and some other package managers:
+
+<table>
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>holdable</th>
+      <th>install options</th>
+      <th>installable</th>
+      <th>package settings</th>
+      <th>purgeable</th>
+      <th>reinstallable</th>
+      <th>uninstall options</th>
+      <th>uninstallable</th>
+      <th>upgradeable</th>
+      <th>versionable</th>
+      <th>virtual packages</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>windows</td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>chocolatey</td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>apt</td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>yum</td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td> </td>
+      <td> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+      <td><em>X</em> </td>
+    </tr>
+  </tbody>
+</table>
+
 ## Setup
 
 ### What Chocolatey affects
@@ -178,11 +258,14 @@ package { 'notepadplusplus':
 }
 ~~~
 
-* this is *versionable* so `ensure =>  '1.0'` works
-* this is *upgradeable*
+* supports `installable` and `uninstallable`
+* supports `versionable` so `ensure =>  '1.0'` works
+* supports `upgradeable`
 * supports `latest` (checks upstream), `absent` (uninstall)
 * supports `install_options` for pre-release, other cli
-* **soon**: supports 'holdable'
+* supports `uninstall_options` for pre-release, other cli
+* supports `holdable`, requires choco 0.9.9+
+* supports `package_settings`
 
 ### Simple install
 
