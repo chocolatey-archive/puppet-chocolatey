@@ -64,10 +64,10 @@ class chocolatey (
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
   $log_output                     = false,
-  $proxy_server                   = false,
-  $proxy_port                     = false,
-  $proxy_username                 = false,
-  $proxy_password                 = false
+  $proxy_server                   = undef,
+  $proxy_port                     = undef,
+  $proxy_username                 = undef,
+  $proxy_password                 = undef
 ) inherits ::chocolatey::params {
 
   validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],
@@ -81,31 +81,25 @@ class chocolatey (
   validate_integer($choco_install_timeout_seconds)
   validate_bool($enable_autouninstaller)
   validate_string($proxy_server)
-  validate_string($proxy_port)
   validate_string($proxy_username)
   validate_string($proxy_password)
 
-#  if $proxy_username {
-#    if ! $proxy_password {
-#      fail("If the proxy username is specified the proxy password needs to be defined!")
-#    }
-#    if ! $proxy_server {
-#      fail("If the proxy username is specified the proxy server needs to be defined!")
-#    }
-#  }
-# 
-#  if $proxy_port {
-#    if ! $proxy_server {
-#      fail("If proxy port is specified the proxy server needs to be defined!")
-#    }
-#  }
-# 
-#  if $proxy_server {
-#    if ! $proxy_port {
-#      fail("If proxy server is specified the proxy port needs to be defined!")
-#    }
-#  }
+  if $proxy_port {
+    validate_integer($proxy_port)
+  }
+  
+  if $proxy_server or $proxy_port {
+    if ( ! $proxy_server) or ( ! $proxy_port) {
+      fail("Both proxy_port and proxy_server must be defined!")
+    }
+  }
 
+  if $proxy_username or $proxy_password {
+    if ( ! $proxy_password) or ( ! $proxy_username) or ( ! $proxy_server) {
+      fail("If proxy username or password is specified, all proxy settings must be defined!")
+    }
+  }
+ 
   if (versioncmp($::serverversion, '3.4.0') >= 0) or (versioncmp($::clientversion, '3.4.0') >= 0) {
     class { '::chocolatey::install': } ->
     class { '::chocolatey::config': }

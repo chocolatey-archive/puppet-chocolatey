@@ -39,13 +39,13 @@ param (
  )
   Write-Output "Downloading $url to $file"
   $downloader = New-Object System.Net.WebCLient
-<% if @proxy_server -%> 
+<% if @proxy_server -%>
   $proxy = New-Object System.Net.WebProxy("<% @proxy_server -%>:<% @proxy_port -%>", $true)
-  <% if @proxy_username -%>
+  <%- if @proxy_username -%>
   $passwd = ConvertTo-SecureString "<% @proxy_password -%>" -AsPlainText -Force; ## Website credentials
   $proxy.Credentials = New-Object System.Management.Automation.PSCredential ("<% @proxy_username -%>", $passwd);
   $downloader.UseDefaultCredentials = $true
-  <% end -%>
+  <%- end -%>
   $downloader.Proxy = $proxy
 <% else -%>
   $downloader.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials;
