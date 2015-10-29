@@ -90,16 +90,16 @@ class chocolatey (
   
   if $proxy_server or $proxy_port {
     if ( ! $proxy_server) or ( ! $proxy_port) {
-      fail("Both proxy_port and proxy_server must be defined!")
+      fail('Both proxy_port and proxy_server must be defined!')
     }
   }
 
   if $proxy_username or $proxy_password {
     if ( ! $proxy_password) or ( ! $proxy_username) or ( ! $proxy_server) {
-      fail("If proxy username or password is specified, all proxy settings must be defined!")
+      fail('If proxy username or password is specified, all proxy settings must be defined!')
     }
   }
- 
+
   if (versioncmp($::serverversion, '3.4.0') >= 0) or (versioncmp($::clientversion, '3.4.0') >= 0) {
     class { '::chocolatey::install': } ->
     class { '::chocolatey::config': }
