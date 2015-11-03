@@ -1,3 +1,7 @@
+2015-11-03 Release 1.2.0:
+- Implement holdable ([#95](https://github.com/chocolatey/puppet-chocolatey/issues/95))
+- Fix - Use install unless version specified in install ([#71](https://github.com/chocolatey/puppet-chocolatey/issues/71))
+
 2015-10-02 Release 1.1.2:
 - Ensure 0.9.9.9 compatibility ([#94](https://github.com/chocolatey/puppet-chocolatey/issues/94))
 - Fix - Mixed stale environment variables of existing choco install causing issues ([#86](https://github.com/chocolatey/puppet-chocolatey/issues/86))
