@@ -13,16 +13,16 @@
 #
 # @example Use an internal Chocolatey.nupkg for installation
 #   class {'chocolatey':
-#     chocolatey_download_url => 'https://internalurl/to/chocolatey.nupkg',
-#     use_7zip                => false,
-#     choco_install_timeout   => 2700,
+#     chocolatey_download_url         => 'https://internalurl/to/chocolatey.nupkg',
+#     use_7zip                        => false,
+#     choco_install_timeout_seconds   => 2700,
 #   }
 #
 # @example Use a file chocolatey.0.9.9.9.nupkg for installation
 #   class {'chocolatey':
-#     chocolatey_download_url => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
-#     use_7zip                => false,
-#     choco_install_timeout   => 2700,
+#     chocolatey_download_url         => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+#     use_7zip                        => false,
+#     choco_install_timeout_seconds   => 2700,
 #   }
 #
 # @example Log chocolatey bootstrap installer script output
