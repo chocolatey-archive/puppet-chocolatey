@@ -38,13 +38,34 @@ describe 'chocolatey' do
       end
     end
 
-    ['\\\\ciflocation\\share',false,'bob',3,"4",''].each do |param_value|
+    if Puppet.version < '4.0.0'
+      invalid_url_values = ['\\\\ciflocation\\share','bob',"4",'',3]
+      not_a_string_values = [false]
+    else
+      invalid_url_values = ['\\\\ciflocation\\share','bob',"4",'']
+      not_a_string_values = [false, 3]
+    end
+
+    invalid_url_values.each do |param_value|
       context "#{param_value} (invalid scenario)" do
         let (:params) {{
           :chocolatey_download_url => param_value
         }}
 
         let(:error_message) { /use a Http\/Https\/File Url that downloads/ }
+        it {
+          expect { catalogue }.to raise_error(Puppet::Error, error_message)
+        }
+      end
+    end
+
+    not_a_string_values.each do |param_value|
+      context "#{param_value} (invalid scenario)" do
+        let (:params) {{
+            :chocolatey_download_url => param_value
+        }}
+
+        let(:error_message) { /is not a string/ }
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
         }
