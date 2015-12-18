@@ -66,6 +66,7 @@ class chocolatey (
   $log_output                     = false
 ) inherits ::chocolatey::params {
 
+  validate_string($chocolatey_download_url)
   validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],
     "For chocolatey_download_url, if not using the default '${::chocolatey::params::download_url}', please use a Http/Https/File Url that downloads 'chocolatey.nupkg'."
   )
