@@ -220,6 +220,18 @@ class {'chocolatey':
 }
 ~~~
 
+### Specify the version of chocolatey by class parameters
+
+~~~puppet
+class {'chocolatey':
+  chocolatey_download_url         => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+  use_7zip                        => false,
+  choco_install_timeout_seconds   => 2700,
+  chocolatey_version              => '0.9.9.9',
+}
+~~~
+
+
 ### Log chocolatey bootstrap installer script output
 
 ~~~puppet
@@ -400,8 +412,8 @@ alternative method to pass args if you have 0.9.8.x and below.
 * `chocolatey::config.pp`: Ensures Chocolatey is configured.
 
 ### Facts
-* `chocolateyversion` - The version of the installed choco client.
-* `choco_install_path` - The location of the installed choco client.
+* `chocolateyversion` - The version of the installed choco client (could also be provided by class parameter `chocolatey_version`).
+* `choco_install_path` - The location of the installed choco client (could also be provided by class parameter `choco_install_location`).
 
 ### Types/Providers
 * [Chocolatey provider](#package-provider-chocolatey)

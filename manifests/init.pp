@@ -57,13 +57,16 @@
 #   `true`.
 # @param [Boolean] log_output Log output from the installer. Defaults to
 #   `false`.
+# @param [String] chocolatey_version chocolatey version, falls back to
+#   `$::chocolateyversion`.
 class chocolatey (
   $choco_install_location         = $::chocolatey::params::install_location,
   $use_7zip                       = $::chocolatey::params::use_7zip,
   $choco_install_timeout_seconds  = $::chocolatey::params::install_timeout_seconds,
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
-  $log_output                     = false
+  $log_output                     = false,
+  $chocolatey_version             = $::chocolatey::params::chocolatey_version
 ) inherits ::chocolatey::params {
 
   validate_string($chocolatey_download_url)
