@@ -85,7 +85,7 @@ class chocolatey (
 
   if $source_url != undef {
     validate_re($source_url,['^http\:\/\/','^https\:\/\/'],
-      "For source_url, please use a valid Http/Https Url for your chocolatey source repo."
+      'For source_url, please use a valid Http/Https Url for your chocolatey source repo.'
     )
   }
 

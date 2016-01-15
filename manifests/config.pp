@@ -29,20 +29,20 @@ class chocolatey::config {
   }
 
 # lint:ignore:80chars
-  if $source_url != undef {
-    $source_cmd = "${_choco_exe_path} source add -n=${source_name} -s ${source_url}"
+  if $::source_url != undef {
+    $source_cmd = "${_choco_exe_path} source add -n=${::source_name} -s ${::source_url}"
 
     # Check if there is a user/password set, add params to source url
-    if $source_user != undef and $source_password != undef {
-      $_source_cmd = "${source_cmd} -u=${source_user} -p=${source_password}"
+    if $::source_user != undef and $::source_password != undef {
+      $_source_cmd = "${source_cmd} -u=${::source_user} -p=${::source_password}"
     } else {
-      notify { "source user and password not set, using unauthenticated source": }
+      notify { 'source user and password not set, using unauthenticated source': }
       $_source_cmd = $source_cmd
     }
 
     # Check if priority is set, default to 0
     if $source_priority == undef{
-      notify { "Chocolatey source priority not set, defaulting to 0": }
+      notify { 'Chocolatey source priority not set, defaulting to 0': }
       $source_priority = '0'
     }
 
