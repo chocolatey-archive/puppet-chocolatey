@@ -82,6 +82,16 @@ class chocolatey (
   validate_integer($choco_install_timeout_seconds)
   validate_bool($enable_autouninstaller)
 
+  if $source_url != undef {
+    validate_re($source_url,['^http\:\/\/','^https\:\/\/'],
+      "For source_url, please use a valid Http/Https Url for your chocolatey source repo."
+    )
+  }
+  
+  if $source_priority != undef {
+    validate_integer($source_priority)
+  }
+
   if (versioncmp($::serverversion, '3.4.0') >= 0) or (versioncmp($::clientversion, '3.4.0') >= 0) {
 
     class { '::chocolatey::install': } ->

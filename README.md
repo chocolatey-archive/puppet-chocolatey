@@ -540,6 +540,27 @@ Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey
 
 Log output from the installer. Defaults to `false`.
 
+##### `source_name`
+
+Name of the source, this corresponds to the the chocolatey command-line option, -n.
+
+##### `source_url`
+
+URL for the source, this corresponds to the the chocolatey command-line option, -s.
+
+##### `source_user`
+
+If using an authenticated source you need to supply a username and password, this corresponds to the the chocolatey command-line option, -u.
+
+##### `source_password`
+
+Name of the source, this corresponds to the the chocolatey command-line option, -p.
+
+##### `source_priority`
+
+Source priority, lower number has higher priority. If none is set it will default to 0, this corresponds to the the chocolatey command-line option, --priority.
+
+
 ## Limitations
 
 1. Works with Windows only.
