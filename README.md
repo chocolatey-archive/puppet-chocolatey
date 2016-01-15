@@ -258,6 +258,21 @@ case $operatingsystem {
 }
 ~~~
 
+### Use custom source
+
+If you would like to use a self hosted / custom Chocoaltey gallery you can set a
+custom source by passing in a source_url param.
+
+~~~puppet
+class { 'chocolatey':
+    source_name     => $source_name,
+    source_url      => $source_url,
+    source_user     => $source_user,
+    source_password => $source_password,
+    source_priority => $source_priority
+  }
+~~~
+
 ### With All Options
 
 ~~~puppet
