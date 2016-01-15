@@ -260,16 +260,19 @@ case $operatingsystem {
 
 ### Use custom source
 
-If you would like to use a self hosted / custom Chocoaltey gallery you can set a
+If you would like to use a self hosted / custom Chocolatey gallery you can set a
 custom source by passing in a source_url param.
 
-~~~puppet
+source_user and source_password are optional.
+
+If source_priority is not set it will default to 0.
+~~~puppt
 class { 'chocolatey':
-    source_name     => $source_name,
-    source_url      => $source_url,
-    source_user     => $source_user,
-    source_password => $source_password,
-    source_priority => $source_priority
+    source_name     => 'my_repo',
+    source_url      => 'http://my_repo.com/chocolatey-gallery/',
+    source_user     => 'remote_user',
+    source_password => 'mypass', #this should be read in from a file.
+    source_priority => '1',
   }
 ~~~
 
