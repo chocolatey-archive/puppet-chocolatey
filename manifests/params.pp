@@ -5,4 +5,5 @@ class chocolatey::params {
   $use_7zip                 = false
   $install_timeout_seconds  = 1500
   $enable_autouninstaller   = true
+  $chocolatey_version       = $::chocolateyversion
 }

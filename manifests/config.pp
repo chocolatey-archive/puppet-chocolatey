@@ -35,7 +35,7 @@ class chocolatey::config {
     # Check if there is a user/password set, add params to source url
     if $source_user != undef and $source_password != undef {
       $_source_cmd = "${source_cmd} -u=${source_user} -p=${source_password}"
-    }else{
+    } else {
       notify { "source user and password not set, using unauthenticated source": }
       $_source_cmd = $source_cmd
     }

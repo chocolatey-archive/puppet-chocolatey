@@ -64,6 +64,7 @@ class chocolatey (
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
   $log_output                     = false,
+  $chocolatey_version             = $::chocolatey::params::chocolatey_version,
   $source_name                    = $::chocolatey::params::source_name,
   $source_url                     = $::chocolatey::params::source_url,
   $source_user                    = $::chocolatey::params::source_user,
@@ -87,7 +88,7 @@ class chocolatey (
       "For source_url, please use a valid Http/Https Url for your chocolatey source repo."
     )
   }
-  
+
   if $source_priority != undef {
     validate_integer($source_priority)
   }
