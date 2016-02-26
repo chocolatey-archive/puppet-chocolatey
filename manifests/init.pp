@@ -42,7 +42,7 @@
 #   `'C:\ProgramData\chocolatey'`.
 # @param [Boolean] use_7zip Whether to use built-in shell or allow installer
 #   to download 7zip to extract `chocolatey.nupkg` during installation.
-#   Defaults to `true`.
+#   Defaults to `false`.
 # @param [Integer] choco_install_timeout_seconds How long in seconds should
 #   be allowed for the install of Chocolatey (including .NET Framework 4 if
 #   necessary). Defaults to `1500` (25 minutes).
