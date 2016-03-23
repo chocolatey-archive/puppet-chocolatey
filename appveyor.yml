@@ -26,7 +26,6 @@ matrix:
   fast_finish: true
 install:
 - SET PATH=C:\Ruby%RUBY_VER%\bin;%PATH%
-- gem install bundler --quiet --no-ri --no-rdoc
 - bundle install --jobs 4 --retry 2 --without system_tests
 - type Gemfile.lock
 build: off
