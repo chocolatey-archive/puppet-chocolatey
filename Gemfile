@@ -35,9 +35,6 @@ group :development do
   gem 'puppetlabs_spec_helper',       :require => false
   gem 'puppet_facts',                 :require => false
   gem 'mocha', '~>0.10.5',            :require => false
-  gem 'metadata-json-lint', '~> 0.0', :require => false
-  gem 'travis', '~>1.8',              :require => false
-  #gem 'rspec-puppet-facts',          :require => false
 end
 
 #gem 'ruby-prof', :require => false
