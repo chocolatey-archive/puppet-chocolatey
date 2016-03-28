@@ -4,7 +4,7 @@
 
 Travis | AppVeyor
 ------------- | -------------
-[![Build Status](https://travis-ci.org/chocolatey/puppet-chocolatey.png?branch=master)](https://travis-ci.org/chocolatey/puppet-chocolatey) | [![Build status](https://ci.appveyor.com/api/projects/status/8lo0ypk2m931okus/branch/master?svg=true)](https://ci.appveyor.com/project/ferventcoder/puppet-chocolatey/branch/master)
+[![Build Status](https://api.travis-ci.org/puppetlabs/puppetlabs-chocolatey.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-chocolatey) | [![Build status](https://ci.appveyor.com/api/projects/status/uosorvcyhnayv70m/branch/master?svg=true)](https://ci.appveyor.com/project/puppetlabs/puppetlabs-chocolatey/branch/master)
 
 #### Table of Contents
 
@@ -547,17 +547,20 @@ Log output from the installer. Defaults to `false`.
 
 ### Known Issues
 
-1. This module doesn't support side by side scenarios. This is ticketed as [#74](https://github.com/chocolatey/puppet-chocolatey/issues/74).
-2. This module may have issues upgrading Chocolatey itself using the package resource. See [#65](https://github.com/chocolatey/puppet-chocolatey/issues/65) and [#60](https://github.com/chocolatey/puppet-chocolatey/issues/60)
-3. Other known issues/enhancements can be found on the [issues list](https://github.com/chocolatey/puppet-chocolatey/issues).
-4. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Choco version 0.9.9.9+ help alleviate this issue.
-5. If there is an error in the installer (`InstallChocolatey.ps1.erb`), it may not show as an error. This may be an issue with the PowerShell provider and is still under investigation.
+1. This module doesn't support side by side scenarios.
+2. This module may have issues upgrading Chocolatey itself using the package resource.
+3. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Choco version 0.9.9.9+ help alleviate this issue.
+4. If there is an error in the installer (`InstallChocolatey.ps1.erb`), it may not show as an error. This may be an issue with the PowerShell provider and is still under investigation.
 
 ## Development
 
-See [CONTRIBUTING.md](https://github.com/chocolatey/puppet-chocolatey/blob/master/CONTRIBUTING.md)
+Puppet Labs modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can’t access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.
+
+We want to keep it as easy as possible to contribute changes so that our modules work in your environment. There are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
+
+For more information, see our [module contribution guide.](https://docs.puppetlabs.com/forge/contributing.html)
 
 ## Attributions
 
-A special thanks goes out to [Rich Siegel](https://github.com/rismoney) who wrote the original
+A special thanks goes out to [Rich Siegel](https://github.com/rismoney) and [Rob Reynolds](https://github.com/ferventcoder) who wrote the original
 provider and continues to contribute to the development of this provider.
