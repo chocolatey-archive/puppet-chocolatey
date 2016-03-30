@@ -12,8 +12,10 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.0"
   - rvm: 2.1.5
     env: PUPPET_GEM_VERSION="~> 4.0"
+  # FUTURE_PARSER testing is disabled pending FM-5038
+  # - rvm: 2.0.0
+  #   env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
   - rvm: 1.9.3
     env: PUPPET_GEM_VERSION="3.0.0"
 notifications:
-  email:
-    - chocolatey-build-status@googlegroups.com
+  email: false
