@@ -1,5 +1,4 @@
 require 'facter'
-require 'rspec/its'
 
 describe 'choco_install_path fact' do
   subject(:fact) { Facter.fact(:choco_install_path) }
@@ -21,7 +20,9 @@ describe 'choco_install_path fact' do
   end
 
   context 'on Linux', :if => Puppet.features.posix? do
-    its(:value) { should eql('C:\ProgramData\chocolatey') }
+    it "should return the default install path on a non-windows system" do
+      subject.value.must == 'C:\ProgramData\chocolatey'
+    end
   end
 
   after :each do

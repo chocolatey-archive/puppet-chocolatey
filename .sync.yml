@@ -1,0 +1,42 @@
+---
+.travis.yml:
+  extras:
+    - rvm: 1.9.3
+      env: PUPPET_GEM_VERSION="3.0.0"
+  script: "\"bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--color --format documentation'\""
+.gitignore:
+  paths:
+    - "*.orig"
+    - "*.bak"
+    - "*.old"
+    - "*.gem"
+    - "*.rbc"
+    - ".rspec_system"
+    - ".vagrant"
+    - ".yardoc"
+    - "InstalledFiles"
+    - "_yardoc"
+    - "coverage"
+    - "doc/"
+    - "lib/bundler/man"
+    - "pkg"
+    - "vendor/"
+    - "rdoc"
+    - "spec/reports"
+    - "test/version_tmp"
+    - "tmp"
+    - ".idea"
+    - ".config"
+
+Gemfile:
+  supports_windows: true
+Rakefile:
+  unmanaged: true
+spec/spec_helper.rb:
+  unmanaged: true
+appveyor.yml:
+  matrix_extras:
+    - PUPPET_GEM_VERSION: 3.0.0
+      RUBY_VER: 193
+  test_script:
+    - 'bundle exec rspec spec/unit -fd -b'

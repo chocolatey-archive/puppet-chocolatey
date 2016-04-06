@@ -1,5 +1,4 @@
-# vim: set ts=2 sw=2 ai et syntax=ruby:
-source ENV['GEM_SOURCE'] || 'https://rubygems.org'
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
 # Determines what type of gem is requested based on place_or_version.
 def gem_type(place_or_version)
@@ -26,26 +25,36 @@ def location_for(place_or_version, fake_version = nil)
   end
 end
 
+# The following gems are not included by default as they require DevKit on Windows.
+# You should probably include them in a Gemfile.local or a ~/.gemfile
+#gem 'pry' #this may already be included in the gemfile
+#gem 'pry-stack_explorer', :require => false
+#if RUBY_VERSION =~ /^2/
+#  gem 'pry-byebug'
+#else
+#  gem 'pry-debugger'
+#end
+
 group :development do
-  gem 'pry',                          :require => false
-  gem 'rake', '~> 10.0',              :require => false
-  gem 'rspec', '>= 3', '< 3.2.0',     :require => false # https://github.com/rspec/rspec-core/issues/1864
-  gem 'rspec-its',                    :require => false
-  gem 'puppet-lint',                  :require => false
-  gem 'puppetlabs_spec_helper',       :require => false
-  gem 'puppet_facts',                 :require => false
-  gem 'mocha', '~>0.10.5',            :require => false
-  gem 'metadata-json-lint', '~> 0.0', :require => false
-  gem 'travis', '~>1.8',              :require => false
-  #gem 'rspec-puppet-facts',          :require => false
+  gem 'rake',                                :require => false
+  gem 'rspec', '~>3.0',                      :require => false
+  gem 'puppet-lint',                         :require => false
+  gem 'puppetlabs_spec_helper', '~>0.10.3',  :require => false
+  gem 'puppet_facts',                        :require => false
+  gem 'mocha', '~>0.10.5',                   :require => false
+  gem 'pry',                                 :require => false
 end
 
-#gem 'ruby-prof', :require => false
+group :system_tests do
+  gem 'beaker-rspec', *location_for(ENV['BEAKER_RSPEC_VERSION'] || '~> 5.1')
+  gem 'beaker', *location_for(ENV['BEAKER_VERSION'] || '~> 2.20')
+  gem 'beaker-puppet_install_helper',  :require => false
+end
 
 # The recommendation is for PROJECT_GEM_VERSION, although there are older ways
 # of referencing these. Add them all for compatibility reasons. We'll remove
 # later when no issues are known. We'll prefer them in the right order.
-puppetversion = ENV['PUPPET_GEM_VERSION'] || ENV['PUPPET_LOCATION'] || ENV['PUPPET_VERSION'] || '>= 0'
+puppetversion = ENV['PUPPET_GEM_VERSION'] || ENV['GEM_PUPPET_VERSION'] || ENV['PUPPET_LOCATION'] || '>= 0'
 gem 'puppet', *location_for(puppetversion)
 
 # Only explicitly specify Facter/Hiera if a version has been specified.
@@ -53,9 +62,9 @@ gem 'puppet', *location_for(puppetversion)
 # gem resolution behavior, try setting `DEBUG_RESOLVER` environment variable
 # to `1` and then run bundle install.
 facterversion = ENV['FACTER_GEM_VERSION'] || ENV['GEM_FACTER_VERSION'] || ENV['FACTER_LOCATION']
-gem 'facter', *location_for(facterversion) if facterversion
+gem "facter", *location_for(facterversion) if facterversion
 hieraversion = ENV['HIERA_GEM_VERSION'] || ENV['GEM_HIERA_VERSION'] || ENV['HIERA_LOCATION']
-gem 'hiera', *location_for(hieraversion) if hieraversion
+gem "hiera", *location_for(hieraversion) if hieraversion
 
 # For Windows dependencies, these could be required based on the version of
 # Puppet you are requiring. Anything greater than v3.5.0 is going to have
@@ -85,23 +94,23 @@ if explicitly_require_windows_gems
   # This also means Puppet Gem less than 3.5.0 - this has been tested back
   # to 3.0.0. Any further back is likely not supported.
   if puppet_gem_location == :gem
-    gem 'ffi', '1.9.0',                 :require => false
-    gem 'win32-eventlog', '0.5.3',      :require => false
-    gem 'win32-process', '0.6.5',       :require => false
-    gem 'win32-security', '~> 0.1.2',   :require => false
-    gem 'win32-service', '0.7.2',       :require => false
-    gem 'minitar', '0.5.4',             :require => false
+    gem "ffi", "1.9.0",                 :require => false
+    gem "win32-eventlog", "0.5.3",      :require => false
+    gem "win32-process", "0.6.5",       :require => false
+    gem "win32-security", "~> 0.1.2",   :require => false
+    gem "win32-service", "0.7.2",       :require => false
+    gem "minitar", "0.5.4",             :require => false
   else
-    gem 'ffi', '~> 1.9.0',              :require => false
-    gem 'win32-eventlog', '~> 0.5',     :require => false
-    gem 'win32-process', '~> 0.6',      :require => false
-    gem 'win32-security', '~> 0.1',     :require => false
-    gem 'win32-service', '~> 0.7',      :require => false
-    gem 'minitar', '~> 0.5.4',          :require => false
+    gem "ffi", "~> 1.9.0",              :require => false
+    gem "win32-eventlog", "~> 0.5",     :require => false
+    gem "win32-process", "~> 0.6",      :require => false
+    gem "win32-security", "~> 0.1",     :require => false
+    gem "win32-service", "~> 0.7",      :require => false
+    gem "minitar", "~> 0.5.4",          :require => false
   end
 
-  gem 'win32-dir', '~> 0.3',            :require => false
-  gem 'win32console', '1.3.2',          :require => false if RUBY_VERSION =~ /^1\./
+  gem "win32-dir", "~> 0.3",            :require => false
+  gem "win32console", "1.3.2",          :require => false if RUBY_VERSION =~ /^1\./
 
   # Puppet less than 3.7.0 requires these.
   # Puppet 3.5.0+ will control the actual requirements.
@@ -110,13 +119,21 @@ if explicitly_require_windows_gems
   # We do not want to allow newer versions than what came out after
   # 3.6.x to be used as they constitute some risk in breaking older
   # functionality. So we set these to exact versions.
-  gem 'sys-admin', '1.5.6',             :require => false
-  gem 'win32-api', '1.4.8',             :require => false
-  gem 'win32-taskscheduler', '0.2.2',   :require => false
-  gem 'windows-api', '0.4.3',           :require => false
-  gem 'windows-pr',  '1.2.3',           :require => false
+  gem "sys-admin", "1.5.6",             :require => false
+  gem "win32-api", "1.4.8",             :require => false
+  gem "win32-taskscheduler", "0.2.2",   :require => false
+  gem "windows-api", "0.4.3",           :require => false
+  gem "windows-pr",  "1.2.3",           :require => false
 end
 
+# Evaluate Gemfile.local if it exists
 if File.exists? "#{__FILE__}.local"
   eval(File.read("#{__FILE__}.local"), binding)
 end
+
+# Evaluate ~/.gemfile if it exists
+if File.exists?(File.join(Dir.home, '.gemfile'))
+  eval(File.read(File.join(Dir.home, '.gemfile')), binding)
+end
+
+# vim:ft=ruby
