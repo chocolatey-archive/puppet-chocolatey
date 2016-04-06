@@ -1,5 +1,4 @@
 require 'facter'
-require 'rspec/its'
 
 describe 'chocolateyversion fact' do
   subject(:fact) { Facter.fact(:chocolateyversion) }
@@ -28,7 +27,9 @@ describe 'chocolateyversion fact' do
   end
 
   context 'on Linux', :if => Puppet.features.posix? do
-    its(:value) { should eql('0') }
+    it "should return 0  on a non-windows system" do
+      subject.value.must == "0"
+    end
   end
 
   after :each do
