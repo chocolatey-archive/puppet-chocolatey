@@ -1,0 +1,23 @@
+HOSTS:
+  centos-7-x86_64-master:
+    roles:
+      - master
+      - dashboard
+      - database
+      - agent
+    platform: el-7-x86_64
+    template: Delivery/Quality Assurance/Templates/vCloud/centos-7-x86_64
+    hypervisor: vcloud
+  win-2008r2-x86_64-agent:
+    roles:
+      - agent
+    platform: windows-2008r2-x86_64
+    template: Delivery/Quality Assurance/Templates/vCloud/win-2008r2-wmf5-x86_64
+    hypervisor: vcloud
+CONFIG:
+  nfs_server: none
+  consoleport: 443
+  datastore: instance0
+  folder: Delivery/Quality Assurance/Enterprise/Dynamic
+  resourcepool: delivery/Quality Assurance/Enterprise/Dynamic
+  pooling_api: http://vmpooler.delivery.puppetlabs.net/
