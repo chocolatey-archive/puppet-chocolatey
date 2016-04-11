@@ -30,6 +30,11 @@
 
 Gemfile:
   supports_windows: true
+  required:
+    ':system_tests':
+      - gem: beaker
+      - gem: master_manipulator
+        version: '~> 1.2'
 Rakefile:
   unmanaged: true
 spec/spec_helper.rb:
