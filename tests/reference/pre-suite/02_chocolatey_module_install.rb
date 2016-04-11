@@ -12,18 +12,14 @@ local = { :module_name => 'chocolatey', :source => proj_root }
 if options[:forge_host]
   # Check to see if module version is specified.
   staging[:version] = ENV['MODULE_VERSION'] if ENV['MODULE_VERSION']
-
   step 'Install Chocolatey Module from Forge'
-  install_dev_puppet_module_on(master, staging)
+  install_dev_puppet_module_on(agents, staging)
 else
   step 'Install Chocolatey Module Dependencies'
-
   %w(puppetlabs-stdlib puppetlabs-powershell badgerious/windows_env).each do |dep|
-    on(agent, puppet("module install #{dep}"))
+    on(agents, puppet("module install #{dep}"))
   end
-
-  step 'Install Chocolatey Module'
-  local[:target_module_path] = agent['distmoduledir']
+  step 'Install Chocolatey Module from Local Source'
   # in CI install from staging forge, otherwise from local
-  install_dev_puppet_module_on(agent, options[:forge_host] ? staging : local)
+  install_dev_puppet_module_on(agents, local)
 end

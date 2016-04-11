@@ -11,7 +11,7 @@ declare -a ARGS
 # Argument Parsing
 if [ $# -eq 0 ]; then
   ARGS[0]='windows-2012r2-64a'
-  ARGS[1]='1.3.2'
+  ARGS[1]='1.4.1'
   ARGS[2]='local'
 elif [[ $# -lt 3 || $# -gt 4 ]]; then
   echo 'USAGE reference_tests.sh <CONFIG> <PUPPET_AGENT_VER> <LOCAL_OR_FORGE> <MODULE_VERSION>'
@@ -62,3 +62,4 @@ bundle exec beaker \
   --pre-suite tests/reference/pre-suite \
   --load-path tests/lib \
   --type aio
+  

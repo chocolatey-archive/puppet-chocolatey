@@ -10,7 +10,7 @@ declare -a ARGS
 # Argument Parsing
 if [ $# -eq 0 ]; then
   ARGS[0]='windows-2012r2-64mda'
-  ARGS[1]='http://pe-releases.puppetlabs.lan/2015.2.3/'
+  ARGS[1]='http://pe-releases.puppetlabs.lan/2016.1.1/'
   ARGS[2]='forge'
 elif [[ $# -lt 3 || $# -gt 4 ]]; then
   echo 'USAGE acceptance_tests.sh <CONFIG> <PE_DIST_DIR> <LOCAL_OR_FORGE> <MODULE_VERSION>'
