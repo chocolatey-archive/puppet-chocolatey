@@ -1,6 +1,7 @@
 test_name 'MODULES-3138 - C97814 - Install Pre-suite Acceptance Test'
 
 # Beaker option set if "BEAKER_FORGE_HOST" environment variable is present
+staging = { :module_name => 'puppetlabs-chocolatey' }
 if options[:forge_host]
   # Check to see if module version is specified.
   staging[:version] = ENV['MODULE_VERSION'] if ENV['MODULE_VERSION']
@@ -15,7 +16,6 @@ end
 
 step 'Install Chocolatey Module'
 proj_root = File.expand_path(File.join(File.dirname(__FILE__), '../../../'))
-staging = { :module_name => 'puppetlabs-chocolatey' }
 local = { :module_name => 'chocolatey', :source => proj_root}
 
 # Check to see if module version is specified.
