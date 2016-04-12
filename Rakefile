@@ -23,32 +23,32 @@ end
 
 desc 'Executes reference tests (agent only) intended for use in CI'
 task :reference_tests do
-	command =<<-EOS
-bundle exec beaker							\
-	--debug									\
-	--preserve-hosts never					\
-	--config tests/configs/$PLATFORM 		\
-	--keyfile ~/.ssh/id_rsa-acceptance		\
-	--load-path tests/lib					\
-	--type aio								\
-	--pre-suite tests/reference/pre-suite	\
-	--tests tests/reference/tests
-	EOS
-	sh command
+    command =<<-EOS
+bundle exec beaker                          \
+    --debug                                 \
+    --preserve-hosts never                  \
+    --config tests/configs/$PLATFORM        \
+    --keyfile ~/.ssh/id_rsa-acceptance      \
+    --load-path tests/lib                   \
+    --type aio                              \
+    --pre-suite tests/reference/pre-suite   \
+    --tests tests/reference/tests
+    EOS
+    sh command
 end
 
 desc 'Executes accetpance tests (master and agent) indened for use in CI'
 task :acceptance_tests do
-	command =<<-EOS
+    command =<<-EOS
 bundle exec beaker
-	--debug									\
-	--preserve-hosts never					\
-	--config tests/configs/$PLATFORM 		\
-	--keyfile ~/.ssh/id_rsa-acceptance		\
-	--load-path tests/lib					\
-	--type aio								\
-	--pre-suite tests/acceptance/pre-suite	\
-	--tests tests/acceptance/tests
-	EOS
-	sh command
+    --debug                                 \
+    --preserve-hosts never                  \
+    --config tests/configs/$PLATFORM        \
+    --keyfile ~/.ssh/id_rsa-acceptance      \
+    --load-path tests/lib                   \
+    --type aio                              \
+    --pre-suite tests/acceptance/pre-suite  \
+    --tests tests/acceptance/tests
+    EOS
+    sh command
 end
