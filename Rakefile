@@ -52,3 +52,11 @@ bundle exec beaker
     EOS
     sh command
 end
+
+task :acceptance_tests => [:blah]
+task :reference_tests => [:blah]
+
+task :blah do
+    abort("PLATFORM variable not present, aborting test.") unless ENV["PLATFORM"]
+end
+
