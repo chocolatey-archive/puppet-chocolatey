@@ -2,7 +2,7 @@
   $pkg = 'notepadplusplus'
 
   package { $pkg:
-    ensure          => 'latest',
-    provider        => 'chocolatey',
+    ensure   => 'latest',
+    provider => 'chocolatey',
   }
 #}
