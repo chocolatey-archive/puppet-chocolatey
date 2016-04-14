@@ -32,7 +32,7 @@ bundle exec beaker                          \
     --load-path tests/lib                   \
     --type aio                              \
     --pre-suite tests/reference/pre-suite   \
-    --tests tests/reference/tests
+    --tests tests/reference/tests           
     EOS
     sh command
 end
@@ -40,23 +40,28 @@ end
 desc 'Executes accetpance tests (master and agent) indened for use in CI'
 task :acceptance_tests do
     command =<<-EOS
-bundle exec beaker
+bundle exec beaker                          \
     --debug                                 \
     --preserve-hosts never                  \
     --config tests/configs/$PLATFORM        \
     --keyfile ~/.ssh/id_rsa-acceptance      \
     --load-path tests/lib                   \
-    --type aio                              \
     --pre-suite tests/acceptance/pre-suite  \
-    --tests tests/acceptance/tests
+    --tests tests/acceptance/tests          
     EOS
     sh command
 end
 
-task :acceptance_tests => [:blah]
-task :reference_tests => [:blah]
+task :acceptance_tests => [:basic_enviroment_variable_check, :acceptance_enviroment_varible_check]
+task :reference_tests => [:basic_enviroment_variable_check]
 
-task :blah do
+task :basic_enviroment_variable_check do
     abort("PLATFORM variable not present, aborting test.") unless ENV["PLATFORM"]
+    abort("MODULE_VERSION variable not present, aborting test.") unless ENV["MODULE_VERSION"]
+end
+
+task :acceptance_enviroment_varible_check do
+    abort("BEAKER_PE_DIR variable not present, aborting test.") unless ENV["BEAKER_PE_DIR"]
+    abort("PE_DIST_DIR variable not present, aborting test.") unless ENV["PE_DIST_DIR"]
 end
 
