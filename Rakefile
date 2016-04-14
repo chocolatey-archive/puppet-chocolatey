@@ -61,7 +61,11 @@ task :basic_enviroment_variable_check do
 end
 
 task :acceptance_enviroment_varible_check do
-    abort("BEAKER_PE_DIR variable not present, aborting test.") unless ENV["BEAKER_PE_DIR"]
-    abort("PE_DIST_DIR variable not present, aborting test.") unless ENV["PE_DIST_DIR"]
+    if ENV["BEAKER_PE_DIR"] && ENV["PE_DIST_DIR"]
+        abort("Either BEAKER_PE_DIR or PE_DIST_DIR variable should be set but not both, aborting test.")
+    end
+    if !ENV["BEAKER_PE_DIR"] && !ENV["PE_DIST_DIR"]
+        abort("Neither BEAKER_PE_DIR or PE_DIST_DIR variable is set, aborting test.")
+    end
 end
 
