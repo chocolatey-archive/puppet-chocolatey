@@ -3,6 +3,10 @@
   extras:
     - rvm: 1.9.3
       env: PUPPET_GEM_VERSION="3.0.0"
+  # FUTURE_PARSER testing is expected to fail and is disabled pending FM-5038
+  allow_failures:
+    - rvm: 2.0.0
+      env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
   script: "\"bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--color --format documentation'\""
 .gitignore:
   paths:
@@ -31,6 +35,17 @@
 Gemfile:
   supports_windows: true
   required:
+    ':development':
+      - gem: rake
+      - gem: rspec
+        version: '~>3.0'
+      - gem: puppet-lint
+      - gem: puppetlabs_spec_helper
+        version: '~>0.10.3'
+      - gem: puppet_facts
+      - gem: mocha
+        version: '~>0.10.5'
+      - gem: pry
     ':system_tests':
       - gem: beaker
       - gem: master_manipulator
@@ -45,3 +60,16 @@ appveyor.yml:
       RUBY_VER: 193
   test_script:
     - 'bundle exec rspec spec/unit -fd -b'
+MAINTAINERS.md:
+  maintainers:
+    - "Puppet Windows Team `windows |at| puppet |dot| com`"
+NOTICE:
+  copyright_holders:
+    - name: 'Rich Siegel, Paul Morgan'
+      begin: 2012
+      end: 2014
+    - name: 'RealDimensions Software, LLC & original authors/contributors from https://github.com/chocolatey/puppet-chocolatey'
+      begin: 2014
+      end: 2016
+    - name: 'Puppet, Inc.'
+      begin: 2016
