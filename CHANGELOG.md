@@ -1,3 +1,8 @@
+## 2016-05-06 Release 1.2.3
+
+- Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
+- Announce Chocolatey for Business in ReadMe.
+
 ## 2016-04-06 Release 1.2.2
 
 - Fix: puppet apply works again [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105).
