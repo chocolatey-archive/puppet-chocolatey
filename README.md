@@ -1,6 +1,8 @@
 # Chocolatey Package Provider for Puppet
 
-[Chocolatey for Business](https://bit.ly/choco_pro_business) editions now available!
+### Chocolatey for Business Now Available!
+
+We're excited for you to learn more about what's available in the [Business editions](https://bit.ly/choco_pro_business)!
 
 ## Build Status
 
