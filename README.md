@@ -1,5 +1,7 @@
 # Chocolatey Package Provider for Puppet
 
+[Chocolatey for Business](https://bit.ly/choco_pro_business) editions now available!
+
 ## Build Status
 
 Travis | AppVeyor
@@ -38,6 +40,8 @@ range of Puppet versions.
 
 This is the official module for working with the [Chocolatey](https://chocolatey.org/about)
 package manager.
+
+This module supports all editions of Chocolatey, including FOSS, [Professional](https://bit.ly/choco_pro_business) and [Chocolatey for Business](https://bit.ly/choco_pro_business).
 
 This module will ultimately be able to
 * install Chocolatey
