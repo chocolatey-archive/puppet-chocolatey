@@ -29,7 +29,7 @@ Travis | AppVeyor
 
 ## Overview
 
-This is a [Puppet](http://docs.puppetlabs.com/) package provider for
+This is a [Puppet](http://docs.puppet.com/) package provider for
 [chocolatey](https://github.com/chocolatey/chocolatey), which is
 like apt-get, but for Windows. This should be compatible with a wide
 range of Puppet versions.
@@ -68,10 +68,10 @@ package { 'git':
 ~~~
 
 The built-in provider has the following needs:
- * Package name must match ***exactly*** the name from installed programs. See [package name must be DisplayName](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#package-name-must-be-the-displayname)
+ * Package name must match ***exactly*** the name from installed programs. See [package name must be DisplayName](https://docs.puppet.com/puppet/latest/reference/resources_package_windows.html#package-name-must-be-the-displayname)
  * Package name has issues with unicode characters
- * Source must point to the location of the executable installer. See [source is required](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#the-source-attribute-is-required).
- * No `ensure => latest` - see [handling versions and upgrades](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#handling-versions-and-upgrades)
+ * Source must point to the location of the executable installer. See [source is required](https://docs.puppet.com/puppet/latest/reference/resources_package_windows.html#the-source-attribute-is-required).
+ * No `ensure => latest` - see [handling versions and upgrades](https://docs.puppet.com/puppet/latest/reference/resources_package_windows.html#handling-versions-and-upgrades)
 
 Chocolatey's provider on the other hand:
  * Package name only has to match the name of the package, which can be whatever you choose.
@@ -82,7 +82,7 @@ Chocolatey's provider on the other hand:
  * Chocolatey makes `package` more platform agnostic since it looks exactly like other platforms.
 
 
-For reference, let's take a look at the [provider features available](https://docs.puppetlabs.com/references/latest/type.html#package-provider-features) as compared to the built-in provider and some other package managers:
+For reference, let's take a look at the [provider features available](https://docs.puppet.com/references/latest/type.html#package-provider-features) as compared to the built-in provider and some other package managers:
 
 <table>
   <thead>
@@ -179,7 +179,7 @@ Chocolatey requires the following components
 
 Install this module via any of these approaches:
 
-* [puppet forge](http://forge.puppetlabs.com/chocolatey/chocolatey)
+* [puppet forge](http://forge.puppet.com/chocolatey/chocolatey)
 * git-submodule ([tutorial](http://goo.gl/e9aXh))
 * [librarian-puppet](https://github.com/rodjek/librarian-puppet)
 * [r10k](https://github.com/puppetlabs/r10k)
@@ -419,7 +419,7 @@ alternative method to pass args if you have 0.9.8.x and below.
 * [Chocolatey provider](#package-provider-chocolatey)
 
 ### Package Provider: Chocolatey
-Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
+Chocolatey implements a [package type](http://docs.puppet.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
 
 This provider supports the `install_options` and `uninstall_options` attributes,
 which allow command-line options to be passed to the choco command. These options
@@ -554,11 +554,11 @@ Log output from the installer. Defaults to `false`.
 
 ## Development
 
-Puppet Labs modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can’t access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.
+Puppet Inc modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can’t access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.
 
 We want to keep it as easy as possible to contribute changes so that our modules work in your environment. There are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
 
-For more information, see our [module contribution guide.](https://docs.puppetlabs.com/forge/contributing.html)
+For more information, see our [module contribution guide.](https://docs.puppet.com/forge/contributing.html)
 
 ## Attributions
 
