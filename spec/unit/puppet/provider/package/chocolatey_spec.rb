@@ -1,6 +1,6 @@
-# vim: set ts=2 sw=2 ai et ruler:
 require 'spec_helper'
 require 'stringio'
+require 'puppet/type/package'
 require 'puppet/provider/package/chocolatey'
 
 provider = Puppet::Type.type(:package).provider(:chocolatey)
