@@ -7,7 +7,8 @@ junit/
 .vagrant/
 .bundle/
 coverage/
-.idea/
+/.idea/
+/.vscode/
 .metadata
 *.iml
 .*.sw[op]
@@ -35,3 +36,4 @@ test/version_tmp
 tmp
 .idea
 .config
+
