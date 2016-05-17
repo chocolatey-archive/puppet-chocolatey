@@ -3,7 +3,7 @@ HOSTS:
     roles:
       - agent
     platform: windows-2008r2-x86_64
-    template: Delivery/Quality Assurance/Templates/vCloud/win-2008r2-wmf5-x86_64
+    template: Delivery/Quality Assurance/Templates/vCloud/win-2008r2-x86_64
     hypervisor: vcloud
 CONFIG:
   masterless: true
