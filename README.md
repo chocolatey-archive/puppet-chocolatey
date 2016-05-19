@@ -259,8 +259,9 @@ if $::kernel == 'windows' {
 # OR
 
 case $operatingsystem {
-  'windows':
+  'windows': {
     Package { provider => chocolatey, }
+  }
 }
 ~~~
 
