@@ -29,7 +29,8 @@
     - "spec/reports"
     - "test/version_tmp"
     - "tmp"
-    - ".idea"
+    - "/.idea/"
+    - "/.vscode/"
     - ".config"
 
 Gemfile:

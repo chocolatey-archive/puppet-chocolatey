@@ -31,6 +31,12 @@ RSpec.configure do |c|
   # set the environment variable before files are loaded, otherwise it is too late
   ENV['ChocolateyInstall'] = 'c:\blah'
 
+  begin
+    Win32::Registry.any_instance.stubs(:[]).with('ChocolateyInstall').raises(Win32::Registry::Error.new(2), 'file not found yo')
+  rescue
+    # we don't care
+  end
+
   # https://www.relishapp.com/rspec/rspec-core/v/2-12/docs/mock-framework-integration/mock-with-mocha!
   c.mock_framework = :mocha
   # see output for all failures
