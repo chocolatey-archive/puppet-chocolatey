@@ -10,14 +10,14 @@
 #
 # With symlinks on Windows, please run the following command an administrative command prompt (substituting the proper directories):
 
-  package { $pkg:
-    ensure   => 'latest',
-    provider => 'chocolatey',
-  }
+package { $pkg:
+  ensure   => 'latest',
+  provider => 'chocolatey',
+}
 
 #    mklink /D C:\ProgramData\PuppetLabs\puppet\etc\modules\chocolatey C:\code\puppetlabs\puppetlabs-chocolatey
 #    mklink /D C:\ProgramData\PuppetLabs\code\environments\production\modules\chocolatey C:\code\puppetlabs\puppetlabs-chocolatey
 
 chocolateysource { 'local':
- location => 'c:\packages',
+  location => 'c:\packages',
 }

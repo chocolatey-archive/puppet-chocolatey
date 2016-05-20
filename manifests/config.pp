@@ -26,4 +26,3 @@ class chocolatey::config {
 # lint:endignore
   }
 }
- 
