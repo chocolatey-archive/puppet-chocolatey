@@ -286,13 +286,6 @@ describe provider do
   end
 
   context "when getting latest" do
-    let (:choco_command) {
-      cmd = PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command
-      return cmd if File.exists?(cmd)
-
-      nil
-    }
-
     context "with compiled choco client" do
       before :each do
         @provider.class.stubs(:is_compiled_choco?).returns(true)
@@ -300,12 +293,14 @@ describe provider do
       end
 
       it "should use choco.exe arguments" do
-        @provider.send(:latestcmd).should == [choco_command, 'upgrade', '--noop', 'chocolatey','-r']
+        # we don't care where choco is, we are concerned with the arguments that are passed to choco.
+        #
+        @provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey','-r']
       end
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).should == [choco_command, 'upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
+        @provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
         #@provider.expects(:chocolatey).with('upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages')
 
         #@provider.latest
@@ -319,12 +314,12 @@ describe provider do
       end
 
       it "should use posh arguments" do
-        @provider.send(:latestcmd).should == [choco_command, 'version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
+        @provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
       end
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).should == [choco_command, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+        @provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
         #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"')
 
         #@provider.latest
