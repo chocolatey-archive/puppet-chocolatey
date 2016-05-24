@@ -18,7 +18,6 @@ describe 'choco_install_path fact' do
       subject.value.must == expected_value
     end
 
-
     it "should return the default path when PuppetX::Chocolatey::ChocolateyInstall.install_path is nil" do
       PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(nil)
 
