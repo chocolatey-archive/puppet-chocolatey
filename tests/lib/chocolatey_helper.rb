@@ -34,12 +34,12 @@ def config_file_location
 end
 
 def backup_config
-  step 'backup config'
+  step 'Backup default configuration file'
   on(agents, "cmd.exe /c \"copy #{config_file_location} #{config_file_location}.bkp\"")
 end
 
 def reset_config
-  step 'reset config'
+  step 'Reset configuration file to default'
   on(agents, "cmd.exe /c \"move #{config_file_location}.bkp #{config_file_location}\"")
 end
 
