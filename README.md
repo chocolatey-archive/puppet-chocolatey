@@ -38,7 +38,7 @@ Travis | AppVeyor
 
 This is a [Puppet](http://docs.puppet.com/) package provider for
 [Chocolatey](https://github.com/chocolatey/chocolatey), which is
-like apt-get, but for Windows. Check the module's metadata.json for 
+like apt-get, but for Windows. Check the module's metadata.json for
 compatible Puppet and Puppet Enterprise versions.
 
 ## Module Description
@@ -645,7 +645,7 @@ Specifies what state the source should be in. Default: `present`. Valid options:
 
 (**Property**: This parameter represents a concrete state on the target system.)
 
-Specifies the location of the source repository. Valid options: String of a URL pointing to an OData feed (such as chocolatey/chocolatey_server), a CIFS (UNC) share, or a local folder. Default: The `name` of the resource.
+Specifies the location of the source repository. Valid options: String of a URL pointing to an OData feed (such as chocolatey/chocolatey_server), a CIFS (UNC) share, or a local folder. Required when `ensure => present` (`present` is default value for `ensure`).
 
 ##### `user`
 

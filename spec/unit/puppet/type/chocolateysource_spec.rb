@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'puppet/type/chocolateysource'
 
 describe Puppet::Type.type(:chocolateysource) do
-  let(:resource) { Puppet::Type.type(:chocolateysource).new(:name => "source") }
+  let(:resource) { Puppet::Type.type(:chocolateysource).new(:name => 'source', :location => 'c:\packages') }
   let(:provider) { Puppet::Provider.new(resource) }
   let(:catalog) { Puppet::Resource::Catalog.new }
   let (:minimum_supported_version) {'0.9.9.0'}
@@ -124,6 +124,19 @@ describe Puppet::Type.type(:chocolateysource) do
         expect {
           resource.validate
         }.to raise_error(ArgumentError, /you must specify both values/)
+      end
+
+      it "should pass when ensure is not present and location is empty" do
+        no_location_resource = Puppet::Type.type(:chocolateysource).new(:name => 'source', :ensure => :disabled )
+      end
+
+      it "should fail when ensure => present and location is empty" do
+        expect {
+          no_location_resource = Puppet::Type.type(:chocolateysource).new(:name => 'source')
+        }.to raise_error(Exception, /non-empty location/)
+        # check for just an exception here
+        # In some versions of Puppet, this comes back as ArgumentError
+        # In other versions of Puppet, this comes back as Puppet::Error
       end
   end
 end

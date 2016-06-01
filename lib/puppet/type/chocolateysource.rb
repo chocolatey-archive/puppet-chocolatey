@@ -11,15 +11,6 @@ Puppet::Type.newtype(:chocolateysource) do
 
   EOT
 
-  def initialize(*args)
-    super
-
-    # if location is unset, use the title
-    if self[:location].nil? then
-      self[:location] = self[:name]
-    end
-  end
-
   ensurable do
     newvalue(:present)  { provider.create }
     newvalue(:disabled) { provider.disable }
@@ -33,8 +24,7 @@ Puppet::Type.newtype(:chocolateysource) do
   end
 
   newparam(:name) do
-    desc "The name of the source. Used for uniqueness. Will set
-      the location to this value if location is unset."
+    desc "The name of the source. Used for uniqueness."
 
     validate do |value|
       if value.nil? or value.empty?
@@ -56,8 +46,8 @@ Puppet::Type.newtype(:chocolateysource) do
   newproperty(:location) do
     desc "The location of the source repository. Can be a url pointing to
       an OData feed (like chocolatey/chocolatey_server), a CIFS (UNC) share,
-      or a local folder.
-      The default is the name of the resource"
+      or a local folder. Required when `ensure => present` (the default for
+      `ensure`)."
 
     validate do |value|
       if value.nil? or value.empty?
@@ -109,6 +99,7 @@ Puppet::Type.newtype(:chocolateysource) do
       end
       raise ArgumentError, "An integer is necessary for priority. Specify 0 or remove for no priority." unless resource.is_numeric?(value)
     end
+
     defaultto(0)
   end
 
@@ -119,6 +110,10 @@ Puppet::Type.newtype(:chocolateysource) do
 
     if provider.respond_to?(:validate)
       provider.validate
+    end
+
+    if (self[:ensure].to_sym == :present && (self[:location].nil? || self[:location].strip == ''))
+      raise ArgumentError, "A non-empty location must be specified when ensure => present."
     end
   end
 

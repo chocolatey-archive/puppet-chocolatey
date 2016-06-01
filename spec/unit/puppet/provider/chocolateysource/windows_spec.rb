@@ -7,7 +7,8 @@ require 'rexml/document'
 provider = Puppet::Type.type(:chocolateysource).provider(:windows)
 describe provider do
   let (:name) { 'sourcename' }
-  let (:resource) { Puppet::Type.type(:chocolateysource).new(:provider => :windows, :name => name) }
+  let (:location) { 'c:\packages' }
+  let (:resource) { Puppet::Type.type(:chocolateysource).new(:provider => :windows, :name => name, :location => location) }
   let (:choco_config) { 'c:\choco.config' }
   let (:choco_config_contents) { <<-'EOT'
 <?xml version="1.0" encoding="utf-8"?>
@@ -103,10 +104,6 @@ describe provider do
   context "properties" do
 
     context ":location" do
-      it "should default to :name" do
-        resource[:location].should eq name
-      end
-
       it "should accept c:\\packages" do
         resource[:location] = 'c:\packages'
       end
