@@ -47,7 +47,7 @@ apply_manifest(chocolatey_src_remove, :catch_failures => true)
 step 'Verify results'
 agents.each do |agent|
   on(agent, "cmd.exe /c \"type #{config_file_location}\"") do |result|
-    assert_not_match(/tim/, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User was not removed')
+    assert_not_match(/.+/, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User was not removed')
     assert_not_match(/.+/, get_xml_value("//sources/source[@id='chocolatey']/@password", result.output).to_s, 'Password was not removed')
   end
 end
