@@ -21,6 +21,7 @@ Travis | AppVeyor
     * [Facts](#facts)
     * [Types/Providers](#typesproviders)
     * [Package provider: Chocolatey](#package-provider-chocolatey)
+    * [Chocolatey source configuration](#chocolateysource)
     * [Class: chocolatey](#class-chocolatey)
 6. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
@@ -186,13 +187,15 @@ Install this module via any of these approaches:
 
 ## Usage
 
+### Manage Chocolatey Installation
+
 Ensure Chocolatey is install and configured:
 
 ~~~puppet
 include chocolatey
 ~~~
 
-### Override default Chocolatey install location
+#### Override default Chocolatey install location
 
 ~~~puppet
 class {'chocolatey':
@@ -200,7 +203,7 @@ class {'chocolatey':
 }
 ~~~
 
-### Use an internal chocolatey.nupkg for Chocolatey installation
+#### Use an internal chocolatey.nupkg for Chocolatey installation
 
 ~~~puppet
 class {'chocolatey':
@@ -210,7 +213,7 @@ class {'chocolatey':
 }
 ~~~
 
-###  Use a file chocolatey.0.9.9.9.nupkg for installation
+####  Use a file chocolatey.0.9.9.9.nupkg for installation
 
 ~~~puppet
 class {'chocolatey':
@@ -220,7 +223,7 @@ class {'chocolatey':
 }
 ~~~
 
-### Specify the version of chocolatey by class parameters
+#### Specify the version of chocolatey by class parameters
 
 ~~~puppet
 class {'chocolatey':
@@ -232,7 +235,7 @@ class {'chocolatey':
 ~~~
 
 
-### Log chocolatey bootstrap installer script output
+#### Log chocolatey bootstrap installer script output
 
 ~~~puppet
 class {'chocolatey':
@@ -258,7 +261,52 @@ case $operatingsystem {
 }
 ~~~
 
-### With All Options
+### Configuration
+
+If you have Chocolatey 0.9.9.x and above, you can take advantage of configuring different aspects of Chocolatey.
+
+#### Sources Configuration
+You can specify sources that Chocolatey uses by default, along with priority.
+
+Requires Chocolatey v0.9.9.0+.
+
+##### Disable the default community repository source
+
+~~~puppet
+chocolateysource {'chocolatey':
+  ensure => disabled,
+}
+~~~
+
+##### Set a priority on a source
+
+~~~puppet
+chocolateysource {'chocolatey':
+  ensure   => present,
+  location => 'https://chocolatey.org/api/v2',
+  priority => 1,
+}
+~~~
+
+##### Add credentials to a source
+
+~~~puppet
+chocolateysource {'sourcename':
+  ensure   => present,
+  location => 'https://internal/source',
+  user     => 'username',
+  password => 'password',
+}
+~~~
+
+**NOTE:** Chocolatey encrypts the password in a way that is not
+verifiable. If you need to rotate passwords, you cannot use this
+resource to do so unless you also change location, user, or priority (as
+those are ensurable properties).
+
+### Packages
+
+#### With All Options
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -276,9 +324,9 @@ package { 'notepadplusplus':
 * supports `latest` (checks upstream), `absent` (uninstall)
 * supports `install_options` for pre-release, other cli
 * supports `uninstall_options` for pre-release, other cli
-* supports `holdable`, requires choco 0.9.9+
+* supports `holdable`, requires Chocolatey v0.9.9.0+
 
-### Simple install
+#### Simple install
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -287,7 +335,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Ensure always the newest version available
+#### Ensure always the newest version available
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -296,7 +344,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Ensure specific version
+#### Ensure specific version
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -305,7 +353,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Specify custom source
+#### Specify custom source
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -339,7 +387,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Install options with spaces
+#### Install options with spaces
 
 Spaces in arguments **must always** be covered with a separation. The example
 below covers `-installArgs "/VERYSILENT /NORESTART"`.
@@ -352,7 +400,7 @@ package {'launchy':
 }
 ~~~
 
-### Install options with quotes / spaces
+#### Install options with quotes / spaces
 The underlying installer may need quotes passed to it. This is possible, but not
 as intuitive.  The example below covers passing
 `/INSTALLDIR="C:\Program Files\somewhere"`.
@@ -417,6 +465,7 @@ alternative method to pass args if you have 0.9.8.x and below.
 
 ### Types/Providers
 * [Chocolatey provider](#package-provider-chocolatey)
+* [Chocolatey source configuration](#chocolateysource)
 
 ### Package Provider: Chocolatey
 Chocolatey implements a [package type](http://docs.puppet.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
@@ -510,6 +559,46 @@ This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
 
+### ChocolateySource
+Allows managing default sources for Chocolatey. A source can be a folder, a CIFS share,
+a NuGet Http OData feed, or a full Package Gallery. Learn more about sources at
+[How To Host Feed](https://chocolatey.org/docs/how-to-host-feed). Requires
+Chocolatey v0.9.9.0+.
+
+#### Properties/Parameters
+
+##### name
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The name of the source. Used for uniqueness. Will set the location to this value if location is unset.
+
+##### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the source should be in. This defaults to `present`.
+
+Valid options: `present`, `disabled`, or `absent`.
+
+#####location
+(**Property**: This attribute represents concrete state on the target system.)
+
+The location of the source repository. Can be a url pointing to an OData feed (like chocolatey/chocolatey_server), a CIFS (UNC) share, or a local folder. Defaults to the name of the resource.
+
+##### user
+(**Property**: This attribute represents concrete state on the target system.)
+
+Optional user name for authenticated feeds. Requires at least Chocolatey v0.9.9.0. Defaults to `nil`. Specifying an empty value is the same as setting the value to nil or not specifying the property at all.
+
+##### password
+Optional user password for authenticated feeds. Not ensurable. Value is not able to be checked with current value. If you need to update the password, update another setting as well. Requires at least Chocolatey v0.9.9.0. Defaults to `nil`. Specifying an empty value is the same as setting the value to nil or not specifying the property at all.
+
+##### priority
+(**Property**: This attribute represents concrete state on the target system.)
+
+Optional priority for explicit feed order when searching for packages across multiple feeds. The lower the number the higher the priority. Sources with a 0 priority are considered no priority and are added after other sources with a priority number. Requires at least Chocolatey v0.9.9.9. Defaults to `0`.
+
+
 ### Class: chocolatey
 
 Used for managing installation and configuration of Chocolatey itself.
@@ -549,7 +638,7 @@ Log output from the installer. Defaults to `false`.
 
 1. This module doesn't support side by side scenarios.
 2. This module may have issues upgrading Chocolatey itself using the package resource.
-3. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Choco version 0.9.9.9+ help alleviate this issue.
+3. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Chocolatey version 0.9.9.9+ help alleviate this issue.
 4. If there is an error in the installer (`InstallChocolatey.ps1.erb`), it may not show as an error. This may be an issue with the PowerShell provider and is still under investigation.
 
 ## Development
