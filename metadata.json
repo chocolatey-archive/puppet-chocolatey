@@ -1,12 +1,12 @@
 {
   "name": "puppetlabs-chocolatey",
-  "version": "0.0.1",
+  "version": "0.7.0",
   "author": "Puppet Inc",
   "summary": "Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
-  "source": "https://github.com/chocolatey/puppet-chocolatey",
-  "project_page": "https://github.com/chocolatey/puppet-chocolatey",
-  "issues_url": "https://github.com/chocolatey/puppet-chocolatey/issues",
+  "source": "https://github.com/puppetlabs/puppetlabs-chocolatey",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-chocolatey",
+  "issues_url": "https://tickets.puppet.com/browse/MODULES",
   "description": "Chocolatey package provider for Puppet",
   "tags": [
     "microsoft",
@@ -21,7 +21,7 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">= 3.0.0 < 2015.4.0"
+      "version_requirement": ">= 3.0.0 < 2016.4.0"
     },
     {
       "name": "puppet",

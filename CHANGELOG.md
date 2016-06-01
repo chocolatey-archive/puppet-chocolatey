@@ -1,3 +1,17 @@
+## 2016-06-01 Unsupported Release 0.7.0
+
+ * Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
+ * $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
+ * Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
+
+
+# Original Approved Module Changelog - Chocolatey Team
+
+The Chocolatey team has graciously agreed to allow Puppet to take this module
+to the next level. Puppet will rerelease a supported module under the original
+versioning scheme. For now we are using a number less than 1.0 to show that this
+could have some technical issues and should be treated as a prerelease version.
+
 ## 2015-12-08 Release 1.2.1
 - Small release for support of newer PE versions.
 
