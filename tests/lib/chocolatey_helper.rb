@@ -28,3 +28,23 @@ def get_latest_chocholatey_download_url()
 
   return src_url
 end
+
+def config_file_location
+  'c:\\ProgramData\\chocolatey\\config\\chocolatey.config'
+end
+
+def backup_config
+  step 'Backup default configuration file'
+  on(agents, "cmd.exe /c \"copy #{config_file_location} #{config_file_location}.bkp\"")
+end
+
+def reset_config
+  step 'Reset configuration file to default'
+  on(agents, "cmd.exe /c \"move #{config_file_location}.bkp #{config_file_location}\"")
+end
+
+def get_xml_value(xpath, file_text)
+  doc = Nokogiri::XML(file_text)
+
+  doc.xpath(xpath)
+end
