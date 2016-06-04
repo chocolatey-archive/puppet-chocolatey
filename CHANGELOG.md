@@ -1,3 +1,12 @@
+## 2016-06-04 Release 1.2.4
+
+- Compatibility with puppetlabs-powershell 2.x [#125](https://github.com/chocolatey/puppet-chocolatey/issues/125).
+
+## 2016-05-06 Release 1.2.3
+
+- Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
+- Announce [Chocolatey for Business](https://chocolatey.org/compare) in ReadMe.
+
 ## 2016-05-06 Release 1.2.3
 
 - Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
