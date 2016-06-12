@@ -22,6 +22,7 @@ Travis | AppVeyor
     * [Types/Providers](#typesproviders)
     * [Package provider: Chocolatey](#package-provider-chocolatey)
     * [Chocolatey source configuration](#chocolateysource)
+    * [Chocolatey feature configuration](#chocolateyfeature)
     * [Class: chocolatey](#class-chocolatey)
 6. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
@@ -81,7 +82,6 @@ Chocolatey's provider on the other hand:
  * Package knows where to get the executable installer
  * Source is free to specify different Chocolatey feeds
  * Chocolatey makes `package` more platform agnostic since it looks exactly like other platforms.
-
 
 For reference, let's take a look at the [provider features available](https://docs.puppet.com/references/latest/type.html#package-provider-features) as compared to the built-in provider and some other package managers:
 
@@ -304,6 +304,68 @@ verifiable. If you need to rotate passwords, you cannot use this
 resource to do so unless you also change location, user, or priority (as
 those are ensurable properties).
 
+#### Features Configuration
+You can configure features that Chocolatey has available. Run
+`choco feature list` to see the configuration features available.
+
+Requires Chocolatey v0.9.9.0+.
+
+##### Enable Auto Uninstaller
+
+Uninstall from programs and features without requiring an explicit
+uninstall script.
+
+~~~puppet
+chocolateyfeature {'autouninstaller':
+  ensure => enabled,
+}
+~~~
+
+##### Disable Use Package Exit Codes
+
+Requires 0.9.10+ for this feature.
+
+Use Package Exit Codes - Package scripts can provide exit codes. With
+this on, package exit codes will be what choco uses for exit when
+non-zero (this value can come from a dependency package). Chocolatey
+defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature
+off, choco will exit with a 0 or a 1 (matching previous behavior).
+
+~~~puppet
+chocolateyfeature {'usepackageexitcodes':
+  ensure => disabled,
+}
+~~~
+
+##### Enable Virus Check
+
+Requires 0.9.10+ and [Chocolatey Pro / Business](https://chocolatey.org/compare)
+for this feature.
+
+Virus Check - perform virus checking on downloaded files. Licensed
+versions only.
+
+~~~puppet
+chocolateyfeature {'viruscheck':
+  ensure => enabled,
+}
+~~~
+
+##### Enable FIPS Compliant Checksums
+
+Requires 0.9.10+ for this feature.
+
+Use FIPS Compliant Checksums - Ensure checksumming done by choco uses
+FIPS compliant algorithms. Not recommended unless required by FIPS Mode.
+Enabling on an existing installation could have unintended consequences
+related to upgrades/uninstalls.
+
+~~~puppet
+chocolateyfeature {'usefipscompliantchecksums':
+  ensure => enabled,
+}
+~~~
+
 ### Packages
 
 #### With All Options
@@ -466,6 +528,8 @@ alternative method to pass args if you have 0.9.8.x and below.
 ### Types/Providers
 * [Chocolatey provider](#package-provider-chocolatey)
 * [Chocolatey source configuration](#chocolateysource)
+* [Chocolatey feature configuration](#chocolateyfeature)
+
 
 ### Package Provider: Chocolatey
 Chocolatey implements a [package type](http://docs.puppet.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
@@ -559,6 +623,7 @@ This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
 
+
 ### ChocolateySource
 Allows managing default sources for Chocolatey. A source can be a folder, a CIFS share,
 a NuGet Http OData feed, or a full Package Gallery. Learn more about sources at
@@ -567,7 +632,7 @@ Chocolatey v0.9.9.0+.
 
 #### Properties/Parameters
 
-##### name
+##### `name`
 (**Namevar**: If ommitted, this attribute's value will default to the resource's
 title.)
 
@@ -580,23 +645,45 @@ What state the source should be in. This defaults to `present`.
 
 Valid options: `present`, `disabled`, or `absent`.
 
-#####location
+##### `location`
 (**Property**: This attribute represents concrete state on the target system.)
 
 The location of the source repository. Can be a url pointing to an OData feed (like chocolatey/chocolatey_server), a CIFS (UNC) share, or a local folder. Defaults to the name of the resource.
 
-##### user
+##### `user`
 (**Property**: This attribute represents concrete state on the target system.)
 
 Optional user name for authenticated feeds. Requires at least Chocolatey v0.9.9.0. Defaults to `nil`. Specifying an empty value is the same as setting the value to nil or not specifying the property at all.
 
-##### password
+##### `password`
 Optional user password for authenticated feeds. Not ensurable. Value is not able to be checked with current value. If you need to update the password, update another setting as well. Requires at least Chocolatey v0.9.9.0. Defaults to `nil`. Specifying an empty value is the same as setting the value to nil or not specifying the property at all.
 
-##### priority
+##### `priority`
 (**Property**: This attribute represents concrete state on the target system.)
 
 Optional priority for explicit feed order when searching for packages across multiple feeds. The lower the number the higher the priority. Sources with a 0 priority are considered no priority and are added after other sources with a priority number. Requires at least Chocolatey v0.9.9.9. Defaults to `0`.
+
+### ChocolateyFeature
+Allows managing features for Chocolatey. Features are configuration that
+act as feature flippers to turn on or off certain aspects of how
+Chocolatey works. Learn more about features at
+[Features](https://chocolatey.org/docs/commands-feature). Requires
+Chocolatey v0.9.9.0+.
+
+#### Properties/Parameters
+
+##### `name`
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The name of the feature. Used for uniqueness.
+
+##### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the feature should be in.
+
+Valid options: `enabled` or `disabled`.
 
 
 ### Class: chocolatey
@@ -628,6 +715,7 @@ Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey
 ##### `log_output`
 
 Log output from the installer. Defaults to `false`.
+
 
 ## Limitations
 
