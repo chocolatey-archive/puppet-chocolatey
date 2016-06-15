@@ -48,6 +48,7 @@ end
 group :system_tests do
   gem 'beaker', *location_for(ENV['BEAKER_VERSION'] || '~> 2.20')
   gem 'master_manipulator', '~> 1.2',  :require => false
+  gem 'beaker-windows', '~> 0.6', :require => false
 end
 
 # The recommendation is for PROJECT_GEM_VERSION, although there are older ways
