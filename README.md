@@ -23,6 +23,7 @@ Travis | AppVeyor
     * [Package provider: Chocolatey](#package-provider-chocolatey)
     * [Chocolatey source configuration](#chocolateysource)
     * [Chocolatey feature configuration](#chocolateyfeature)
+    * [Chocolatey config configuration](#chocolateyconfig)
     * [Class: chocolatey](#class-chocolatey)
 6. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
@@ -366,6 +367,57 @@ chocolateyfeature {'usefipscompliantchecksums':
 }
 ~~~
 
+#### Config Configuration
+You can configure config values that Chocolatey has available. Run
+`choco config list` to see the config settings available (just the
+config settings section).
+
+Requires Chocolatey v0.9.10.0+.
+
+##### Set Cache Location
+
+Cache location defaults to the TEMP directory. Set an explicit directory
+to cache downloads to instead of the default.
+
+~~~puppet
+chocolateyconfig {'cachelocation':
+  value  => "c:\\downloads",
+}
+~~~
+
+##### Unset Cache Location
+
+Remove cache location setting to go back to default.
+
+~~~puppet
+chocolateyconfig {'cachelocation':
+  ensure => absent,
+}
+~~~
+
+##### Use an Explicit Proxy
+
+When using Chocolatey behind a proxy, set `proxy` and optionally
+`proxyUser`/`proxyPassword` as well.
+
+**NOTE:** `proxyPassword` value is not verifiable.
+
+~~~puppet
+chocolateyconfig {'proxy':
+  value  => 'https://someproxy.com',
+}
+
+chocolateyconfig {'proxyUser':
+  value  => 'bob',
+}
+
+# not verifiable
+chocolateyconfig {'proxyPassword':
+  value  => 'securepassword',
+}
+~~~
+
+
 ### Packages
 
 #### With All Options
@@ -553,8 +605,8 @@ What state the package should be in. You can choose which package to retrieve by
 specifying a version number or `latest` as the ensure value. This defaults to
 `installed`.
 
-Valid options: `present` (also called `installed`), `absent`, `latest` or a version
-number.
+Valid options: `present` (also called `installed`), `absent`, `latest`,
+`held` or a version number.
 
 ##### `install_options`
 An array of additional options to pass when installing a package. These options are
@@ -684,6 +736,38 @@ The name of the feature. Used for uniqueness.
 What state the feature should be in.
 
 Valid options: `enabled` or `disabled`.
+
+
+### ChocolateyConfig
+Allows managing config settings for Chocolatey. Configuration values
+provide settings for users to configure aspects of Chocolatey and the
+way it functions. Similar to features, except allow for user configured
+values. Learn more about config settings at
+[Config](https://chocolatey.org/docs/commands-config). Requires
+Chocolatey v0.9.9.9+.
+
+#### Properties/Parameters
+
+##### `name`
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The name of the config setting. Used for uniqueness. Puppet is not able to
+easily manage any values that include Password in the key name in them as they
+will be encrypted in the configuration file.
+
+##### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the config should be in. This defaults to `present`.
+
+Valid options: `present` or `absent`.
+
+##### `value`
+(**Property**: This attribute represents concrete state on the target system.)
+
+The value of the config setting. If the name includes "password", then the value
+is not ensurable due to being encrypted in the configuration file.
 
 
 ### Class: chocolatey
