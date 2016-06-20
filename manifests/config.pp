@@ -16,11 +16,17 @@ class chocolatey::config {
       default => 'enable'
     }
 
+    if versioncmp($chocolatey::chocolatey_version, '0.9.10.0') >= 0 {
+      $_find_str = "autoUninstaller|${_enable_autouninstaller}d|"
+    } else {
+      $_find_str = "autoUninstaller - [${_enable_autouninstaller}d]"
+    }
+
 # lint:ignore:80chars
     exec { "chocolatey_autouninstaller_${_enable_autouninstaller}":
       path        => $::path,
       command     => "${_choco_exe_path} feature -r ${_enable_autouninstaller} -n autoUninstaller",
-      unless      => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /B /I /C:\"autoUninstaller - [${_enable_autouninstaller}d]\"",
+      unless      => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /B /I /C:\"${_find_str}\"",
       environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"]
     }
 # lint:endignore
