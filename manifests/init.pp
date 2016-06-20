@@ -13,16 +13,16 @@
 #
 # @example Use an internal Chocolatey.nupkg for installation
 #   class {'chocolatey':
-#     chocolatey_download_url         => 'https://internalurl/to/chocolatey.nupkg',
-#     use_7zip                        => false,
-#     choco_install_timeout_seconds   => 2700,
+#     chocolatey_download_url => 'https://internalurl/to/chocolatey.nupkg',
+#     use_7zip                => false,
+#     choco_install_timeout   => 2700,
 #   }
 #
 # @example Use a file chocolatey.0.9.9.9.nupkg for installation
 #   class {'chocolatey':
-#     chocolatey_download_url         => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
-#     use_7zip                        => false,
-#     choco_install_timeout_seconds   => 2700,
+#     chocolatey_download_url => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+#     use_7zip                => false,
+#     choco_install_timeout   => 2700,
 #   }
 #
 # @example Log chocolatey bootstrap installer script output
@@ -57,8 +57,6 @@
 #   `true`.
 # @param [Boolean] log_output Log output from the installer. Defaults to
 #   `false`.
-# @param [String] chocolatey_version chocolatey version, falls back to
-#   `$::chocolateyversion`.
 class chocolatey (
   $choco_install_location         = $::chocolatey::params::install_location,
   $use_7zip                       = $::chocolatey::params::use_7zip,
@@ -66,10 +64,14 @@ class chocolatey (
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
   $log_output                     = false,
-  $chocolatey_version             = $::chocolatey::params::chocolatey_version
+  $chocolatey_version             = $::chocolatey::params::chocolatey_version,
+  $source_name                    = $::chocolatey::params::source_name,
+  $source_url                     = $::chocolatey::params::source_url,
+  $source_user                    = $::chocolatey::params::source_user,
+  $source_password                = $::chocolatey::params::source_password,
+  $source_priority                = $::chocolatey::params::source_priority
 ) inherits ::chocolatey::params {
 
-  validate_string($chocolatey_download_url)
   validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],
     "For chocolatey_download_url, if not using the default '${::chocolatey::params::download_url}', please use a Http/Https/File Url that downloads 'chocolatey.nupkg'."
   )
@@ -81,7 +83,18 @@ class chocolatey (
   validate_integer($choco_install_timeout_seconds)
   validate_bool($enable_autouninstaller)
 
-  if ((versioncmp($::clientversion, '3.4.0') >= 0) and (!defined('$::serverversion') or versioncmp($::serverversion, '3.4.0') >= 0)) {
+  if $source_url != undef {
+    validate_re($source_url,['^http\:\/\/','^https\:\/\/'],
+      'For source_url, please use a valid Http/Https Url for your chocolatey source repo.'
+    )
+  }
+
+  if $source_priority != undef {
+    validate_integer($source_priority)
+  }
+
+  if (versioncmp($::serverversion, '3.4.0') >= 0) or (versioncmp($::clientversion, '3.4.0') >= 0) {
+
     class { '::chocolatey::install': } ->
     class { '::chocolatey::config': }
 

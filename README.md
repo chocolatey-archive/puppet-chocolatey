@@ -266,6 +266,24 @@ case $operatingsystem {
 }
 ~~~
 
+### Use custom source
+
+If you would like to use a self hosted / custom Chocolatey gallery you can set a
+custom source by passing in a source_url param.
+
+source_user and source_password are optional.
+
+If source_priority is not set it will default to 0.
+~~~puppt
+class { 'chocolatey':
+    source_name     => 'my_repo',
+    source_url      => 'http://my_repo.com/chocolatey-gallery/',
+    source_user     => 'remote_user',
+    source_password => 'mypass', #this should be read in from a file.
+    source_priority => '1',
+  }
+~~~
+
 ### With All Options
 
 ~~~puppet
@@ -547,6 +565,27 @@ Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey
 ##### `log_output`
 
 Log output from the installer. Defaults to `false`.
+
+##### `source_name`
+
+Name of the source, this corresponds to the the chocolatey command-line option, -n.
+
+##### `source_url`
+
+URL for the source, this corresponds to the the chocolatey command-line option, -s.
+
+##### `source_user`
+
+If using an authenticated source you need to supply a username and password, this corresponds to the the chocolatey command-line option, -u.
+
+##### `source_password`
+
+Name of the source, this corresponds to the the chocolatey command-line option, -p.
+
+##### `source_priority`
+
+Source priority, lower number has higher priority. If none is set it will default to 0, this corresponds to the the chocolatey command-line option, --priority.
+
 
 ## Limitations
 
