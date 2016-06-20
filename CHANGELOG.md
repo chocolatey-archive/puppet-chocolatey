@@ -1,3 +1,8 @@
+## 2016-06-20 Release 1.2.5
+
+- Support feature list changes in v0.9.10+ [#133](https://github.com/chocolatey/puppet-chocolatey/issues/133)
+- Fix - Chocolatey fails to install in PowerShell v2 with PowerShell Module 1.x [#128](https://github.com/chocolatey/puppet-chocolatey/issues/128)
+
 ## 2016-06-04 Release 1.2.4
 
 - Compatibility with puppetlabs-powershell 2.x [#125](https://github.com/chocolatey/puppet-chocolatey/issues/125).
