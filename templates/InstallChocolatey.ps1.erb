@@ -36,7 +36,8 @@ $chocErrorLog = Join-Path $tempDir "chocError.log"
 # to the FileStream not being what is expected. Fixes "The OS handle's
 # position is not what FileStream expected. Do not use a handle
 # simultaneously in one FileStream and in Win32 code or another
-# FileStream."
+# FileStream."
+
 
 # This only works with the ConsoleHost (PowerShell InternalHost)
 function Fix-PowerShellOutputRedirectionBug {
@@ -55,7 +56,8 @@ function Fix-PowerShellOutputRedirectionBug {
     $field2.SetValue($consoleHost, [Console]::Error)
   } catch {
     Write-Output "Unable to apply redirection fix. Error: $_"
-  }
+  }
+
 
 }
 
@@ -99,8 +101,7 @@ $chocInstallPS1 = Join-Path $toolsFolder "chocolateyInstall.ps1"
 
 if ($PSVersionTable.psversion.Major -gt 2) {
   & $chocInstallPS1
-}
-else {
+} else {
   $output = Invoke-Expression $chocInstallPS1
   $output
   write-output "Any errors that occured during install or upgrade are logged here: $chocoErrorLog"
