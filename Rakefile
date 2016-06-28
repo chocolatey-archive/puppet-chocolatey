@@ -7,6 +7,12 @@ rescue LoadError
   #Do nothing, only installed with system_tests group 
 end
 
+# These lint exclusions are in puppetlabs_spec_helper but needs a version above 0.10.3 
+# Line length test is 80 chars in puppet-lint 1.1.0
+PuppetLint.configuration.send('disable_80chars')
+# Line length test is 140 chars in puppet-lint 2.x
+PuppetLint.configuration.send('disable_140chars')
+
 task :default => [:test]
 
 desc 'Run RSpec'
