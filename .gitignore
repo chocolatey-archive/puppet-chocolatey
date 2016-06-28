@@ -7,13 +7,13 @@ junit/
 .vagrant/
 .bundle/
 coverage/
-/.idea/
-/.vscode/
+.idea/
 .metadata
 *.iml
 .*.sw[op]
 .DS_Store
 .rspec
+tmp/
 
 *.orig
 *.bak
@@ -34,6 +34,6 @@ rdoc
 spec/reports
 test/version_tmp
 tmp
-.idea
+/.idea/
+/.vscode/
 .config
-
