@@ -2,7 +2,7 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 
-$chocolatey_latest_info_url = "http://nexus.delivery.puppetlabs.net/service/local/nuget/temp-build-tools/Packages()?$filter=((Id%20eq%20%27chocolatey%27)%20and%20(not%20IsPrerelease))%20and%20IsLatestVersion"
+$chocolatey_latest_info_url = "http://nexus.delivery.puppetlabs.net/service/local/nuget/choco-pipeline-tests/Packages()?$filter=((Id%20eq%20%27chocolatey%27)%20and%20(not%20IsPrerelease))%20and%20IsLatestVersion"
 
 # Extract the url for the latest Puppet hosted version of Chocolatey
 #
