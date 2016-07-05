@@ -4,10 +4,10 @@
   "author": "chocolatey",
   "summary": "The Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
-  "source": "https://github.com/chocolatey/puppet-chocolatey",
-  "project_page": "https://github.com/chocolatey/puppet-chocolatey",
-  "issues_url": "https://github.com/chocolatey/puppet-chocolatey/issues",
-  "description": "The Chocolatey package provider for Puppet",
+  "source": "https://github.com/puppetlabs/puppetlabs-chocolatey",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-chocolatey",
+  "issues_url": "https://tickets.puppet.com/browse/MODULES",
+  "description": "Chocolatey package provider for Puppet",
   "tags": [
     "microsoft",
     "powershell",
@@ -23,19 +23,17 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">= 2.7.0 < 2016.3.0"
+      "version_requirement": ">= 3.0.0 < 2016.4.0"
     },
     {
       "name": "puppet",
-      "version_requirement": ">= 2.7.0 < 5.0.0"
+      "version_requirement": ">= 3.0.0 < 5.0.0"
     }
   ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Windows",
       "operatingsystemrelease": [
-        "Server 2003",
-        "Server 2003 R2",
         "Server 2008",
         "Server 2008 R2",
         "Server 2012",

@@ -1,3 +1,7 @@
+## Unreleased
+
+ * Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
+
 ## 2016-06-20 Release 1.2.5
 
 - Support feature list changes in v0.9.10+ [#133](https://github.com/chocolatey/puppet-chocolatey/issues/133)
@@ -22,7 +26,6 @@
 - Fix: puppet apply works again [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105).
 - `$::chocolateyversion` fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
 - Fix: Implement PowerShell Redirection Fix for Windows 2008 / PowerShell v2 - see [#119](https://github.com/chocolatey/puppet-chocolatey/issues/119)
-
 
 ## 2015-12-08 Release 1.2.1
 - Small release for support of newer PE versions.
