@@ -8,7 +8,7 @@ We're excited for you to learn more about what's available in the [Business edit
 
 Travis | AppVeyor
 ------------- | -------------
-[![Build Status](https://travis-ci.org/chocolatey/puppet-chocolatey.png?branch=master)](https://travis-ci.org/chocolatey/puppet-chocolatey) | [![Build status](https://ci.appveyor.com/api/projects/status/8lo0ypk2m931okus/branch/master?svg=true)](https://ci.appveyor.com/project/ferventcoder/puppet-chocolatey/branch/master)
+[![Build Status](https://api.travis-ci.org/puppetlabs/puppetlabs-chocolatey.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-chocolatey) | [![Build status](https://ci.appveyor.com/api/projects/status/uosorvcyhnayv70m/branch/master?svg=true)](https://ci.appveyor.com/project/puppetlabs/puppetlabs-chocolatey/branch/master)
 
 #### Table of Contents
 
@@ -25,6 +25,9 @@ Travis | AppVeyor
     * [Facts](#facts)
     * [Types/Providers](#typesproviders)
     * [Package provider: Chocolatey](#package-provider-chocolatey)
+    * [Chocolatey source configuration](#chocolateysource)
+    * [Chocolatey feature configuration](#chocolateyfeature)
+    * [Chocolatey config configuration](#chocolateyconfig)
     * [Class: chocolatey](#class-chocolatey)
 6. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
@@ -33,7 +36,7 @@ Travis | AppVeyor
 
 ## Overview
 
-This is a [Puppet](http://docs.puppetlabs.com/) package provider for
+This is a [Puppet](http://docs.puppet.com/) package provider for
 [chocolatey](https://github.com/chocolatey/chocolatey), which is
 like apt-get, but for Windows. This should be compatible with a wide
 range of Puppet versions.
@@ -75,10 +78,10 @@ package { 'git':
 ~~~
 
 The built-in provider has the following needs:
- * Package name must match ***exactly*** the name from installed programs. See [package name must be DisplayName](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#package-name-must-be-the-displayname)
+ * Package name must match ***exactly*** the name from installed programs. See [package name must be DisplayName](https://docs.puppet.com/puppet/latest/reference/resources_package_windows.html#package-name-must-be-the-displayname)
  * Package name has issues with unicode characters
- * Source must point to the location of the executable installer. See [source is required](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#the-source-attribute-is-required).
- * No `ensure => latest` - see [handling versions and upgrades](https://docs.puppetlabs.com/puppet/latest/reference/resources_package_windows.html#handling-versions-and-upgrades)
+ * Source must point to the location of the executable installer. See [source is required](https://docs.puppet.com/puppet/latest/reference/resources_package_windows.html#the-source-attribute-is-required).
+ * No `ensure => latest` - see [handling versions and upgrades](https://docs.puppet.com/puppet/latest/reference/resources_package_windows.html#handling-versions-and-upgrades)
 
 Chocolatey's provider on the other hand:
  * Package name only has to match the name of the package, which can be whatever you choose.
@@ -88,8 +91,7 @@ Chocolatey's provider on the other hand:
  * Source is free to specify different Chocolatey feeds
  * Chocolatey makes `package` more platform agnostic since it looks exactly like other platforms.
 
-
-For reference, let's take a look at the [provider features available](https://docs.puppetlabs.com/references/latest/type.html#package-provider-features) as compared to the built-in provider and some other package managers:
+For reference, let's take a look at the [provider features available](https://docs.puppet.com/references/latest/type.html#package-provider-features) as compared to the built-in provider and some other package managers:
 
 <table>
   <thead>
@@ -186,12 +188,14 @@ Chocolatey requires the following components
 
 Install this module via any of these approaches:
 
-* [puppet forge](http://forge.puppetlabs.com/chocolatey/chocolatey)
+* [puppet forge](http://forge.puppet.com/chocolatey/chocolatey)
 * git-submodule ([tutorial](http://goo.gl/e9aXh))
 * [librarian-puppet](https://github.com/rodjek/librarian-puppet)
 * [r10k](https://github.com/puppetlabs/r10k)
 
 ## Usage
+
+### Manage Chocolatey Installation
 
 Ensure Chocolatey is install and configured:
 
@@ -199,7 +203,7 @@ Ensure Chocolatey is install and configured:
 include chocolatey
 ~~~
 
-### Override default Chocolatey install location
+#### Override default Chocolatey install location
 
 ~~~puppet
 class {'chocolatey':
@@ -207,7 +211,7 @@ class {'chocolatey':
 }
 ~~~
 
-### Use an internal chocolatey.nupkg for Chocolatey installation
+#### Use an internal chocolatey.nupkg for Chocolatey installation
 
 ~~~puppet
 class {'chocolatey':
@@ -217,7 +221,7 @@ class {'chocolatey':
 }
 ~~~
 
-###  Use a file chocolatey.0.9.9.9.nupkg for installation
+####  Use a file chocolatey.0.9.9.9.nupkg for installation
 
 ~~~puppet
 class {'chocolatey':
@@ -227,7 +231,7 @@ class {'chocolatey':
 }
 ~~~
 
-### Specify the version of chocolatey by class parameters
+#### Specify the version of chocolatey by class parameters
 
 ~~~puppet
 class {'chocolatey':
@@ -239,7 +243,7 @@ class {'chocolatey':
 ~~~
 
 
-### Log chocolatey bootstrap installer script output
+#### Log chocolatey bootstrap installer script output
 
 ~~~puppet
 class {'chocolatey':
@@ -266,7 +270,165 @@ case $operatingsystem {
 }
 ~~~
 
-### With All Options
+### Configuration
+
+If you have Chocolatey 0.9.9.x and above, you can take advantage of configuring different aspects of Chocolatey.
+
+#### Sources Configuration
+You can specify sources that Chocolatey uses by default, along with priority.
+
+Requires Chocolatey v0.9.9.0+.
+
+##### Disable the default community repository source
+
+~~~puppet
+chocolateysource {'chocolatey':
+  ensure => disabled,
+}
+~~~
+
+##### Set a priority on a source
+
+~~~puppet
+chocolateysource {'chocolatey':
+  ensure   => present,
+  location => 'https://chocolatey.org/api/v2',
+  priority => 1,
+}
+~~~
+
+##### Add credentials to a source
+
+~~~puppet
+chocolateysource {'sourcename':
+  ensure   => present,
+  location => 'https://internal/source',
+  user     => 'username',
+  password => 'password',
+}
+~~~
+
+**NOTE:** Chocolatey encrypts the password in a way that is not
+verifiable. If you need to rotate passwords, you cannot use this
+resource to do so unless you also change location, user, or priority (as
+those are ensurable properties).
+
+#### Features Configuration
+You can configure features that Chocolatey has available. Run
+`choco feature list` to see the configuration features available.
+
+Requires Chocolatey v0.9.9.0+.
+
+##### Enable Auto Uninstaller
+
+Uninstall from programs and features without requiring an explicit
+uninstall script.
+
+~~~puppet
+chocolateyfeature {'autouninstaller':
+  ensure => enabled,
+}
+~~~
+
+##### Disable Use Package Exit Codes
+
+Requires 0.9.10+ for this feature.
+
+Use Package Exit Codes - Package scripts can provide exit codes. With
+this on, package exit codes will be what choco uses for exit when
+non-zero (this value can come from a dependency package). Chocolatey
+defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature
+off, choco will exit with a 0 or a 1 (matching previous behavior).
+
+~~~puppet
+chocolateyfeature {'usepackageexitcodes':
+  ensure => disabled,
+}
+~~~
+
+##### Enable Virus Check
+
+Requires 0.9.10+ and [Chocolatey Pro / Business](https://chocolatey.org/compare)
+for this feature.
+
+Virus Check - perform virus checking on downloaded files. Licensed
+versions only.
+
+~~~puppet
+chocolateyfeature {'viruscheck':
+  ensure => enabled,
+}
+~~~
+
+##### Enable FIPS Compliant Checksums
+
+Requires 0.9.10+ for this feature.
+
+Use FIPS Compliant Checksums - Ensure checksumming done by choco uses
+FIPS compliant algorithms. Not recommended unless required by FIPS Mode.
+Enabling on an existing installation could have unintended consequences
+related to upgrades/uninstalls.
+
+~~~puppet
+chocolateyfeature {'usefipscompliantchecksums':
+  ensure => enabled,
+}
+~~~
+
+#### Config Configuration
+You can configure config values that Chocolatey has available. Run
+`choco config list` to see the config settings available (just the
+config settings section).
+
+Requires Chocolatey v0.9.10.0+.
+
+##### Set Cache Location
+
+Cache location defaults to the TEMP directory. Set an explicit directory
+to cache downloads to instead of the default.
+
+~~~puppet
+chocolateyconfig {'cachelocation':
+  value  => "c:\\downloads",
+}
+~~~
+
+##### Unset Cache Location
+
+Remove cache location setting to go back to default.
+
+~~~puppet
+chocolateyconfig {'cachelocation':
+  ensure => absent,
+}
+~~~
+
+##### Use an Explicit Proxy
+
+When using Chocolatey behind a proxy, set `proxy` and optionally
+`proxyUser`/`proxyPassword` as well.
+
+**NOTE:** `proxyPassword` value is not verifiable.
+
+~~~puppet
+chocolateyconfig {'proxy':
+  value  => 'https://someproxy.com',
+}
+
+chocolateyconfig {'proxyUser':
+  value  => 'bob',
+}
+
+# not verifiable
+chocolateyconfig {'proxyPassword':
+  value  => 'securepassword',
+}
+~~~
+
+
+### Packages
+
+#### With All Options
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -284,9 +446,9 @@ package { 'notepadplusplus':
 * supports `latest` (checks upstream), `absent` (uninstall)
 * supports `install_options` for pre-release, other cli
 * supports `uninstall_options` for pre-release, other cli
-* supports `holdable`, requires choco 0.9.9+
+* supports `holdable`, requires Chocolatey v0.9.9.0+
 
-### Simple install
+#### Simple install
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -295,7 +457,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Ensure always the newest version available
+#### Ensure always the newest version available
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -304,7 +466,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Ensure specific version
+#### Ensure specific version
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -313,7 +475,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Specify custom source
+#### Specify custom source
 
 ~~~puppet
 package { 'notepadplusplus':
@@ -347,7 +509,7 @@ package { 'notepadplusplus':
 }
 ~~~
 
-### Install options with spaces
+#### Install options with spaces
 
 Spaces in arguments **must always** be covered with a separation. The example
 below covers `-installArgs "/VERYSILENT /NORESTART"`.
@@ -360,7 +522,7 @@ package {'launchy':
 }
 ~~~
 
-### Install options with quotes / spaces
+#### Install options with quotes / spaces
 The underlying installer may need quotes passed to it. This is possible, but not
 as intuitive.  The example below covers passing
 `/INSTALLDIR="C:\Program Files\somewhere"`.
@@ -425,9 +587,12 @@ alternative method to pass args if you have 0.9.8.x and below.
 
 ### Types/Providers
 * [Chocolatey provider](#package-provider-chocolatey)
+* [Chocolatey source configuration](#chocolateysource)
+* [Chocolatey feature configuration](#chocolateyfeature)
+
 
 ### Package Provider: Chocolatey
-Chocolatey implements a [package type](http://docs.puppetlabs.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
+Chocolatey implements a [package type](http://docs.puppet.com/references/latest/type.html#package) with a resource provider, which is built into Puppet.
 
 This provider supports the `install_options` and `uninstall_options` attributes,
 which allow command-line options to be passed to the choco command. These options
@@ -448,8 +613,8 @@ What state the package should be in. You can choose which package to retrieve by
 specifying a version number or `latest` as the ensure value. This defaults to
 `installed`.
 
-Valid options: `present` (also called `installed`), `absent`, `latest` or a version
-number.
+Valid options: `present` (also called `installed`), `absent`, `latest`,
+`held` or a version number.
 
 ##### `install_options`
 An array of additional options to pass when installing a package. These options are
@@ -518,6 +683,101 @@ This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
 
+
+### ChocolateySource
+Allows managing default sources for Chocolatey. A source can be a folder, a CIFS share,
+a NuGet Http OData feed, or a full Package Gallery. Learn more about sources at
+[How To Host Feed](https://chocolatey.org/docs/how-to-host-feed). Requires
+Chocolatey v0.9.9.0+.
+
+#### Properties/Parameters
+
+##### `name`
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The name of the source. Used for uniqueness. Will set the location to this value if location is unset.
+
+##### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the source should be in. This defaults to `present`.
+
+Valid options: `present`, `disabled`, or `absent`.
+
+##### `location`
+(**Property**: This attribute represents concrete state on the target system.)
+
+The location of the source repository. Can be a url pointing to an OData feed (like chocolatey/chocolatey_server), a CIFS (UNC) share, or a local folder. Defaults to the name of the resource.
+
+##### `user`
+(**Property**: This attribute represents concrete state on the target system.)
+
+Optional user name for authenticated feeds. Requires at least Chocolatey v0.9.9.0. Defaults to `nil`. Specifying an empty value is the same as setting the value to nil or not specifying the property at all.
+
+##### `password`
+Optional user password for authenticated feeds. Not ensurable. Value is not able to be checked with current value. If you need to update the password, update another setting as well. Requires at least Chocolatey v0.9.9.0. Defaults to `nil`. Specifying an empty value is the same as setting the value to nil or not specifying the property at all.
+
+##### `priority`
+(**Property**: This attribute represents concrete state on the target system.)
+
+Optional priority for explicit feed order when searching for packages across multiple feeds. The lower the number the higher the priority. Sources with a 0 priority are considered no priority and are added after other sources with a priority number. Requires at least Chocolatey v0.9.9.9. Defaults to `0`.
+
+### ChocolateyFeature
+Allows managing features for Chocolatey. Features are configuration that
+act as feature flippers to turn on or off certain aspects of how
+Chocolatey works. Learn more about features at
+[Features](https://chocolatey.org/docs/commands-feature). Requires
+Chocolatey v0.9.9.0+.
+
+#### Properties/Parameters
+
+##### `name`
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The name of the feature. Used for uniqueness.
+
+##### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the feature should be in.
+
+Valid options: `enabled` or `disabled`.
+
+
+### ChocolateyConfig
+Allows managing config settings for Chocolatey. Configuration values
+provide settings for users to configure aspects of Chocolatey and the
+way it functions. Similar to features, except allow for user configured
+values. Learn more about config settings at
+[Config](https://chocolatey.org/docs/commands-config). Requires
+Chocolatey v0.9.9.9+.
+
+#### Properties/Parameters
+
+##### `name`
+(**Namevar**: If ommitted, this attribute's value will default to the resource's
+title.)
+
+The name of the config setting. Used for uniqueness. Puppet is not able to
+easily manage any values that include Password in the key name in them as they
+will be encrypted in the configuration file.
+
+##### `ensure`
+(**Property**: This attribute represents concrete state on the target system.)
+
+What state the config should be in. This defaults to `present`.
+
+Valid options: `present` or `absent`.
+
+##### `value`
+(**Property**: This attribute represents concrete state on the target system.)
+
+The value of the config setting. If the name includes "password", then the value
+is not ensurable due to being encrypted in the configuration file.
+
+
 ### Class: chocolatey
 
 Used for managing installation and configuration of Chocolatey itself.
@@ -548,6 +808,7 @@ Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey
 
 Log output from the installer. Defaults to `false`.
 
+
 ## Limitations
 
 1. Works with Windows only.
@@ -555,17 +816,20 @@ Log output from the installer. Defaults to `false`.
 
 ### Known Issues
 
-1. This module doesn't support side by side scenarios. This is ticketed as [#74](https://github.com/chocolatey/puppet-chocolatey/issues/74).
-2. This module may have issues upgrading Chocolatey itself using the package resource. See [#65](https://github.com/chocolatey/puppet-chocolatey/issues/65) and [#60](https://github.com/chocolatey/puppet-chocolatey/issues/60)
-3. Other known issues/enhancements can be found on the [issues list](https://github.com/chocolatey/puppet-chocolatey/issues).
-4. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Choco version 0.9.9.9+ help alleviate this issue.
-5. If there is an error in the installer (`InstallChocolatey.ps1.erb`), it may not show as an error. This may be an issue with the PowerShell provider and is still under investigation.
+1. This module doesn't support side by side scenarios.
+2. This module may have issues upgrading Chocolatey itself using the package resource.
+3. If .NET 4.0 is not installed, it may have trouble installing Chocolatey. Chocolatey version 0.9.9.9+ help alleviate this issue.
+4. If there is an error in the installer (`InstallChocolatey.ps1.erb`), it may not show as an error. This may be an issue with the PowerShell provider and is still under investigation.
 
 ## Development
 
-See [CONTRIBUTING.md](https://github.com/chocolatey/puppet-chocolatey/blob/master/CONTRIBUTING.md)
+Puppet Inc modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can’t access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.
+
+We want to keep it as easy as possible to contribute changes so that our modules work in your environment. There are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
+
+For more information, see our [module contribution guide.](https://docs.puppet.com/forge/contributing.html)
 
 ## Attributions
 
-A special thanks goes out to [Rich Siegel](https://github.com/rismoney) who wrote the original
+A special thanks goes out to [Rich Siegel](https://github.com/rismoney) and [Rob Reynolds](https://github.com/ferventcoder) who wrote the original
 provider and continues to contribute to the development of this provider.
