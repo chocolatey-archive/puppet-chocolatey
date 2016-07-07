@@ -93,18 +93,14 @@ if explicitly_require_windows_gems
   # This also means Puppet Gem less than 3.5.0 - this has been tested back
   # to 3.0.0. Any further back is likely not supported.
   if puppet_gem_location == :gem
-    # ffi is pinned due to PUP-6473.
-    # Can be removed once https://github.com/ffi/ffi/issues/506 is resolved  
-    gem "ffi", "1.9.0", "<= 1.9.10",             :require => false
+    gem "ffi", "1.9.0",                          :require => false
     gem "win32-eventlog", "0.5.3","<= 0.6.5",    :require => false
     gem "win32-process", "0.6.5","<= 0.7.5",     :require => false
     gem "win32-security", "~> 0.1.2","<= 0.2.5", :require => false
     gem "win32-service", "0.7.2","<= 0.8.7",     :require => false
     gem "minitar", "0.5.4",                      :require => false
   else
-    # ffi is pinned due to PUP-6473.
-    # Can be removed once https://github.com/ffi/ffi/issues/506 is resolved  
-    gem "ffi", "~> 1.9.0", "<= 1.9.10",          :require => false
+    gem "ffi", "~> 1.9.0",                       :require => false
     gem "win32-eventlog", "~> 0.5","<= 0.6.5",   :require => false
     gem "win32-process", "~> 0.6","<= 0.7.5",    :require => false
     gem "win32-security", "~> 0.1","<= 0.2.5",   :require => false
@@ -130,9 +126,6 @@ if explicitly_require_windows_gems
 else
   if Gem::Platform.local.os == 'mingw32'
     # If we're using a Puppet gem on windows, which handles its own win32-xxx gem dependencies (Pup 3.5.0 and above), set maximum versions
-    # ffi is pinned due to PUP-6473.
-    # Can be removed once https://github.com/ffi/ffi/issues/506 is resolved  
-    gem "ffi", "~> 1.9.6", "<= 1.9.10", :require => false
     # Required due to PUP-6445
     gem "win32-dir", "<= 0.4.9",        :require => false
     gem "win32-eventlog", "<= 0.6.5",   :require => false
