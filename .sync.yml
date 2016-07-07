@@ -51,6 +51,8 @@ Gemfile:
       - gem: beaker
       - gem: master_manipulator
         version: '~> 1.2'
+      - gem: beaker-windows
+        version: '~> 0.6'
 Rakefile:
   unmanaged: true
 spec/spec_helper.rb:
