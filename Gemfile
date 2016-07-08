@@ -115,6 +115,8 @@ if explicitly_require_windows_gems
   gem 'win32-taskscheduler', '0.2.2',   :require => false
   gem 'windows-api', '0.4.3',           :require => false
   gem 'windows-pr',  '1.2.3',           :require => false
+else
+
 end
 
 if File.exists? "#{__FILE__}.local"
