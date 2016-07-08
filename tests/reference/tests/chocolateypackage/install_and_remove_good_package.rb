@@ -6,7 +6,7 @@ confine(:to, :platform => 'windows')
 # arrange
 package_name = 'vlc'
 package_exe_path = %{C:\\'Program Files\\VideoLAN\\VLC\\vlc.exe'}
-package_uninstall_command = %{cmd.exe /C C:\\'Program Files\\VideoLAN\\VLC\\uninstall.exe' /S}
+software_uninstall_command = %{cmd.exe /C C:\\'Program Files\\VideoLAN\\VLC\\uninstall.exe' /S}
 
 chocolatey_package_manifest = <<-PP
   package { "#{package_name}":
@@ -20,12 +20,10 @@ PP
 teardown do
   on(agent, exec_ps_cmd("test-path #{package_exe_path}")) do |result|
       if (result.output =~ /True/i)
-        on(agent, exec_ps_cmd(package_uninstall_command))
+        retry_on(agent, exec_ps_cmd(software_uninstall_command))
       end
   end
-  on(agent, exec_ps_cmd("test-path #{package_exe_path}")) do |result|
-    assert_match(/False/i, result.output, "#{package_name} was present after uninstall command called.")
-  end
+  #TODO: should we validate that the software was removed successfully here?
 end
 
 #validate
