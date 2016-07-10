@@ -6,7 +6,7 @@ confine(:to, :platform => 'windows')
 # arrange
 package_name = '竹ChocolateyGUIÖ'
 package_exe_path = %{C:\\'Program Files (x86)\\ChocolateyGUI\\ChocolateyGUI.exe'}
-package_uninstall_command = %{msiexec /x C:\\ProgramData\\chocolatey\\lib\\竹ChocolateyGUIÖ\\tools\\竹ChocolateyGUIÖ.msi /q}.force_encoding("ASCII-8BIT")
+software_uninstall_command = %{msiexec /x C:\\ProgramData\\chocolatey\\lib\\竹ChocolateyGUIÖ\\tools\\竹ChocolateyGUIÖ.msi /q}.force_encoding("ASCII-8BIT")
 
 chocolatey_package_manifest = <<-PP
   package { "#{package_name}":
@@ -20,7 +20,7 @@ PP
 teardown do
   on(agent, exec_ps_cmd("test-path #{package_exe_path}")) do |result|
     if (result.output =~ /True/i)
-      on(agent, exec_ps_cmd(package_uninstall_command))
+      on(agent, exec_ps_cmd(software_uninstall_command))
     end
   end
   on(agent, exec_ps_cmd("test-path #{package_exe_path}")) do |result|
