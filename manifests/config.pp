@@ -8,7 +8,9 @@ class chocolatey::config {
   # version less than 0.9.9 and we don't know what the
   # user may link to - it could be an older version of
   # Chocolatey
-  if versioncmp($chocolatey::chocolatey_version, '0.9.9.0') >= 0 {
+
+# lint:ignore:80chars
+  if versioncmp($chocolatey::chocolatey_version, '0.9.9.0') >= 0 and versioncmp($chocolatey::chocolatey_version, '0.9.10.0') < 0 {
     $_choco_exe_path = "${chocolatey::choco_install_location}\\bin\\choco.exe"
 
     $_enable_autouninstaller = $chocolatey::enable_autouninstaller ? {
@@ -16,19 +18,12 @@ class chocolatey::config {
       default => 'enable'
     }
 
-    if versioncmp($chocolatey::chocolatey_version, '0.9.10.0') >= 0 {
-      $_find_str = "autoUninstaller|${_enable_autouninstaller}d|"
-    } else {
-      $_find_str = "autoUninstaller - [${_enable_autouninstaller}d]"
-    }
-
-# lint:ignore:80chars
     exec { "chocolatey_autouninstaller_${_enable_autouninstaller}":
       path        => $::path,
       command     => "${_choco_exe_path} feature -r ${_enable_autouninstaller} -n autoUninstaller",
-      unless      => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /B /I /C:\"${_find_str}\"",
+      unless      => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /B /I /C:\"autoUninstaller - [${_enable_autouninstaller}d]\"",
       environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"]
     }
-# lint:endignore
   }
+# lint:endignore
 }
