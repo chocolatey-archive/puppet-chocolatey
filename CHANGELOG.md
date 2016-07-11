@@ -1,3 +1,7 @@
+## 2016-07-11 Release 1.2.6
+
+- Fix - AutoUninstaller runs every time in 0.9.9.x [#134](https://github.com/chocolatey/puppet-chocolatey/issues/134)
+
 ## 2016-06-20 Release 1.2.5
 
 - Support feature list changes in v0.9.10+ [#133](https://github.com/chocolatey/puppet-chocolatey/issues/133)

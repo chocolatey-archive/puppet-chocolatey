@@ -1,6 +1,6 @@
 {
   "name": "chocolatey-chocolatey",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "author": "chocolatey",
   "summary": "The Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
@@ -23,7 +23,7 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">= 2.7.0 < 2016.3.0"
+      "version_requirement": ">= 2.7.0 < 2016.4.0"
     },
     {
       "name": "puppet",
