@@ -17,7 +17,7 @@ $ErrorActionPreference = 'Stop'
 
 # For some reason try/catch wrapping only ensures
 # that none of this script runs at all
-# https://tickets.puppet.com/browse/MODULES-2634
+# https://tickets.puppetlabs.com/browse/MODULES-2634
 #try {
 
 # variables
@@ -31,6 +31,37 @@ $tempDir = Join-Path $chocTempDir "chocInstall"
 if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
 $file = Join-Path $tempDir "chocolatey.zip"
 $chocErrorLog = Join-Path $tempDir "chocError.log"
+
+# PowerShell v2/3 caches the output stream. Then it throws errors due
+# to the FileStream not being what is expected. Fixes "The OS handle's
+# position is not what FileStream expected. Do not use a handle
+# simultaneously in one FileStream and in Win32 code or another
+# FileStream."
+
+
+# This only works with the ConsoleHost (PowerShell InternalHost)
+function Fix-PowerShellOutputRedirectionBug {
+  try{
+    # http://www.leeholmes.com/blog/2008/07/30/workaround-the-os-handles-position-is-not-what-filestream-expected/ plus comments
+    $bindingFlags = [Reflection.BindingFlags] "Instance,NonPublic,GetField"
+    $objectRef = $host.GetType().GetField("externalHostRef", $bindingFlags).GetValue($host)
+    $bindingFlags = [Reflection.BindingFlags] "Instance,NonPublic,GetProperty"
+    $consoleHost = $objectRef.GetType().GetProperty("Value", $bindingFlags).GetValue($objectRef, @())
+    [void] $consoleHost.GetType().GetProperty("IsStandardOutputRedirected", $bindingFlags).GetValue($consoleHost, @())
+    $bindingFlags = [Reflection.BindingFlags] "Instance,NonPublic,GetField"
+    $field = $consoleHost.GetType().GetField("standardOutputWriter", $bindingFlags)
+    $field.SetValue($consoleHost, [Console]::Out)
+    [void] $consoleHost.GetType().GetProperty("IsStandardErrorRedirected", $bindingFlags).GetValue($consoleHost, @())
+    $field2 = $consoleHost.GetType().GetField("standardErrorWriter", $bindingFlags)
+    $field2.SetValue($consoleHost, [Console]::Error)
+  } catch {
+    Write-Output "Unable to apply redirection fix. Error: $_"
+  }
+
+
+}
+
+Fix-PowerShellOutputRedirectionBug
 
 function Download-File {
 param (
@@ -70,8 +101,7 @@ $chocInstallPS1 = Join-Path $toolsFolder "chocolateyInstall.ps1"
 
 if ($PSVersionTable.psversion.Major -gt 2) {
   & $chocInstallPS1
-}
-else {
+} else {
   $output = Invoke-Expression $chocInstallPS1
   $output
   write-output "Any errors that occured during install or upgrade are logged here: $chocoErrorLog"

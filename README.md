@@ -1,5 +1,9 @@
 # Chocolatey Package Provider for Puppet
 
+### Chocolatey for Business Now Available!
+
+We're excited for you to learn more about what's available in the [Business editions](https://chocolatey.org/compare)!
+
 ## Build Status
 
 Travis | AppVeyor
@@ -42,7 +46,10 @@ range of Puppet versions.
 This is the official module for working with the [Chocolatey](https://chocolatey.org/about)
 package manager.
 
+This module supports all editions of Chocolatey, including FOSS, [Professional](https://chocolatey.org/compare) and [Chocolatey for Business](https://chocolatey.org/compare).
+
 This module will ultimately be able to
+
 * install Chocolatey
 * work with custom location installations
 * configure Chocolatey
@@ -257,8 +264,9 @@ if $::kernel == 'windows' {
 # OR
 
 case $operatingsystem {
-  'windows':
+  'windows': {
     Package { provider => chocolatey, }
+  }
 }
 ~~~
 

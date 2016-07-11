@@ -1,16 +1,45 @@
 ## 2016-06-01 Unsupported Release 0.7.0
 
  * Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
- * $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
- * Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
+ * Includes community module releases up to 1.2.1, plus these additional fixes:
+   * $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
+   * Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
 
-
-# Original Approved Module Changelog - Chocolatey Team
+# Approved Community Module Changelog - Chocolatey Team
 
 The Chocolatey team has graciously agreed to allow Puppet to take this module
 to the next level. Puppet will rerelease a supported module under the original
 versioning scheme. For now we are using a number less than 1.0 to show that this
 could have some technical issues and should be treated as a prerelease version.
+
+## 2016-07-11 Release 1.2.6
+
+- Fix - AutoUninstaller runs every time in 0.9.9.x [#134](https://github.com/chocolatey/puppet-chocolatey/issues/134)
+
+## 2016-06-20 Release 1.2.5
+
+- Support feature list changes in v0.9.10+ [#133](https://github.com/chocolatey/puppet-chocolatey/issues/133)
+- Fix - Chocolatey fails to install in PowerShell v2 with PowerShell Module 1.x [#128](https://github.com/chocolatey/puppet-chocolatey/issues/128)
+
+## 2016-06-04 Release 1.2.4
+
+- Compatibility with puppetlabs-powershell 2.x [#125](https://github.com/chocolatey/puppet-chocolatey/issues/125).
+
+## 2016-05-06 Release 1.2.3
+
+- Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
+- Announce [Chocolatey for Business](https://chocolatey.org/compare) in ReadMe.
+
+## 2016-05-06 Release 1.2.3
+
+- Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
+- Announce Chocolatey for Business in ReadMe.
+
+## 2016-04-06 Release 1.2.2
+
+- Fix: puppet apply works again [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105).
+- `$::chocolateyversion` fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
+- Fix: Implement PowerShell Redirection Fix for Windows 2008 / PowerShell v2 - see [#119](https://github.com/chocolatey/puppet-chocolatey/issues/119)
 
 ## 2015-12-08 Release 1.2.1
 - Small release for support of newer PE versions.

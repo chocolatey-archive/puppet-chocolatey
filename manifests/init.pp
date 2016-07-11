@@ -50,11 +50,11 @@
 #   `chocolatey.nupkg`. This must be a url, but not necessarily an OData feed.
 #   Any old url location will work. Defaults to
 #   `'https://chocolatey.org/api/v2/package/chocolatey/'`.
-# @param [Boolean] enable_autouninstaller Should auto uninstaller be turned on?
-#   Auto uninstaller is what allows Chocolatey to automatically manage the
-#   uninstall of software from Programs and Features without necessarily
-#   requiring a `chocolateyUninstall.ps1` file in the package. Defaults to
-#   `true`.
+# @param [Boolean] enable_autouninstaller [Deprecated] - Should auto
+#   uninstaller be turned on? Auto uninstaller is what allows Chocolatey to
+#   automatically manage the uninstall of software from Programs and Features
+#   without necessarily requiring a `chocolateyUninstall.ps1` file in the
+#   package. Defaults to `true`. Setting is ignored in Chocolatey v0.9.10+.
 # @param [Boolean] log_output Log output from the installer. Defaults to
 #   `false`.
 # @param [String] chocolatey_version chocolatey version, falls back to
@@ -69,16 +69,24 @@ class chocolatey (
   $chocolatey_version             = $::chocolatey::params::chocolatey_version
 ) inherits ::chocolatey::params {
 
+
+validate_string($choco_install_location)
+# lint:ignore:140chars
+validate_re($choco_install_location, '^\w\:',
+"Please use a full path for choco_install_location starting with a local drive. Reference choco_install_location => '${choco_install_location}'."
+)
+# lint:endignore
+
+  validate_bool($use_7zip)
+  validate_integer($choco_install_timeout_seconds)
+
   validate_string($chocolatey_download_url)
+# lint:ignore:140chars
   validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],
     "For chocolatey_download_url, if not using the default '${::chocolatey::params::download_url}', please use a Http/Https/File Url that downloads 'chocolatey.nupkg'."
   )
-  validate_bool($use_7zip)
-  validate_string($choco_install_location)
-  validate_re($choco_install_location, '^\w\:',
-    "Please use a full path for choco_install_location starting with a local drive. Reference choco_install_location => '${choco_install_location}'."
-  )
-  validate_integer($choco_install_timeout_seconds)
+# lint:endignore
+
   validate_bool($enable_autouninstaller)
 
   if ((versioncmp($::clientversion, '3.4.0') >= 0) and (!defined('$::serverversion') or versioncmp($::serverversion, '3.4.0') >= 0)) {

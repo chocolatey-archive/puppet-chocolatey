@@ -81,7 +81,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
 
     if choco_exe
-      args << '-dvy'
+      args << '-y'
     end
 
     args << @resource[:install_options]
@@ -103,7 +103,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     args = 'uninstall', @resource[:name][/\A\S*/]
 
     if choco_exe
-      args << '-dvfy'
+      args << '-fy'
     end
 
     args << @resource[:uninstall_options]
@@ -125,7 +125,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     unhold if choco_exe
 
     if choco_exe
-      args = 'upgrade', @resource[:name][/\A\S*/], '-dvy'
+      args = 'upgrade', @resource[:name][/\A\S*/], '-y'
     else
       args = 'update', @resource[:name][/\A\S*/]
     end
