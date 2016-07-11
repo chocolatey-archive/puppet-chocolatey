@@ -71,14 +71,14 @@ describe provider do
 
       it "should use install command without versioned package" do
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-dvy', nil)
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
 
         @provider.install
       end
 
       it "should use upgrade command with versioned package" do
         resource[:ensure] = '1.2.3'
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-version', '1.2.3', '-dvy', nil)
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-version', '1.2.3', '-y', nil)
 
         @provider.install
       end
@@ -86,14 +86,14 @@ describe provider do
       it "should call install instead of upgrade if package name ends with .config" do
         resource[:name] = "packages.config"
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'packages.config','-dvy', nil)
+        @provider.expects(:chocolatey).with('install', 'packages.config','-y', nil)
 
         @provider.install
       end
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey','-dvy', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('install','chocolatey','-y', nil, '-source', 'c:\packages')
 
         @provider.install
       end
@@ -143,7 +143,7 @@ describe provider do
 
       it "should use install command with held package" do
         resource[:ensure] = :held
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-dvy', nil)
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
         @provider.expects(:chocolatey).with('pin', 'add', '-n', 'chocolatey')
 
         @provider.hold
@@ -173,14 +173,14 @@ describe provider do
       end
 
       it "should call the remove operation" do
-        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-dvfy', nil)
+        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-fy', nil)
 
         @provider.uninstall
       end
 
       it "should use ignore source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey','-dvfy', nil)
+        @provider.expects(:chocolatey).with('uninstall','chocolatey','-fy', nil)
 
         @provider.uninstall
       end
@@ -222,14 +222,14 @@ describe provider do
           :name     => "chocolatey",
           :provider => :chocolatey,
         })]
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-dvy', nil)
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil)
 
         @provider.update
       end
 
       it "should use `chocolatey install` when ensure latest and package absent" do
         provider.stubs(:instances).returns []
-        @provider.expects(:chocolatey).with('install', 'chocolatey', '-dvy', nil)
+        @provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil)
 
         @provider.update
       end
@@ -241,7 +241,7 @@ describe provider do
           :provider => :chocolatey,
         })]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-dvy', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', nil, '-source', 'c:\packages')
 
         @provider.update
       end

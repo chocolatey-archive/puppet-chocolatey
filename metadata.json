@@ -16,7 +16,9 @@
     "dot_net",
     "chocolatey",
     "package",
-    "package manager"
+    "package manager",
+    "chocolatey for business",
+    "chocolatey professional"
   ],
   "requirements": [
     {
@@ -49,7 +51,7 @@
     },
     {
       "name": "puppetlabs/powershell",
-      "version_requirement": ">= 1.0.1 < 2.0.0"
+      "version_requirement": ">= 1.0.1 < 3.0.0"
     },
     {
       "name": "badgerious/windows_env",
