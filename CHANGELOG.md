@@ -1,7 +1,15 @@
+## 2016-07-13 Unsupported Release 0.8.0
+
+This brings the unsupported puppetlabs-chocolatey provider on par with the approved chocolatey-chocolatey at 1.2.6 and adds additional features.
+
+ * Includes community module releases up to 1.2.6 (changelog below).
+ * Manage features - `chocolateyfeature` - see [MODULES-3034](https://tickets.puppet.com/browse/MODULES-3034)
+ * Manage config settings - `chocolateyconfig` - see [MODULES-3035](https://tickets.puppet.com/browse/MODULES-3035)
+
 ## 2016-06-01 Unsupported Release 0.7.0
 
  * Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
- * Includes community module releases up to 1.2.1, plus these additional fixes:
+ * Includes community module releases up to 1.2.1 (changelog below up to 1.2.1), plus these additional fixes:
    * $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
    * Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
 
