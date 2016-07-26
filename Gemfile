@@ -48,7 +48,7 @@ end
 group :system_tests do
   gem 'beaker', *location_for(ENV['BEAKER_VERSION'] || '~> 2.20')
   gem 'master_manipulator', '~> 1.2',  :require => false
-  gem 'beaker-windows', '~> 0.6', :require => false
+  gem 'beaker-windows', '~> 0.6',      :require => false
 end
 
 # The recommendation is for PROJECT_GEM_VERSION, although there are older ways
@@ -56,6 +56,10 @@ end
 # later when no issues are known. We'll prefer them in the right order.
 puppetversion = ENV['PUPPET_GEM_VERSION'] || ENV['GEM_PUPPET_VERSION'] || ENV['PUPPET_LOCATION'] || '>= 0'
 gem 'puppet', *location_for(puppetversion)
+
+# json_pure 2.0.2 added a requirement on ruby >= 2. We pin to json_pure 2.0.1
+# if using ruby 1.x
+gem 'json_pure', '<=2.0.1', :require => false if RUBY_VERSION =~ /^1\./
 
 # Only explicitly specify Facter/Hiera if a version has been specified.
 # Otherwise it can lead to strange bundler behavior. If you are seeing weird
