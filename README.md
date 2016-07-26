@@ -211,6 +211,9 @@ class {'chocolatey':
 }
 ~~~
 
+**NOTE:** This will affect suitability on first install, see
+[`choco_install_location`](#choco_install_location) for details.
+
 #### Use an internal chocolatey.nupkg for Chocolatey installation
 
 ~~~puppet
@@ -788,6 +791,9 @@ Used for managing installation and configuration of Chocolatey itself.
 
 Where Chocolatey install should be located. This needs to be an absolute path starting with a drive letter e.g. `c:\`. Defaults to the currently detected install location based on the `ChocolateyInstall` environment variable, falls back to `'C:\ProgramData\chocolatey'`.
 
+**NOTE:** Puppet can install Chocolatey and configure Chocolatey/install packages during the same run *UNLESS* you specify this setting. This is due to the way the providers search for suitability of the command, falling back to the default install for the executable when none is found. Since environment variables and commands
+do not refresh during the same Puppet run (due somewhat to a Windows limitation with updating environment information for currently running processes), installing to a directory that is not the default won't be detected until the next time Puppet runs. So unless you really want this installed elsewhere and don't have a current existing install in that non-default location, the recommendation is not to set this value.
+
 ##### `use_7zip`
 
 Whether to use built-in shell or allow installer to download 7zip to extract `chocolatey.nupkg` during installation. Defaults to `true`.
@@ -813,6 +819,7 @@ Log output from the installer. Defaults to `false`.
 
 1. Works with Windows only.
 2. If you override an existing install location of Chocolatey using `choco_install_location =>` in the Chocolatey class, it does not bring any of the existing packages with it. You will need to handle that through some other means.
+3. Overriding the install location will also not allow Chocolatey to be configured or install packages on the same run that it is installed on. See [`choco_install_location`](#choco_install_location) for details.
 
 ### Known Issues
 
