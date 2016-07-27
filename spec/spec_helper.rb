@@ -32,6 +32,8 @@ RSpec.configure do |c|
   ENV['ChocolateyInstall'] = 'c:\blah'
 
   begin
+    Win32::Registry.any_instance.stubs(:[]).with('Bind')
+    Win32::Registry.any_instance.stubs(:[]).with('Domain')
     Win32::Registry.any_instance.stubs(:[]).with('ChocolateyInstall').raises(Win32::Registry::Error.new(2), 'file not found yo')
   rescue
     # we don't care

@@ -13,13 +13,7 @@ PuppetLint.configuration.send('disable_80chars')
 # Line length test is 140 chars in puppet-lint 2.x
 PuppetLint.configuration.send('disable_140chars')
 
-task :default => [:test]
-
-desc 'Run RSpec'
-RSpec::Core::RakeTask.new(:test) do |t|
-  t.pattern = 'spec/{unit}/**/*.rb'
-#  t.rspec_opts = ['--color']
-end
+task :default => [:spec]
 
 desc 'Generate code coverage'
 RSpec::Core::RakeTask.new(:coverage) do |t|
