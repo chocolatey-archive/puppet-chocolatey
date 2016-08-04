@@ -2,6 +2,5 @@ fixtures:
   forge_modules:
     stdlib:       "puppetlabs/stdlib"
     powershell:   "puppetlabs/powershell"
-    windows_env:  "badgerious/windows_env"
   symlinks:
     chocolatey: "#{source_dir}"
