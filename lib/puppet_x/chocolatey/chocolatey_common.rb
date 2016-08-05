@@ -62,6 +62,10 @@ module PuppetX
         chocoInstallPath = PuppetX::Chocolatey::ChocolateyInstall.install_path
         choco_config = "#{chocoInstallPath}\\config\\chocolatey.config"
 
+        # choco may be installed, but a config file doesn't exist until the
+        # first run of choco - trigger that by checking the version
+        choco_run_ensure_config = choco_version
+
         return choco_config if file_exists?(choco_config)
 
         old_choco_config = "#{chocoInstallPath}\\chocolateyinstall\\chocolatey.config"
