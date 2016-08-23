@@ -102,14 +102,14 @@ if explicitly_require_windows_gems
     gem "win32-eventlog", "0.5.3","<= 0.6.5",    :require => false
     gem "win32-process", "0.6.5","<= 0.7.5",     :require => false
     gem "win32-security", "~> 0.1.2","<= 0.2.5", :require => false
-    gem "win32-service", "0.7.2","<= 0.8.7",     :require => false
+    gem "win32-service", "0.7.2","<= 0.8.8",     :require => false
     gem "minitar", "0.5.4",                      :require => false
   else
     gem "ffi", "~> 1.9.0",                       :require => false
     gem "win32-eventlog", "~> 0.5","<= 0.6.5",   :require => false
     gem "win32-process", "~> 0.6","<= 0.7.5",    :require => false
     gem "win32-security", "~> 0.1","<= 0.2.5",   :require => false
-    gem "win32-service", "~> 0.7","<= 0.8.7",    :require => false
+    gem "win32-service", "~> 0.7","<= 0.8.8",    :require => false
     gem "minitar", "~> 0.5.4",                   :require => false
   end
 
@@ -136,7 +136,7 @@ else
     gem "win32-eventlog", "<= 0.6.5",   :require => false
     gem "win32-process", "<= 0.7.5",    :require => false
     gem "win32-security", "<= 0.2.5",   :require => false
-    gem "win32-service", "<= 0.8.7",    :require => false
+    gem "win32-service", "<= 0.8.8",    :require => false
   end
 end
 
