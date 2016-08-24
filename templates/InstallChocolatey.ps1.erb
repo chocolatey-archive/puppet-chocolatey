@@ -23,6 +23,7 @@ $ErrorActionPreference = 'Stop'
 # variables
 $url = '<%= @download_url %>'
 $unzipMethod = '<%= @unzip_type %>'
+$version = '<%= @chocolatey_version %>'
 if ($env:TEMP -eq $null) {
   $env:TEMP = Join-Path $env:SystemDrive 'temp'
 }
@@ -31,6 +32,10 @@ $tempDir = Join-Path $chocTempDir "chocInstall"
 if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
 $file = Join-Path $tempDir "chocolatey.zip"
 $chocErrorLog = Join-Path $tempDir "chocError.log"
+
+if $version != '' {
+  $url = "${url}${version}"
+}
 
 # PowerShell v2/3 caches the output stream. Then it throws errors due
 # to the FileStream not being what is expected. Fixes "The OS handle's

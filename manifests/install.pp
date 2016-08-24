@@ -2,8 +2,9 @@
 class chocolatey::install {
   assert_private()
 
-  $download_url = $::chocolatey::chocolatey_download_url
-  $unzip_type   = $::chocolatey::use_7zip ? {
+  $download_url       = $::chocolatey::chocolatey_download_url
+  $chocolatey_version = $::chocolatey::chocolatey_version
+  $unzip_type         = $::chocolatey::use_7zip ? {
     true      => '7zip',
     default   => 'windows'
   }
@@ -32,6 +33,6 @@ class chocolatey::install {
     provider    => powershell,
     timeout     => $::chocolatey::choco_install_timeout_seconds,
     logoutput   => $::chocolatey::log_output,
-    environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"]
+    environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"],
   }
 }

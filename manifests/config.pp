@@ -22,7 +22,7 @@ class chocolatey::config {
       path        => $::path,
       command     => "${_choco_exe_path} feature -r ${_enable_autouninstaller} -n autoUninstaller",
       unless      => "cmd.exe /c ${_choco_exe_path} feature list -r | findstr /B /I /C:\"autoUninstaller - [${_enable_autouninstaller}d]\"",
-      environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"]
+      environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"],
     }
   }
 # lint:endignore
