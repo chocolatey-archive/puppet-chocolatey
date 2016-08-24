@@ -69,12 +69,11 @@ class chocolatey (
   $chocolatey_version             = $::chocolatey::params::chocolatey_version
 ) inherits ::chocolatey::params {
 
-
-validate_string($choco_install_location)
+  validate_string($choco_install_location)
 # lint:ignore:140chars
-validate_re($choco_install_location, '^\w\:',
-"Please use a full path for choco_install_location starting with a local drive. Reference choco_install_location => '${choco_install_location}'."
-)
+  validate_re($choco_install_location, '^\w\:',
+    "Please use a full path for choco_install_location starting with a local drive. Reference choco_install_location => '${choco_install_location}'."
+  )
 # lint:endignore
 
   validate_bool($use_7zip)
