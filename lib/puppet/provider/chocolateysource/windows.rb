@@ -63,6 +63,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     source[:priority] = 0
     source[:priority] = element.attributes['priority'].downcase if element.attributes['priority']
 
+    source[:user] = ''
     source[:user] = element.attributes['user'].downcase if element.attributes['user']
 
     Puppet.debug("Loaded source '#{source.inspect}'.")
@@ -160,7 +161,9 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     if @property_flush[:ensure] != :absent
       command = 'enable'
-      command = 'disable' if @property_flush[:ensure] == :disabled
+      # use whatever the resource is set to for ensure - it won't be in
+      # property_flush unless it is changing
+      command = 'disable' if @resource[:ensure] == :disabled
       begin
         Puppet::Util::Execution.execute([command(:chocolatey), 'source', command, '--name', resource[:name]])
       rescue Puppet::ExecutionFailure

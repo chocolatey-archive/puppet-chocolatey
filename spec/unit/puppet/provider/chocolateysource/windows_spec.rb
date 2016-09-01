@@ -536,6 +536,7 @@ describe provider do
     end
 
     it "should disable a source when ensure => disabled" do
+      resource[:ensure] = :disabled
       resource.provider.disable
 
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
@@ -555,6 +556,7 @@ describe provider do
     end
 
     it "should remove a source when ensure => absent" do
+      resource[:ensure] = :absent
       resource.provider.destroy
 
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).never
