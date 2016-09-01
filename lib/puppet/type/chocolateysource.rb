@@ -104,7 +104,7 @@ Puppet::Type.newtype(:chocolateysource) do
   end
 
   validate do
-    if (!self[:user].nil? && self[:user] != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user] == '') && !self[:password].nil? && self[:password] != '')
+    if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
       raise ArgumentError, "If specifying user/password, you must specify both values."
     end
 
