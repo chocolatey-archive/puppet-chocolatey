@@ -20,5 +20,5 @@ end
 step 'Apply manifest'
 apply_manifest(chocolatey_src, :expect_failures => true) do
   step 'Verify failure'
-  assert_match(/Error: Validation of Chocolateysource[chocolatey] failed: A non-empty location/, stderr, "stderr did not match expected")
+  assert_match(/Error: Validation of Chocolateysource\[chocolatey\] failed: A non-empty location/, stderr, "stderr did not match expected")
 end
