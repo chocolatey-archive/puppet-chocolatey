@@ -16,6 +16,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
   def initialize(value={})
     super(value)
+
     @property_flush = {}
   end
 
@@ -172,12 +173,9 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     end
 
     @property_hash.clear
-    @property_hash = { :ensure => ( @property_flush[:ensure] )}  #if  @property_flush[:ensure] == :absent
-
     @property_flush.clear
 
     self.class.refresh_sources
     @property_hash = query
   end
-
 end

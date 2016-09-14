@@ -130,8 +130,6 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     end
 
     @property_hash.clear
-    @property_hash = { :ensure => ( @property_flush[:ensure] )}
-
     @property_flush.clear
 
     self.class.refresh_configs
