@@ -3,6 +3,7 @@ class chocolatey::install {
   assert_private()
 
   $download_url = $::chocolatey::chocolatey_download_url
+  $ignore_proxy = $::chocolatey::ignore_proxy
   $unzip_type   = $::chocolatey::use_7zip ? {
     true      => '7zip',
     default   => 'windows'

@@ -23,6 +23,7 @@ $ErrorActionPreference = 'Stop'
 # variables
 $url = '<%= @download_url %>'
 $unzipMethod = '<%= @unzip_type %>'
+$ignore_proxy = '<%= @ignore_proxy %>'
 if ($env:TEMP -eq $null) {
   $env:TEMP = Join-Path $env:SystemDrive 'temp'
 }
@@ -70,7 +71,11 @@ param (
  )
   Write-Output "Downloading $url to $file"
   $downloader = new-object System.Net.WebClient
-  $downloader.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials;
+  If($ignore_proxy -eq 'true'){
+    $downloader.Proxy = [System.Net.GlobalProxySelection]::GetEmptyWebProxy()
+  }Else{
+    $downloader.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials;
+  }  
   $downloader.DownloadFile($url, $file)
 }
 

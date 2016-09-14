@@ -169,7 +169,7 @@ describe 'chocolatey' do
     end
   end
 
-  ['use_7zip','enable_autouninstaller'].each do |boolean_param|
+  ['use_7zip','enable_autouninstaller','ignore_proxy'].each do |boolean_param|
     context "#{boolean_param} =>" do
       [true, false].each do |param_value|
         context "#{param_value}" do

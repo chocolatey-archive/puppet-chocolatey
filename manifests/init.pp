@@ -65,6 +65,7 @@ class chocolatey (
   $choco_install_timeout_seconds  = $::chocolatey::params::install_timeout_seconds,
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
+  $ignore_proxy                    = $::chocolatey::params::ignore_proxy,
   $log_output                     = false,
   $chocolatey_version             = $::chocolatey::params::chocolatey_version
 ) inherits ::chocolatey::params {
@@ -78,6 +79,7 @@ validate_re($choco_install_location, '^\w\:',
 # lint:endignore
 
   validate_bool($use_7zip)
+  validate_bool($ignore_proxy)
   validate_integer($choco_install_timeout_seconds)
 
   validate_string($chocolatey_download_url)
