@@ -84,11 +84,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '-y'
     end
 
-    args << @resource[:install_options]
-
     if @resource[:source]
       args << '-source' << @resource[:source]
     end
+
+    args << @resource[:install_options]
 
     chocolatey(*args)
   end
@@ -106,13 +106,13 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '-fy'
     end
 
-    args << @resource[:uninstall_options]
-
     unless choco_exe
       if @resource[:source]
         args << '-source' << @resource[:source]
       end
     end
+
+    args << @resource[:uninstall_options]
 
     chocolatey(*args)
   end
@@ -130,11 +130,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args = 'update', @resource[:name][/\A\S*/]
     end
 
-    args << @resource[:install_options]
-
     if @resource[:source]
       args << '-source' << @resource[:source]
     end
+
+    args << @resource[:install_options]
 
     if self.query
       chocolatey(*args)

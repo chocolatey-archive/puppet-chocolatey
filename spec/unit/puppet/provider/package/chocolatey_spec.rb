@@ -93,7 +93,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey','-y', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('install','chocolatey','-y', '-source', 'c:\packages', nil)
 
         @provider.install
       end
@@ -123,7 +123,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('install','chocolatey', '-source', 'c:\packages', nil)
 
         @provider.install
       end
@@ -200,7 +200,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-source', 'c:\packages', nil)
 
         @provider.uninstall
       end
@@ -241,7 +241,7 @@ describe provider do
           :provider => :chocolatey,
         })]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', '-source', 'c:\packages', nil)
 
         @provider.update
       end
@@ -278,7 +278,7 @@ describe provider do
           :provider => :chocolatey,
         })]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('update','chocolatey', nil, '-source', 'c:\packages')
+        @provider.expects(:chocolatey).with('update','chocolatey', '-source', 'c:\packages', nil)
 
         @provider.update
       end
