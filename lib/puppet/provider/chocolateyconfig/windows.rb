@@ -113,13 +113,19 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     args = []
     args << 'config'
 
+    # look at the hash, then flush if present.
+    # If all else fails, looks at resource[:ensure]
+    property_ensure = @property_hash[:ensure]
+    property_ensure = @property_flush[:ensure] if @property_flush[:ensure]
+    property_ensure = resource[:ensure] if property_ensure.nil?
+
     command = 'set'
-    command = 'unset' if @property_flush[:ensure] == :absent
+    command = 'unset' if property_ensure == :absent
 
     args << command
     args << '--name' << resource[:name]
 
-    if @property_flush[:ensure] != :absent
+    if property_ensure != :absent
       args << '--value' << resource[:value]
     end
 
@@ -130,8 +136,6 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     end
 
     @property_hash.clear
-    @property_hash = { :ensure => ( @property_flush[:ensure] )}
-
     @property_flush.clear
 
     self.class.refresh_configs

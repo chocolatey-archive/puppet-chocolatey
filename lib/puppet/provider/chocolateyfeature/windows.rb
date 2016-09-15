@@ -117,8 +117,6 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
     Puppet::Util::Execution.execute([command(:chocolatey), *args])
 
     @property_hash.clear
-    @property_hash = { :ensure => ( @property_flush[:ensure] )}
-
     @property_flush.clear
 
     self.class.features

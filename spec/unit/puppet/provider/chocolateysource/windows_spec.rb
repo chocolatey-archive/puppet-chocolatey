@@ -339,6 +339,25 @@ describe provider do
 
       resource.provider.validate
     end
+
+    it "should pass when ensure is not present and location is empty" do
+      no_location_resource = Puppet::Type.type(:chocolateysource).new(:name => 'source', :ensure => :disabled )
+      no_location_resource.provider = provider.new(no_location_resource)
+
+      no_location_resource.provider.validate
+    end
+
+    it "should fail when ensure => present and location is empty" do
+      expect {
+        no_location_resource = Puppet::Type.type(:chocolateysource).new(:name => 'source')
+        no_location_resource.provider = provider.new(no_location_resource)
+
+        no_location_resource.provider.validate
+      }.to raise_error(Exception, /non-empty location/)
+      # check for just an exception here
+      # In some versions of Puppet, this comes back as ArgumentError
+      # In other versions of Puppet, this comes back as Puppet::Error
+    end
   end
 
   context ".flush" do
@@ -536,25 +555,20 @@ describe provider do
     end
 
     it "should disable a source when ensure => disabled" do
+      resource[:ensure] = :disabled
+      resource[:name] = 'chocolatey'
       resource.provider.disable
-
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0,
-                                                     ])
 
       Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
                                                       'source', 'disable',
-                                                      '--name', 'yup'
+                                                      '--name', 'chocolatey'
                                                      ])
 
       resource.flush
     end
 
     it "should remove a source when ensure => absent" do
+      resource[:ensure] = :absent
       resource.provider.destroy
 
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).never

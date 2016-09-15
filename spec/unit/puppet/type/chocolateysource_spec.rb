@@ -99,44 +99,31 @@ describe Puppet::Type.type(:chocolateysource) do
   end
 
   context ".validate" do
-      it "should pass when both user/password are empty" do
+    it "should pass when both user/password are empty" do
+      resource.validate
+    end
+
+    it "should pass when both user/password have a value" do
+      resource[:user] = 'tim'
+      resource[:password] = 'tim'
+
+      resource.validate
+    end
+
+    it "should fail when user has a value but password does not" do
+      resource[:user] = 'tim'
+
+      expect {
         resource.validate
-      end
+      }.to raise_error(ArgumentError, /you must specify both values/)
+    end
 
-      it "should pass when both user/password have a value" do
-        resource[:user] = 'tim'
-        resource[:password] = 'tim'
+    it "should fail when password has a value but user does not" do
+      resource[:password] = 'tim'
 
+      expect {
         resource.validate
-      end
-
-      it "should fail when user has a value but password does not" do
-        resource[:user] = 'tim'
-
-        expect {
-          resource.validate
-        }.to raise_error(ArgumentError, /you must specify both values/)
-      end
-
-      it "should fail when password has a value but user does not" do
-        resource[:password] = 'tim'
-
-        expect {
-          resource.validate
-        }.to raise_error(ArgumentError, /you must specify both values/)
-      end
-
-      it "should pass when ensure is not present and location is empty" do
-        no_location_resource = Puppet::Type.type(:chocolateysource).new(:name => 'source', :ensure => :disabled )
-      end
-
-      it "should fail when ensure => present and location is empty" do
-        expect {
-          no_location_resource = Puppet::Type.type(:chocolateysource).new(:name => 'source')
-        }.to raise_error(Exception, /non-empty location/)
-        # check for just an exception here
-        # In some versions of Puppet, this comes back as ArgumentError
-        # In other versions of Puppet, this comes back as Puppet::Error
-      end
+      }.to raise_error(ArgumentError, /you must specify both values/)
+    end
   end
 end
