@@ -11,8 +11,8 @@ describe provider do
   let (:newer_choco_version) {'0.9.10.0'}
   let (:last_posh_choco_version) {'0.9.8.33'}
   let (:minimum_supported_choco_uninstall_source) {'0.9.10.0'}
+  let (:minimum_supported_choco_exit_codes) {'0.9.10.0'}
   let (:choco_zero_ten_zero) {'0.10.0'}
-
 
   before :each do
     @provider = provider.new(resource)
@@ -75,6 +75,22 @@ describe provider do
       it "should use install command without versioned package" do
         resource[:ensure] = :present
         @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
+
+        @provider.install
+      end
+
+      it "should call with ignore package exit codes when = 0.9.10" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_exit_codes).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+
+        @provider.install
+      end
+
+      it "should call with ignore package exit codes when > 0.9.10" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
 
         @provider.install
       end
@@ -181,6 +197,20 @@ describe provider do
         @provider.uninstall
       end
 
+      it "should call with ignore package exit codes when = 0.9.10" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_exit_codes).at_least_once
+        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-fy', nil, '--ignore-package-exit-codes')
+
+        @provider.uninstall
+      end
+
+      it "should call with ignore package exit codes when > 0.9.10" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
+        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-fy', nil, '--ignore-package-exit-codes')
+
+        @provider.uninstall
+      end
+
       it "should use ignore source if it is specified and the version is less than 0.9.10" do
         resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('uninstall','chocolatey','-fy', nil)
@@ -191,7 +221,7 @@ describe provider do
       it "should use source if it is specified and the version is at least 0.9.10" do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_uninstall_source).at_least_once
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil, '--ignore-package-exit-codes')
 
         @provider.uninstall
       end
@@ -199,7 +229,7 @@ describe provider do
       it "should use source if it is specified and the version is greater than 0.9.10" do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil, '--ignore-package-exit-codes')
 
         @provider.uninstall
       end
@@ -245,6 +275,33 @@ describe provider do
 
         @provider.update
       end
+
+      it "should call with ignore package exit codes when = 0.9.10" do
+        provider.stubs(:instances).returns [provider.new({
+             :ensure   => "1.2.3",
+             :name     => "chocolatey",
+             :provider => :chocolatey,
+         })]
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_exit_codes).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+
+        @provider.update
+      end
+
+      it "should call with ignore package exit codes when > 0.9.10" do
+        provider.stubs(:instances).returns [provider.new({
+            :ensure   => "1.2.3",
+            :name     => "chocolatey",
+            :provider => :chocolatey,
+        })]
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+
+        @provider.update
+      end
+
 
       it "should use `chocolatey install` when ensure latest and package absent" do
         provider.stubs(:instances).returns []

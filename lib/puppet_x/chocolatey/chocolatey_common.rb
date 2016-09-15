@@ -8,6 +8,7 @@ module PuppetX
 
       ## determines if C# version of choco
       FIRST_COMPILED_CHOCO_VERSION = '0.9.9.0'
+      MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES = '0.9.10.0'
       MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE = '0.9.10.0'
 
       def file_exists?(path)
