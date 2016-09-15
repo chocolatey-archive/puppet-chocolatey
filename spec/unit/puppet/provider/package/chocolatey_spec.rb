@@ -10,6 +10,9 @@ describe provider do
   let (:first_compiled_choco_version) {'0.9.9.0'}
   let (:newer_choco_version) {'0.9.10.0'}
   let (:last_posh_choco_version) {'0.9.8.33'}
+  let (:minimum_supported_choco_uninstall_source) {'0.9.10.0'}
+  let (:choco_zero_ten_zero) {'0.10.0'}
+
 
   before :each do
     @provider = provider.new(resource)
@@ -178,9 +181,25 @@ describe provider do
         @provider.uninstall
       end
 
-      it "should use ignore source if it is specified" do
+      it "should use ignore source if it is specified and the version is less than 0.9.10" do
         resource[:source] = 'c:\packages'
         @provider.expects(:chocolatey).with('uninstall','chocolatey','-fy', nil)
+
+        @provider.uninstall
+      end
+
+      it "should use source if it is specified and the version is at least 0.9.10" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_uninstall_source).at_least_once
+        resource[:source] = 'c:\packages'
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil)
+
+        @provider.uninstall
+      end
+
+      it "should use source if it is specified and the version is greater than 0.9.10" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
+        resource[:source] = 'c:\packages'
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil)
 
         @provider.uninstall
       end

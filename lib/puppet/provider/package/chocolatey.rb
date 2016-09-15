@@ -106,7 +106,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '-fy'
     end
 
-    unless choco_exe
+    choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
+    if !choco_exe || choco_version >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE)
       if @resource[:source]
         args << '-source' << @resource[:source]
       end
