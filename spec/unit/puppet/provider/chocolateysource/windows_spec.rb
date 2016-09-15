@@ -556,19 +556,12 @@ describe provider do
 
     it "should disable a source when ensure => disabled" do
       resource[:ensure] = :disabled
+      resource[:name] = 'chocolatey'
       resource.provider.disable
-
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0,
-                                                     ])
 
       Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
                                                       'source', 'disable',
-                                                      '--name', 'yup'
+                                                      '--name', 'chocolatey'
                                                      ])
 
       resource.flush

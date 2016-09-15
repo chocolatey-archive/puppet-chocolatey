@@ -147,24 +147,30 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     args = []
     args << 'source'
 
+    # look at the hash, then flush if present.
+    # If all else fails, looks at resource[:ensure]
+    property_ensure = @property_hash[:ensure]
+    property_ensure = @property_flush[:ensure] if @property_flush[:ensure]
+    property_ensure = resource[:ensure] if property_ensure.nil?
+
     command = 'add'
-    command = 'remove' if @property_flush[:ensure] == :absent
+    command = 'remove' if property_ensure == :absent
+    command = 'disable' if property_ensure == :disabled
 
     args << command
     args << '--name' << resource[:name]
 
-    if @property_flush[:ensure] != :absent
+    if command == 'add'
       args << '--source' << resource[:location]
-
-      choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
 
       if resource[:user]  && resource[:user] != ''
         args << '--user' << resource[:user]
         args << '--password' << resource[:password]
       end
 
+      choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
       if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
-        args << '--priority' << (resource[:priority] || 0)
+        args << '--priority' << resource[:priority]
       end
     end
 
@@ -174,13 +180,9 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       raise Puppet::Error, "An error occurred running choco. Unable to set Chocolatey source configuration for #{self.inspect}"
     end
 
-    if @property_flush[:ensure] != :absent
-      command = 'enable'
-      # use whatever the resource is set to for ensure - it won't be in
-      # property_flush unless it is changing
-      command = 'disable' if @resource[:ensure] == :disabled
+    if property_ensure == :present
       begin
-        Puppet::Util::Execution.execute([command(:chocolatey), 'source', command, '--name', resource[:name]])
+        Puppet::Util::Execution.execute([command(:chocolatey), 'source', 'enable', '--name', resource[:name]])
       rescue Puppet::ExecutionFailure
         raise Puppet::Error, "An error occurred running choco. Unable to set Chocolatey source configuration for #{self.inspect}"
       end

@@ -639,7 +639,7 @@ Specifies the name of the source. Used for uniqueness. Also sets the `location` 
 
 (**Property**: This parameter represents a concrete state on the target system.)
 
-Specifies what state the source should be in. Default: `present`. Valid options: `present`, `disabled`, or `absent`.
+Specifies what state the source should be in. Default: `present`. Valid options: `present`, `disabled`, or `absent`. `disabled` should only be used with existing sources.
 
 ##### `location`
 
