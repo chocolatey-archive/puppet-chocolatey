@@ -16,7 +16,6 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
   def initialize(value={})
     super(value)
-
     @property_flush = {}
   end
 
@@ -120,6 +119,21 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY) && resource[:priority] && resource[:priority] != 0
       Puppet.warning("Chocolatey is unable to manage priority for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY}. The value you set will be ignored.")
+    end
+
+    # location is always filled in with puppet resource, but
+    # resource[:location] is always empty (because it has a different
+    # code path where validation occurs before all properties/params
+    # have been set), resulting in errors
+    # location is always :absent when a manifest runs this with a missing
+    # `location => value`
+    location_check = location
+    # location could be :absent, which mk_resource_method will set it to
+    # resource[:location] is nil when running puppet resource
+    # if you remove `location => value`
+    location_check = resource[:location] if location_check == :absent
+    if (resource[:ensure] == :present && (location_check.nil? || location_check.strip == ''))
+      raise ArgumentError, "A non-empty location must be specified when ensure => present."
     end
 
     if resource[:password] && resource[:password] != ''

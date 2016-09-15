@@ -67,6 +67,10 @@ Puppet::Type.newtype(:chocolateysource) do
       same as setting the value to nil or not specifying
       the property at all."
 
+    def insync?(is)
+      is.downcase == should.downcase
+    end
+
     defaultto ''
   end
 
@@ -110,10 +114,6 @@ Puppet::Type.newtype(:chocolateysource) do
 
     if provider.respond_to?(:validate)
       provider.validate
-    end
-
-    if (self[:ensure].to_sym == :present && (self[:location].nil? || self[:location].strip == ''))
-      raise ArgumentError, "A non-empty location must be specified when ensure => present."
     end
   end
 
