@@ -84,10 +84,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '-y'
     end
 
-    args << @resource[:install_options]
-
     if @resource[:source]
       args << '-source' << @resource[:source]
+    end
+
+    args << @resource[:install_options]
+
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+      args << '--ignore-package-exit-codes'
     end
 
     chocolatey(*args)
@@ -106,12 +110,17 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '-fy'
     end
 
-    args << @resource[:uninstall_options]
-
-    unless choco_exe
+    choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
+    if !choco_exe || choco_version >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE)
       if @resource[:source]
         args << '-source' << @resource[:source]
       end
+    end
+
+    args << @resource[:uninstall_options]
+
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+      args << '--ignore-package-exit-codes'
     end
 
     chocolatey(*args)
@@ -130,10 +139,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args = 'update', @resource[:name][/\A\S*/]
     end
 
-    args << @resource[:install_options]
-
     if @resource[:source]
       args << '-source' << @resource[:source]
+    end
+
+    args << @resource[:install_options]
+
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+      args << '--ignore-package-exit-codes'
     end
 
     if self.query
