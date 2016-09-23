@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-chocolatey",
-  "version": "0.8.0",
+  "version": "2.0.0",
   "author": "Puppet Inc",
   "summary": "Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
@@ -39,7 +39,7 @@
         "Server 2012",
         "Server 2012 R2",
         "7",
-        "8",
+        "8.1",
         "10"
       ]
     }
