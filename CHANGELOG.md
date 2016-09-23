@@ -1,3 +1,21 @@
+## 2015-09-28 First Supported Release 2.0.0
+
+### Summary
+
+Puppetlabs-Chocolatey is now a supported module! This includes everything from the approved chocolatey-chocolatey module, plus the improvements in the unsupported releases 0.7.0 and 0.8.0. It also adds the following additional changes and fixes.
+
+### Features
+
+- `chocolateysource` - explicitly require location in ensure ([MODULES-3430](https://tickets.puppet.com/browse/MODULES-3430))
+- set ignore package exit codes when Chocolatey is on version 0.9.10+ ([MODULES-3880](https://tickets.puppet.com/browse/MODULES-3880))
+
+### Bug Fixes
+
+- Fix: Ensure config file exists before `chocolateyfeature`, `chocolateyconfig`, or `chocolateysource` ([MODULES-3677](https://tickets.puppet.com/browse/MODULES-3677))
+- Fix: `chocolateysource` - ensure flush when disabling source ([MODULES-3430](https://tickets.puppet.com/browse/MODULES-3430))
+- Fix: `chocolateysource` - erroneous user sync messages ([MODULES-3758](https://tickets.puppet.com/browse/MODULES-3758))
+
+
 ## 2016-07-13 Unsupported Release 0.8.0
 
 This brings the unsupported puppetlabs-chocolatey provider on par with the approved chocolatey-chocolatey at 1.2.6 and adds additional features.
