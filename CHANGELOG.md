@@ -1,4 +1,4 @@
-## 2015-09-28 First Supported Release 2.0.0
+## 2015-09-29 First Supported Release 2.0.0
 
 ### Summary
 
