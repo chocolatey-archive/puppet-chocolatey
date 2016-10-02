@@ -1,4 +1,5 @@
 Facter.add('chocolateyversion') do
+  confine :osfamily => :windows
   setcode do
     value = nil
 
