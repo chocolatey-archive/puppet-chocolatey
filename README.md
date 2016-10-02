@@ -548,6 +548,10 @@ Should auto uninstaller be turned on? Auto uninstaller is what allows Chocolatey
 
 Log output from the installer. Defaults to `false`.
 
+#### `ignore_proxy`
+
+Ignores the system proxy during installation when set to `true`. Defaults to `false`.
+
 ## Limitations
 
 1. Works with Windows only.

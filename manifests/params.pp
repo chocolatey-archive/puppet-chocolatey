@@ -6,4 +6,5 @@ class chocolatey::params {
   $install_timeout_seconds  = 1500
   $enable_autouninstaller   = true
   $chocolatey_version       = $::chocolateyversion
+  $ignore_proxy             = false
 }
