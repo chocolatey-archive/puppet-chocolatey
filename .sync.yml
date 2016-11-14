@@ -34,7 +34,6 @@
     - ".config"
 
 Gemfile:
-  supports_windows: true
   required:
     ':development':
       - gem: rake
@@ -47,8 +46,13 @@ Gemfile:
       - gem: mocha
         version: '~>0.10.5'
       - gem: pry
+      - gem: json_pure
+        version: '<= 2.0.1'
+        condition: "Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')"
     ':system_tests':
       - gem: beaker
+        from_env: BEAKER_VERSION
+        version: '~> 2.20'
       - gem: master_manipulator
         version: '~> 1.2'
       - gem: beaker-windows
