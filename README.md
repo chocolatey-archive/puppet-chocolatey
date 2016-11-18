@@ -139,7 +139,8 @@ class {'chocolatey':
 }
 ~~~
 
-**NOTE:** This will affect suitability on first install, see
+**NOTE:** This will affect suitability on first install. There are also
+special considerations for `C:\Chocolatey` as an install location, see
 [`choco_install_location`](#choco_install_location) for details.
 
 #### Use an internal chocolatey.nupkg for Chocolatey installation
@@ -728,8 +729,11 @@ Manages installation and configuration of Chocolatey itself.
 
 Specifies where Chocolatey install should be located. Valid options: Must be an absolute path starting with a drive letter, for example: `c:\`. Default: The currently detected install location based on the `ChocolateyInstall` environment variable. If not specified, falls back to `'C:\ProgramData\chocolatey'`.
 
-**NOTE:** Puppet can install Chocolatey and configure Chocolatey install packages during the same run *UNLESS* you specify this setting. This is due to the way the providers search for suitability of the command, falling back to the default install for the executable when none is found. Because environment variables and commands
-do not refresh during the same Puppet run (due somewhat to a Windows limitation with updating environment information for currently running processes), installing to a directory that is not the default won't be detected until the next time Puppet runs. So unless you really want this installed elsewhere and don't have a current existing install in that non-default location, do not set this value.
+**NOTE:** Puppet can install Chocolatey and configure Chocolatey install packages during the same run *UNLESS* you specify this setting. This is due to the way the providers search for suitability of the command, falling back to the default install for the executable when none is found. Because environment variables and commands do not refresh during the same Puppet run (due somewhat to a Windows limitation with updating environment information for currently running processes), installing to a directory that is not the default won't be detected until the next time Puppet runs. So unless you really want this installed elsewhere and don't have a current existing install in that non-default location, do not set this value.
+
+Specifying `C:\Chocolatey` as the install directory will trigger Chocolatey to attempt to upgrade that directory. This is due to that location being the original install location for Chocolatey before it was moved to another directory and subsequently locked down. If you need this to be the installation directory, please define an environment variable `ChocolateyAllowInsecureRootDirectory` and set it to `'true'`. For more information, please see the [CHANGELOG for 0.9.9](https://github.com/chocolatey/choco/blob/master/CHANGELOG.md#099-march-3-2015).
+
+One last consideration for overriding the default installation directory - if you override it, you will need to set appropriate permissions on that install location as Chocolatey will not lock down the directory to administrators only. Chocolatey only locks down the directory in the default location for quite a few reasons including possible issues with those custom locations. For that reason, when the installation directory is not the default, those permissions will also need to be explicitly specified. See ["Can I install Chocolatey to another location?""](https://chocolatey.org/install#can-i-install-chocolatey-to-another-location) for more information.
 
 ##### `use_7zip`
 
