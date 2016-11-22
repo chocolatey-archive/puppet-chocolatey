@@ -32,6 +32,20 @@ describe 'Chocolatey Version' do
         PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
       end
 
+      it "should handle other messages that return with version call" do
+        expected_value = '1.2.3'
+        Puppet::Util::Execution.expects(:execute).returns("Error setting some value.\nPlease set this value yourself\r\nsound good?\r" + expected_value)
+
+        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+      end
+
+      it "should handle a trailing line break" do
+        expected_value = '1.2.3'
+        Puppet::Util::Execution.expects(:execute).returns(expected_value + "\r\n")
+
+        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+      end
+
       it "should handle 0.9.8.33 of choco" do
         expected_value = '1.2.3'
         Puppet::Util::Execution.expects(:execute).returns('!!ATTENTION!!
