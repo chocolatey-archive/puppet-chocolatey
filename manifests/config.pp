@@ -9,8 +9,13 @@ class chocolatey::config {
   # user may link to - it could be an older version of
   # Chocolatey
 
+  $_choco_version = $chocolatey::chocolatey_version ? {
+    undef   => '0',
+    default => $chocolatey::chocolatey_version
+  }
+
 # lint:ignore:80chars
-  if versioncmp($chocolatey::chocolatey_version, '0.9.9.0') >= 0 and versioncmp($chocolatey::chocolatey_version, '0.9.10.0') < 0 {
+  if versioncmp($_choco_version, '0.9.9.0') >= 0 and versioncmp($_choco_version, '0.9.10.0') < 0 {
     $_choco_exe_path = "${chocolatey::choco_install_location}\\bin\\choco.exe"
 
     $_enable_autouninstaller = $chocolatey::enable_autouninstaller ? {
