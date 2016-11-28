@@ -8,12 +8,20 @@ class chocolatey::install {
     default   => 'windows'
   }
 
+  registry_value { 'ChocolateyInstall environment value':
+    ensure => present,
+    path   => 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\ChocolateyInstall',
+    type   => 'string',
+    data   => $chocolatey::choco_install_location,
+  }
+
   exec { 'install_chocolatey_official':
     command     => template('chocolatey/InstallChocolatey.ps1.erb'),
     creates     => "${::chocolatey::choco_install_location}\\bin\\choco.exe",
     provider    => powershell,
     timeout     => $::chocolatey::choco_install_timeout_seconds,
     logoutput   => $::chocolatey::log_output,
-    environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"]
+    environment => ["ChocolateyInstall=${::chocolatey::choco_install_location}"],
+    require     => Registry_value['ChocolateyInstall environment value'],
   }
 }

@@ -2,5 +2,6 @@ fixtures:
   forge_modules:
     stdlib:       "puppetlabs/stdlib"
     powershell:   "puppetlabs/powershell"
+    registry:     "puppetlabs/registry"
   symlinks:
     chocolatey: "#{source_dir}"
