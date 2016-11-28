@@ -5,13 +5,6 @@ module PuppetX
   module Chocolatey
     class ChocolateyVersion
 
-      UPGRADE_WARNING = "!!ATTENTION!!
-The next version of Chocolatey (v0.9.9) will require -y to perform
-  behaviors that change state without prompting for confirmation. Start
-  using it now in your automated scripts.
-
-  For details on the all new Chocolatey, visit http://bit.ly/new_choco
-"
       OLD_CHOCO_MESSAGE = "Please run chocolatey /? or chocolatey help - chocolatey v"
 
       def self.version
@@ -22,7 +15,11 @@ The next version of Chocolatey (v0.9.9) will require -y to perform
             # call `choco -v`
             # - new choco will output a single value e.g. `0.9.9`
             # - old choco is going to return the default output e.g. `Please run chocolatey /?`
-            version = Puppet::Util::Execution.execute("#{choco_path} -v").gsub(UPGRADE_WARNING,'').gsub(OLD_CHOCO_MESSAGE,'').strip
+            version = Puppet::Util::Execution.execute("#{choco_path} -v").gsub(OLD_CHOCO_MESSAGE,'')
+            # - other messages, such as upgrade warnings or warnings about
+            #   installing the licensed extension once the license is installed
+            #   may show up when running this comamnd. Remove those as well
+            version = version.split(/\r\n|\n|\r/).last.strip unless version.nil?
           rescue StandardError => e
             version = '0'
           end
