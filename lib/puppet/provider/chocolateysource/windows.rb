@@ -113,7 +113,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
   def validate
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
-    if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION)
+    if PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) && choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION)
       raise Puppet::ResourceError, "Chocolatey version must be '#{MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values with Puppet. Detected '#{choco_version}' as your version. Please upgrade Chocolatey to use this resource."
     end
 
