@@ -6,7 +6,7 @@ require 'puppet'
 begin
   require 'beaker/tasks/test' unless RUBY_PLATFORM =~ /win32/
 rescue LoadError
-  #Do nothing, only installed with system_tests group 
+  #Do nothing, only installed with system_tests group
 end
 
 
@@ -24,7 +24,7 @@ if Puppet::Util::Platform.windows? and !Puppet::FileSystem.respond_to?(:symlink)
   end
 end
 
-# These lint exclusions are in puppetlabs_spec_helper but needs a version above 0.10.3 
+# These lint exclusions are in puppetlabs_spec_helper but needs a version above 0.10.3
 # Line length test is 80 chars in puppet-lint 1.1.0
 PuppetLint.configuration.send('disable_80chars')
 # Line length test is 140 chars in puppet-lint 2.x
@@ -51,15 +51,6 @@ end
 
 desc 'Executes reference tests (agent only) intended for use in CI'
 task :reference_tests do
-  case
-    when platform == 'windows-2008r2-64a'
-      bhg_mapped_name = 'windows2008r2-64'
-    when platform == 'windows-2012r2-64a'
-      bhg_mapped_name = 'windows2012r2-64'
-    else
-      abort("#{platform} is not a supported platform for reference test execution.")
-  end
-
   command = "bundle exec beaker-hostgenerator --global-config {masterless=true} #{bhg_mapped_name} > tests/configs/#{platform}" # should we assume the "configs" directory is present?
   sh command
 
@@ -72,22 +63,13 @@ bundle exec beaker                          \
     --load-path tests/lib                   \
     --type aio                              \
     --pre-suite tests/reference/pre-suite   \
-    --tests tests/reference/tests           
+    --tests tests/reference/tests
     EOS
   sh command
 end
 
 desc 'Executes accetpance tests (master and agent) intended for use in CI'
 task :acceptance_tests do
-  case
-    when platform == 'windows-2008r2-64mda'
-      bhg_mapped_name = 'windows2008r2-64'
-    when platform == 'windows-2012r2-64mda'
-      bhg_mapped_name = 'windows2012r2-64'
-    else
-      abort("#{platform} is not a supported platform for acceptance test execution.")
-  end
-
   command = "bundle exec beaker-hostgenerator centos7-64mdca-#{bhg_mapped_name} > tests/configs/#{platform}"
   sh command
 
@@ -99,7 +81,7 @@ bundle exec beaker                          \
     --keyfile ~/.ssh/id_rsa-acceptance      \
     --load-path tests/lib                   \
     --pre-suite tests/acceptance/pre-suite  \
-    --tests tests/acceptance/tests          
+    --tests tests/acceptance/tests
     EOS
   sh command
 end
