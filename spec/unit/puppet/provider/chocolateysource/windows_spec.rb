@@ -10,6 +10,7 @@ describe provider do
   let (:location) { 'c:\packages' }
   let (:resource) { Puppet::Type.type(:chocolateysource).new(:provider => :windows, :name => name, :location => location) }
   let (:choco_config) { 'c:\choco.config' }
+  let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
   let (:choco_config_contents) { <<-'EOT'
 <?xml version="1.0" encoding="utf-8"?>
 <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -61,6 +62,7 @@ describe provider do
   let (:last_unsupported_version) {'0.9.8.33'}
 
   before :each do
+    PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
     PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
 
     @provider = provider.new(resource)
@@ -243,6 +245,11 @@ describe provider do
   end
 
   context ".validation" do
+    before :each do
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(true).at_least(0)
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_install_path).returns(true).at_least(0)
+    end
+
     it "should not warn when both user/password are empty" do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
       Puppet.expects(:warning).never

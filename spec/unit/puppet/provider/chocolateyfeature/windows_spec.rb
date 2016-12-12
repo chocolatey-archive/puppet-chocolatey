@@ -9,6 +9,7 @@ describe provider do
   let (:name) { 'allowglobalconfirmation' }
   let (:resource) { Puppet::Type.type(:chocolateyfeature).new(:provider => :windows, :name => name, :ensure => 'enabled' ) }
   let (:choco_config) { 'c:\choco.config' }
+  let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
   let (:choco_config_contents) { <<-'EOT'
 <?xml version="1.0" encoding="utf-8"?>
 <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -56,6 +57,7 @@ describe provider do
   let (:minimum_supported_version) {'0.9.9.0'}
 
   before :each do
+    PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
     PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
 
     @provider = provider.new(resource)

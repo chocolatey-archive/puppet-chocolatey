@@ -9,6 +9,7 @@ describe provider do
   let (:name) { 'configItem' }
   let (:resource) { Puppet::Type.type(:chocolateyconfig).new(:provider => :windows, :name => name, :value => "yes") }
   let (:choco_config) { 'c:\choco.config' }
+  let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
   let (:choco_config_contents) { <<-'EOT'
 <?xml version="1.0" encoding="utf-8"?>
 <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -58,6 +59,7 @@ describe provider do
   let (:last_unsupported_version) {'0.9.9.12'}
 
   before :each do
+    PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
     PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
 
     @provider = provider.new(resource)
@@ -185,13 +187,24 @@ describe provider do
   end
 
   context ".validation" do
+    it "should not error when Chocolatey is not installed" do
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(false).at_least(0)
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_install_path).returns(false).at_least(0)
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns('')
+
+      resource.provider.validate
+    end
+
     it "should not error when the minimum version is met" do
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(false).at_least(0)
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_install_path).returns(true).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
 
       resource.provider.validate
     end
 
     it "should error when the minimum version is not met" do
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(true).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version)
 
       expect {
