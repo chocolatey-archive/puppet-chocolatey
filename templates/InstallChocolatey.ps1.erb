@@ -100,10 +100,14 @@ if ($unzipMethod -eq '7zip') {
   Write-Output "Extracting $file to $tempDir..."
   Start-Process "$7zaExe" -ArgumentList "x -o`"$tempDir`" -y `"$file`"" -Wait -NoNewWindow
 } else {
-  $shellApplication = new-object -com shell.application
-  $zipPackage = $shellApplication.NameSpace($file)
-  $destinationFolder = $shellApplication.NameSpace($tempDir)
-  $destinationFolder.CopyHere($zipPackage.Items(),0x10)
+  if ($PSVersionTable.PSversion.major -lt 5) {
+    $shellApplication = new-object -com shell.application
+    $zipPackage = $shellApplication.NameSpace($file)
+    $destinationFolder = $shellApplication.NameSpace($tempDir)
+    $destinationFolder.CopyHere($zipPackage.Items(),0x10)
+  } else {
+    Expand-Archive -Path "$file" -DestinationPath "$tempDir" -Force
+  }
 }
 
 # call chocolatey install
