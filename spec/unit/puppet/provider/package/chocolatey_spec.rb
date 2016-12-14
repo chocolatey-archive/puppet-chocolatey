@@ -473,6 +473,14 @@ describe provider do
               :name => 'package2'
           }
         end
+
+        it "should return nil on error" do
+          provider.expects(:execpipe).yields(StringIO.new(%Q(Unable to search for packages when there are no soures enabled for packages and none were passed as arguments.\n)))
+
+          expect {
+            provider.instances
+          }.to raise_error(Puppet::Error, /At least one source must be enabled./)
+        end
       end
 
       context "with posh choco client" do
