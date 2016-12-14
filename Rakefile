@@ -68,9 +68,9 @@ bundle exec beaker                          \
   sh command
 end
 
-desc 'Executes accetpance tests (master and agent) intended for use in CI'
+desc 'Executes acceptance tests (master and agent) intended for use in CI'
 task :acceptance_tests do
-  command = "bundle exec beaker-hostgenerator centos7-64mdca-#{bhg_mapped_name} > tests/configs/#{platform}"
+  command = "bundle exec beaker-hostgenerator #{bhg_mapped_name} > tests/configs/#{platform}"
   sh command
 
   command =<<-EOS
