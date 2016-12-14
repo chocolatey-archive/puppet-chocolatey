@@ -199,6 +199,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
         process.each_line do |line|
           line.chomp!
           if line.empty? or line.match(/Reading environment variables.*/); next; end
+          raise Puppet::Error, "At least one source must be enabled." if line.match(/Unable to search for packages.*/)
           if choco_exe
             values = line.split('|')
           else
