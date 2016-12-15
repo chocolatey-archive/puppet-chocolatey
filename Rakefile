@@ -40,7 +40,6 @@ end
 
 
 platform = ENV["PLATFORM"]
-bhg_mapped_name = ''
 
 # Create the directory, if it exists already you'll get an error, but this should not stop the execution
 begin
@@ -51,7 +50,7 @@ end
 
 desc 'Executes reference tests (agent only) intended for use in CI'
 task :reference_tests do
-  command = "bundle exec beaker-hostgenerator --global-config {masterless=true} #{bhg_mapped_name} > tests/configs/#{platform}" # should we assume the "configs" directory is present?
+  command = "bundle exec beaker-hostgenerator --global-config {masterless=true} #{platform} > tests/configs/#{platform}" # should we assume the "configs" directory is present?
   sh command
 
   command =<<-EOS
@@ -70,7 +69,7 @@ end
 
 desc 'Executes acceptance tests (master and agent) intended for use in CI'
 task :acceptance_tests do
-  command = "bundle exec beaker-hostgenerator #{bhg_mapped_name} > tests/configs/#{platform}"
+  command = "bundle exec beaker-hostgenerator #{platform} > tests/configs/#{platform}"
   sh command
 
   command =<<-EOS
