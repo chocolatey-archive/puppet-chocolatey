@@ -12,8 +12,8 @@ coverage/
 *.iml
 .*.sw[op]
 .DS_Store
-.rspec
 tmp/
+vendor/
 
 *.orig
 *.bak

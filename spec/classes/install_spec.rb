@@ -6,6 +6,7 @@ RSpec.describe 'chocolatey' do
     {
       :chocolateyversion  => '0.9.9.8',
       :choco_install_path => 'C:\ProgramData\chocolatey',
+      :path => 'C:\something',
     }
   }
 
