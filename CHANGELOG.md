@@ -1,4 +1,24 @@
-## 2015-09-29 First Supported Release 2.0.0
+## 2016-12-29 Supported Release 2.0.1
+
+### Summary
+
+This is a bug fix release, correcting some issues in the original supported release and one that was introduced by the switchover to the puppetlabs-powershell v2 module.
+
+### Bug Fixes
+
+- Fix: ChocolateyInstall environment variable not set for alternate installation directory ([MODULES-4091](https://tickets.puppetlabs.com/browse/MODULES-4091))
+- Fix: Unsuitable providers should not cause errors ([MODULES-4149](https://tickets.puppetlabs.com/browse/MODULES-4149))
+- Fix: version is malformed with any extraneous messages ([MODULES-4135](https://tickets.puppetlabs.com/browse/MODULES-4135))
+- Fix: module does not propagate null source error correctly ([MODULES-4056](https://tickets.puppetlabs.com/browse/MODULES-4056))
+- Fix: install fails on Windows 10 when using built-in compression ([MODULES-4210](https://tickets.puppetlabs.com/browse/MODULES-4210))
+
+### Improvements
+
+- Set TLS 1.1+ when available
+- Document considerations for install to "C:\Chocolatey" ([MODULES-4090](https://tickets.puppetlabs.com/browse/MODULES-4090))
+
+
+## 2016-09-29 First Supported Release 2.0.0
 
 ### Summary
 
