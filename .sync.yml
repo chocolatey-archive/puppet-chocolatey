@@ -1,12 +1,4 @@
 ---
-.travis.yml:
-  extras:
-    - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION="3.0.0"
-  # FUTURE_PARSER testing is expected to fail and is disabled pending FM-5038
-  allow_failures:
-    - rvm: 2.0.0
-      env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
 .gitignore:
   paths:
     - "*.orig"
@@ -43,8 +35,8 @@ spec/spec_helper.rb:
   unmanaged: true
 appveyor.yml:
   matrix_extras:
-    - PUPPET_GEM_VERSION: 3.0.0
-      RUBY_VER: 193
+    - PUPPET_GEM_VERSION: 4.2.3
+      RUBY_VER: 21-x64
   test_script:
     - 'bundle exec rspec spec/unit -fd -b'
 MAINTAINERS.md:
