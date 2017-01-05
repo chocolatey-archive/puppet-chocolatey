@@ -7,7 +7,6 @@
   allow_failures:
     - rvm: 2.0.0
       env: PUPPET_GEM_VERSION="~> 3.0" FUTURE_PARSER="yes"
-  script: "\"bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--color --format documentation'\""
 .gitignore:
   paths:
     - "*.orig"
@@ -34,30 +33,9 @@
     - ".config"
 
 Gemfile:
-  required:
-    ':development':
-      - gem: rake
-      - gem: rspec
-        version: '~>3.0'
-      - gem: puppet-lint
-      - gem: puppetlabs_spec_helper
-        version: '~>0.10.3'
-      - gem: puppet_facts
-      - gem: mocha
-        version: '~>0.10.5'
-      - gem: pry
-      - gem: json_pure
-        version: '<= 2.0.1'
-        condition: "Gem::Version.new(RUBY_VERSION.dup) < Gem::Version.new('2.0.0')"
+  optional:
     ':system_tests':
-      - gem: beaker
-        from_env: BEAKER_VERSION
-        version: '~> 2.20'
-      - gem: master_manipulator
-        version: '~> 1.2'
       - gem: beaker-windows
-        version: '~> 0.6'
-      - gem: beaker-hostgenerator
         version: '~> 0.6'
 Rakefile:
   unmanaged: true

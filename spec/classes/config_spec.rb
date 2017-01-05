@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 RSpec.describe 'chocolatey' do
+  let(:facts) {
+    {
+      :path => 'C:\something',
+    }
+  }
   context 'contains config.pp' do
     context 'with older choco installed' do
       let(:facts) {
-        {
+        super().merge({
           :chocolateyversion  => '0.9.8.33',
           :choco_install_path => 'C:\ProgramData\chocolatey',
-        }
+        })
       }
 
       [true, false].each do |param_value|
@@ -28,10 +33,10 @@ RSpec.describe 'chocolatey' do
 
     context 'without choco installed' do
       let(:facts) {
-        {
+        super().merge({
           :chocolateyversion  => '0',
           :choco_install_path => 'C:\ProgramData\chocolatey',
-        }
+        })
       }
 
       [true, false].each do |param_value|
@@ -52,10 +57,10 @@ RSpec.describe 'chocolatey' do
 
     context 'with choco.exe installed' do
       let(:facts) {
-        {
+        super().merge({
           :chocolateyversion  => '0.9.9.8',
           :choco_install_path => 'C:\ProgramData\chocolatey',
-        }
+        })
       }
 
       [true, false].each do |param_value|
