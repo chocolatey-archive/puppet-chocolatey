@@ -6,10 +6,10 @@ init:
 - git config --global user.email "chocolatey@realdimensions.net"
 - git config --global user.name "Chocolatey yo"
 - SET
-- 'mkdir C:\ProgramData\PuppetLabs\code && exit 0'
-- 'mkdir C:\ProgramData\PuppetLabs\facter && exit 0'
-- 'mkdir C:\ProgramData\PuppetLabs\hiera && exit 0'
-- 'mkdir C:\ProgramData\PuppetLabs\puppet\var && exit 0'
+- 'mkdir %ProgramData%\PuppetLabs\code && exit 0'
+- 'mkdir %ProgramData%\PuppetLabs\facter && exit 0'
+- 'mkdir %ProgramData%\PuppetLabs\hiera && exit 0'
+- 'mkdir %ProgramData%\PuppetLabs\puppet\var && exit 0'
 environment:
   matrix:
   - PUPPET_GEM_VERSION: ~> 3.0
@@ -25,7 +25,7 @@ environment:
 matrix:
   fast_finish: true
 install:
-- SET PATH=C:\Ruby%RUBY_VER%\bin;%PATH%
+- SET PATH=$SystemDrive%\Ruby%RUBY_VER%\bin;%PATH%
 - gem install bundler --quiet --no-ri --no-rdoc
 - bundle install --jobs 4 --retry 2 --without system_tests
 - type Gemfile.lock

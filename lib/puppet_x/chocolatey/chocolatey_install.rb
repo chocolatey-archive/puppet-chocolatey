@@ -17,7 +17,7 @@ module PuppetX
         end
       end
 
-      value || 'C:\ProgramData\chocolatey'
+      value || ENV['ProgramData'] + '\chocolatey'
       end
 
     end

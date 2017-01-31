@@ -42,9 +42,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def self.chocolatey_command
     if Puppet::Util::Platform.windows?
       #default_location = $::choco_installpath || ENV['ALLUSERSPROFILE'] + '\chocolatey'
-      chocopath = ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\bin\choco.exe')) ||
+      chocopath = (ENV['ProgramData'] + '\chocolatey' if file_exists?(ENV['ProgramData'] + '\chocolatey\bin\choco.exe')) ||
           (ENV['ChocolateyInstall'] if ENV['ChocolateyInstall'] && file_exists?("#{ENV['ChocolateyInstall']}\\bin\\choco.exe")) ||
-          ('C:\Chocolatey' if file_exists?('C:\Chocolatey\bin\choco.exe')) ||
+          (ENV['SystemDrive'] + '\Chocolatey' if file_exists?(ENV['SystemDrive'] + '\Chocolatey\bin\choco.exe')) ||
           "#{ENV['ALLUSERSPROFILE']}\\chocolatey"
 
       chocopath += '\bin\choco.exe'
