@@ -75,7 +75,7 @@ param (
     $downloader.Proxy = [System.Net.GlobalProxySelection]::GetEmptyWebProxy()
   }Else{
     $downloader.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials;
-  }  
+  }
   $downloader.DownloadFile($url, $file)
 }
 
@@ -117,7 +117,7 @@ Write-Output 'Ensuring chocolatey commands are on the path'
 $chocInstallVariableName = "ChocolateyInstall"
 $chocoPath = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
 if ($chocoPath -eq $null -or $chocoPath -eq '') {
-  $chocoPath = 'C:\ProgramData\Chocolatey'
+  $chocoPath = $env:ProgramData + '\Chocolatey'
 }
 
 $chocoBinPath = Join-Path $chocoPath 'bin'

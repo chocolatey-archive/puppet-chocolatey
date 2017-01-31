@@ -20,7 +20,7 @@
 #
 # @example Use a file chocolatey.0.9.9.9.nupkg for installation
 #   class {'chocolatey':
-#     chocolatey_download_url         => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+#     chocolatey_download_url         => 'file:///${::systemdrive}/location/of/chocolatey.0.9.9.9.nupkg',
 #     use_7zip                        => false,
 #     choco_install_timeout_seconds   => 2700,
 #   }
@@ -39,7 +39,7 @@
 #   located. This needs to be an absolute path starting with a drive letter
 #   e.g. `c:\`. Defaults to the currently detected install location based on
 #   the `ChocolateyInstall` environment variable, falls back to
-#   `'C:\ProgramData\chocolatey'`.
+#   `'%ProgramData%\chocolatey'`.
 # @param [Boolean] use_7zip Whether to use built-in shell or allow installer
 #   to download 7zip to extract `chocolatey.nupkg` during installation.
 #   Defaults to `false`.

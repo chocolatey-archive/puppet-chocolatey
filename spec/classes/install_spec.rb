@@ -5,7 +5,7 @@ RSpec.describe 'chocolatey' do
   let(:facts) {
     {
       :chocolateyversion  => '0.9.9.8',
-      :choco_install_path => 'C:\ProgramData\chocolatey',
+      :choco_install_path => ENV['ProgramData'] + '\chocolatey',
     }
   }
 
@@ -18,7 +18,7 @@ RSpec.describe 'chocolatey' do
     it { is_expected.to contain_windows_env('chocolatey_PATH_env').with_variable('PATH') }
     it { is_expected.to contain_windows_env('chocolatey_PATH_env').that_notifies('Exec[install_chocolatey_official]') }
 
-    ['c:\local_folder', "C:\\ProgramData\\chocolatey"].each do |param_value|
+    ['%SystemDrive%\local_folder', "%ProgramData%\\chocolatey"].each do |param_value|
         context "choco_install_location => #{param_value}" do
         let(:params) {{ :choco_install_location => param_value }}
 
