@@ -62,7 +62,7 @@ Windows versus Chocolatey, let's take a look at the use case of installing git:
 # Using built-in provider
 package { "Git version 1.8.4-preview20130916":
   ensure    => installed,
-  source    => 'C:\temp\Git-1.8.4-preview20130916.exe',
+  source    => '${::systemdrive}\temp\Git-1.8.4-preview20130916.exe',
   install_options => ['/VERYSILENT']
 }
 ~~~
@@ -221,7 +221,7 @@ class {'chocolatey':
 
 ~~~puppet
 class {'chocolatey':
-  chocolatey_download_url         => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+  chocolatey_download_url         => 'file:///${::systemdrive}/location/of/chocolatey.0.9.9.9.nupkg',
   use_7zip                        => false,
   choco_install_timeout_seconds   => 2700,
 }
@@ -231,7 +231,7 @@ class {'chocolatey':
 
 ~~~puppet
 class {'chocolatey':
-  chocolatey_download_url         => 'file:///c:/location/of/chocolatey.0.9.9.9.nupkg',
+  chocolatey_download_url         => 'file:///${::systemdrive}/location/of/chocolatey.0.9.9.9.nupkg',
   use_7zip                        => false,
   choco_install_timeout_seconds   => 2700,
   chocolatey_version              => '0.9.9.9',
@@ -319,7 +319,7 @@ package { 'notepadplusplus':
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
-  source   => 'C:\local\folder\packages',
+  source   => '${::systemdrive}\local\folder\packages',
 }
 ~~~
 
@@ -343,7 +343,7 @@ package { 'notepadplusplus':
 package { 'notepadplusplus':
   ensure   => '6.7.5',
   provider => 'chocolatey',
-  source   => 'C:\local\folder\packages;https://chocolatey.org/api/v2/',
+  source   => '${::systemdrive}\local\folder\packages;https://chocolatey.org/api/v2/',
 }
 ~~~
 
@@ -363,12 +363,12 @@ package {'launchy':
 ### Install options with quotes / spaces
 The underlying installer may need quotes passed to it. This is possible, but not
 as intuitive.  The example below covers passing
-`/INSTALLDIR="C:\Program Files\somewhere"`.
+`/INSTALLDIR="%ProgramFiles%\somewhere"`.
 
 For this to be passed through with Chocolatey, you will need a set of double
 quotes surrounding the argument and two sets of double quotes surrounding the
 item that must be quoted (see [how to pass/options/switches](https://github.com/chocolatey/choco/wiki/CommandsReference#how-to-pass-options--switches)). This makes the
-string look like `-installArgs "/INSTALLDIR=""C:\Program Files\somewhere"""` for
+string look like `-installArgs "/INSTALLDIR=""%ProgramFile%\somewhere"""` for
 proper use with Chocolatey.
 
 Then for Puppet to handle that appropriately, we must split on ***every*** space.
@@ -377,7 +377,7 @@ incorrectly. So this means it will look like the following:
 
 ~~~puppet
 install_options => ['-installArgs',
-  '"/INSTALLDIR=""C:\Program', 'Files\somewhere"""']
+  '"/INSTALLDIR=""%ProgramFiles%\somewhere"""']
 ~~~
 
 Make sure you have all of the right quotes - start it off with a single double
@@ -390,7 +390,7 @@ package {'mysql':
   ensure          => latest,
   provider        => 'chocolatey',
   install_options => ['-override', '-installArgs',
-    '"/INSTALLDIR=""C:\Program', 'Files\somewhere"""'],
+    '"/INSTALLDIR=""%ProgramFiles%\somewhere"""'],
 }
 ~~~
 
@@ -401,7 +401,7 @@ package {'mysql':
   ensure          => latest,
   provider        => 'chocolatey',
   install_options => ['-override', '-installArgs', '"'
-    '/INSTALLDIR=""C:\Program', 'Files\somewhere""',
+    '/INSTALLDIR=""%ProgramFiles%\somewhere""',
     '"'],
 }
 ~~~
@@ -433,9 +433,9 @@ This provider supports the `install_options` and `uninstall_options` attributes,
 which allow command-line options to be passed to the choco command. These options
 should be specified as documented below.
 
- * Required binaries: `choco.exe`, usually found in `C:\Program Data\chocolatey\bin\choco.exe`.
-   * The binary is searched for using the Environment Variable `ChocolateyInstall`, then by two known locations (`C:\Chocolatey\bin\choco.exe` and `C:\ProgramData\chocolatey\bin\choco.exe`).
-   * On Windows 2003 you should install Chocolatey to `C:\Chocolatey` or somewhere besides the default. **NOTE**: the root of `C:\` is not a secure location by default, so you may want to update the security on the folder.
+ * Required binaries: `choco.exe`, usually found in `%ProgramData%\chocolatey\bin\choco.exe`.
+   * The binary is searched for using the Environment Variable `ChocolateyInstall`, then by two known locations (`%systemdrive%\Chocolatey\bin\choco.exe` and `%ProgramData%\chocolatey\bin\choco.exe`).
+   * On Windows 2003 you should install Chocolatey to `%systemdrive%\Chocolatey` or somewhere besides the default. **NOTE**: the root of `C:\` is not a secure location by default, so you may want to update the security on the folder.
  * Supported features: `install_options`, `installable`, `uninstall_options`,
 `uninstallable`, `upgradeable`, `versionable`.
 
@@ -526,7 +526,7 @@ Used for managing installation and configuration of Chocolatey itself.
 
 ##### `choco_install_location`
 
-Where Chocolatey install should be located. This needs to be an absolute path starting with a drive letter e.g. `c:\`. Defaults to the currently detected install location based on the `ChocolateyInstall` environment variable, falls back to `'C:\ProgramData\chocolatey'`.
+Where Chocolatey install should be located. This needs to be an absolute path starting with a drive letter e.g. `c:\`. Defaults to the currently detected install location based on the `ChocolateyInstall` environment variable, falls back to `'%ProgramData%\chocolatey'`.
 
 ##### `use_7zip`
 
