@@ -29,7 +29,7 @@ end
 
 RSpec.configure do |c|
   # set the environment variable before files are loaded, otherwise it is too late
-  ENV['ChocolateyInstall'] = 'c:\blah'
+  ENV['ChocolateyInstall'] = '%SystemDrive%\blah'
 
   # https://www.relishapp.com/rspec/rspec-core/v/2-12/docs/mock-framework-integration/mock-with-mocha!
   c.mock_framework = :mocha

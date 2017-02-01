@@ -22,17 +22,17 @@ describe provider do
   end
 
   it "should find chocolatey install location based on ChocolateyInstall environment variable", :if => Puppet.features.microsoft_windows? do
-    @provider.class.expects(:file_exists?).with('C:\ProgramData\chocolatey\bin\choco.exe').returns(false)
-    @provider.class.expects(:file_exists?).with('c:\blah\bin\choco.exe').returns(true)
+    @provider.class.expects(:file_exists?).with(ENV['ProgramData'] + '\chocolatey\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with(ENV['SystemDrive'] + '\blah\bin\choco.exe').returns(true)
     # this is a placeholder, it is already set in spec_helper
-    ENV['ChocolateyInstall'] = 'c:\blah'
-    @provider.class.chocolatey_command.should == 'c:\blah\bin\choco.exe'
+    ENV['ChocolateyInstall'] = ENV['SystemDrive'] + '\blah'
+    @provider.class.chocolatey_command.should == ENV['SystemDrive'] + '\blah\bin\choco.exe'
   end
 
   it "should find chocolatey install location based on default location", :if => Puppet.features.microsoft_windows? do
-    @provider.class.expects(:file_exists?).with('C:\ProgramData\chocolatey\bin\choco.exe').returns(false)
-    @provider.class.expects(:file_exists?).with('c:\blah\bin\choco.exe').returns(false)
-    @provider.class.expects(:file_exists?).with('C:\Chocolatey\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with(ENV['ProgramData'] + '\chocolatey\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with(ENV['SystemDrive'] + '\blah\bin\choco.exe').returns(false)
+    @provider.class.expects(:file_exists?).with(ENV['SystemDrive'] + '\Chocolatey\bin\choco.exe').returns(false)
     @provider.class.expects(:file_exists?).with("#{ENV['ALLUSERSPROFILE']}\\chocolatey\\bin\\choco.exe").returns(true)
     @provider.class.chocolatey_command.should == "#{ENV['ALLUSERSPROFILE']}\\chocolatey\\bin\\choco.exe"
     @provider.class.chocolatey_command
@@ -67,8 +67,8 @@ describe provider do
       resource[:source].should be_nil
     end
 
-    it "should accept c:\\packages" do
-      resource[:source] = 'c:\packages'
+    it "should accept " + ENV['SystemDrive'] + "\\packages" do
+      resource[:source] = ENV['SystemDrive'] + '\packages'
     end
 
     it "should accept http://somelocation/packages" do
@@ -106,8 +106,8 @@ describe provider do
       end
 
       it "should use source if it is specified" do
-        resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey','-y', nil, '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.expects(:chocolatey).with('install','chocolatey','-y', nil, '-source', ENV['SystemDrive'] + '\packages')
         @provider.install
       end
     end
@@ -130,8 +130,8 @@ describe provider do
       end
 
       it "should use source if it is specified" do
-        resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.expects(:chocolatey).with('install','chocolatey', nil, '-source', ENV['SystemDrive'] + '\packages')
         @provider.install
       end
     end
@@ -175,7 +175,7 @@ describe provider do
       end
 
       it "should use ignore source if it is specified" do
-        resource[:source] = 'c:\packages'
+        resource[:source] = ENV['SystemDrive'] + '\packages'
         @provider.expects(:chocolatey).with('uninstall','chocolatey','-fy', nil)
         @provider.uninstall
       end
@@ -192,8 +192,8 @@ describe provider do
       end
 
       it "should use source if it is specified" do
-        resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', nil, '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', nil, '-source', ENV['SystemDrive'] + '\packages')
         @provider.uninstall
       end
     end
@@ -227,8 +227,8 @@ describe provider do
           :name     => "chocolatey",
           :provider => :chocolatey,
         })]
-        resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', nil, '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', nil, '-source', ENV['SystemDrive'] + '\packages')
         @provider.update
       end
     end
@@ -260,8 +260,8 @@ describe provider do
           :name     => "chocolatey",
           :provider => :chocolatey,
         })]
-        resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('update','chocolatey', nil, '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.expects(:chocolatey).with('update','chocolatey', nil, '-source', ENV['SystemDrive'] + '\packages')
         @provider.update
       end
     end
@@ -286,9 +286,9 @@ describe provider do
       end
 
       it "should use source if it is specified" do
-        resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).should == [choco_command, 'upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
-        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.send(:latestcmd).should == [choco_command, 'upgrade', '--noop', 'chocolatey','-r', '-source', ENV['SystemDrive'] + '\packages']
+        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', ENV['SystemDrive'] + '\packages')
         #@provider.latest
       end
     end
@@ -303,9 +303,9 @@ describe provider do
       end
 
       it "should use source if it is specified" do
-        resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).should == [choco_command, 'version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
-        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages')
+        resource[:source] = ENV['SystemDrive'] + '\packages'
+        @provider.send(:latestcmd).should == [choco_command, 'version', 'chocolatey', '-source', ENV['SystemDrive'] + '\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', ENV['SystemDrive'] + '\packages')
         #@provider.latest
       end
     end

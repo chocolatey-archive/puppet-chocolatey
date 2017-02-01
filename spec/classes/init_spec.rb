@@ -4,7 +4,7 @@ describe 'chocolatey' do
   let(:facts) {
     {
       :chocolateyversion  => '0.9.9.8',
-      :choco_install_path => 'C:\ProgramData\chocolatey',
+      :choco_install_path => ENV['ProgramData'] + '\chocolatey',
     }
   }
 
@@ -26,7 +26,7 @@ describe 'chocolatey' do
   end
 
   context "chocolatey_download_url =>" do
-    ['https://chocolatey.org/api/v2/package/chocolatey/','http://location','file:///c:/somwhere/chocolatey.nupkg'].each do |param_value|
+    ['https://chocolatey.org/api/v2/package/chocolatey/','http://location','file:///%systemdrive%/somwhere/chocolatey.nupkg'].each do |param_value|
       context "#{param_value}" do
         let (:params) {{
           :chocolatey_download_url => param_value
@@ -74,7 +74,7 @@ describe 'chocolatey' do
   end
 
   context "choco_install_location =>" do
-    ['C:\\ProgramData\\chocolatey','D:\\somewhere'].each do |param_value|
+    [ENV['ProgramData'] + '\\chocolatey','D:\\somewhere'].each do |param_value|
       context "#{param_value}" do
         let (:params) {{
           :choco_install_location => param_value
