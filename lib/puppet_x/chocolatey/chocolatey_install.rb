@@ -1,3 +1,9 @@
+if ENV['ProgramData'] != nil
+  program_data = ENV['ProgramData']
+else
+  program_data = 'c:\ProgramData'
+end
+
 module PuppetX
   module Chocolatey
     class ChocolateyInstall
@@ -17,7 +23,7 @@ module PuppetX
         end
       end
 
-      value || 'C:\ProgramData\chocolatey'
+      value || program_data + '\chocolatey'
       end
 
     end
