@@ -1,6 +1,12 @@
 #require 'ruby-prof'
 #RubyProf.start
 
+if ENV['SystemDrive'] != nil
+  system_drive = ENV['SystemDrive']
+else
+  system_drive = 'c:'
+end
+
 IDEAL_CONSOLE_WIDTH = 72
 def horizontal_rule(width = 5)
   '=' * [width, IDEAL_CONSOLE_WIDTH].min
@@ -29,7 +35,7 @@ end
 
 RSpec.configure do |c|
   # set the environment variable before files are loaded, otherwise it is too late
-  ENV['ChocolateyInstall'] = '%SystemDrive%\blah'
+  ENV['ChocolateyInstall'] = system_drive + '\blah'
 
   # https://www.relishapp.com/rspec/rspec-core/v/2-12/docs/mock-framework-integration/mock-with-mocha!
   c.mock_framework = :mocha

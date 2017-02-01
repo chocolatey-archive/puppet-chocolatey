@@ -1,10 +1,15 @@
 require 'spec_helper'
 
+if ENV['ProgramData'] != nil
+  program_data = ENV['ProgramData']
+else
+  program_data = 'c:\ProgramData'
+end
 describe 'chocolatey' do
   let(:facts) {
     {
       :chocolateyversion  => '0.9.9.8',
-      :choco_install_path => ENV['ProgramData'] + '\chocolatey',
+      :choco_install_path => program_data + '\chocolatey',
     }
   }
 
@@ -74,7 +79,7 @@ describe 'chocolatey' do
   end
 
   context "choco_install_location =>" do
-    [ENV['ProgramData'] + '\\chocolatey','D:\\somewhere'].each do |param_value|
+    [program_data + '\\chocolatey','D:\\somewhere'].each do |param_value|
       context "#{param_value}" do
         let (:params) {{
           :choco_install_location => param_value

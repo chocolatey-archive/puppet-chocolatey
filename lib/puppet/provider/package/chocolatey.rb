@@ -2,6 +2,17 @@ require 'puppet/provider/package'
 require 'pathname'
 require Pathname.new(__FILE__).dirname + '../../../' + 'puppet_x/chocolatey/chocolatey_install'
 
+if ENV['ProgramData'] != nil
+  program_data = ENV['ProgramData']
+else
+  program_data = 'c:\ProgramData'
+end
+if ENV['SystemDrive'] != nil
+  system_drive = ENV['SystemDrive']
+else
+  system_drive = 'c:'
+end
+
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
 
   desc "Manages packages using Chocolatey (Windows package manager).
@@ -42,9 +53,9 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   def self.chocolatey_command
     if Puppet::Util::Platform.windows?
       #default_location = $::choco_installpath || ENV['ALLUSERSPROFILE'] + '\chocolatey'
-      chocopath = (ENV['ProgramData'] + '\chocolatey' if file_exists?(ENV['ProgramData'] + '\chocolatey\bin\choco.exe')) ||
+      chocopath = (program_data + '\chocolatey' if file_exists?(program_data + '\chocolatey\bin\choco.exe')) ||
           (ENV['ChocolateyInstall'] if ENV['ChocolateyInstall'] && file_exists?("#{ENV['ChocolateyInstall']}\\bin\\choco.exe")) ||
-          (ENV['SystemDrive'] + '\Chocolatey' if file_exists?(ENV['SystemDrive'] + '\Chocolatey\bin\choco.exe')) ||
+          (system_drive + '\Chocolatey' if file_exists?(ENV['SystemDrive'] + '\Chocolatey\bin\choco.exe')) ||
           "#{ENV['ALLUSERSPROFILE']}\\chocolatey"
 
       chocopath += '\bin\choco.exe'

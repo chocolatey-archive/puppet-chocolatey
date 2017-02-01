@@ -1,12 +1,18 @@
 require 'spec_helper'
 
+if ENV['ProgramData'] != nil
+  program_data = ENV['ProgramData']
+else
+  program_data = 'c:\ProgramData'
+end
+
 RSpec.describe 'chocolatey' do
   context 'contains config.pp' do
     context 'with older choco installed' do
       let(:facts) {
         {
           :chocolateyversion  => '0.9.8.33',
-          :choco_install_path => ENV['ProgramData'] + '\chocolatey',
+          :choco_install_path => program_data + '\chocolatey',
         }
       }
 
@@ -30,7 +36,7 @@ RSpec.describe 'chocolatey' do
       let(:facts) {
         {
           :chocolateyversion  => '0',
-          :choco_install_path => ENV['ProgramData'] + '\chocolatey',
+          :choco_install_path => program_data + '\chocolatey',
         }
       }
 
