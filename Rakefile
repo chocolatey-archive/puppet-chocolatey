@@ -39,115 +39,67 @@ RSpec::Core::RakeTask.new(:coverage) do |t|
   t.rcov_opts = ['--exclude', 'spec']
 end
 
+
+platform = ENV["PLATFORM"]
+
+# Create the directory, if it exists already you'll get an error, but this should not stop the execution
 begin
-  require 'rototiller'
-  default_reference_platform = 'windows2012r2-64'
-  default_acceptance_platform = 'centos7-64mdca-windows2012r2-64a'
-  internal_pe_host_location = 'http://neptune.puppetlabs.lan/'
-  internal_pe_version = '2016.5/ci-ready/'
-
-  # Modify a rototiller command and add the common testing options
-  def add_common_beaker_options_to(command)
-    command.add_option do |debug|
-      debug.name = '--debug'
-    end
-    command.add_option do |preserve_hosts|
-      preserve_hosts.name = '--preserve-hosts'
-      preserve_hosts.add_argument do |arg|
-        arg.name = 'never'
-        arg.add_env({:name => 'BEAKER_PRESERVEHOSTS', :message => 'Override the --preserve-hosts option'})
-      end
-    end
-    command.add_option do |config|
-      config.name = '--config'
-      config.add_argument do |arg|
-          arg.name = "tests/configs/#{ENV['PLATFORM']}"
-        end
-    end
-    command.add_option do |keyfile|
-      keyfile.name = '--keyfile'
-      keyfile.add_argument do |arg|
-        arg.name = "#{ENV['HOME']}/.ssh/id_rsa-acceptance"
-        arg.add_env({:name => 'BEAKER_KEYFILE', :message => 'Override the --keyfile option'})
-      end
-    end
-    command.add_option do |loadpath|
-      loadpath.name = '--load-path'
-      loadpath.add_argument do |arg|
-        arg.name = 'tests/lib'
-        arg.add_env({:name => 'BEAKER_LOADPATH', :message => 'Override the --load-path option' })
-      end
-    end
-  end
-
-  desc 'Generate Beaker Host config'
-  rototiller_task :host_config, [:default_platform] do |t, args|
-    t.add_env({:name => 'PLATFORM', :message => 'PLATFORM Must be set. For example "windows2012r2-64"', :default => args[:default_platform]})
-    hosts_file = "tests/configs/#{ENV['PLATFORM']}"
-    t.add_command do |cmd|
-      cmd.name = 'bundle exec beaker-hostgenerator'
-      cmd.add_argument({:name => "#{ENV['PLATFORM']} > #{hosts_file}"})
-    end
-  end
-
-  # Runs the reference tests in agent only configuration
-  desc 'Executes reference tests (agent only) intended for use in CI'
-  rototiller_task :reference_tests  do |task|
-    Rake::Task[:host_config].invoke("#{default_reference_platform}") # pass the default_reference_platform to the host_config task
-    task.add_command do |cmd|
-      cmd.name = 'bundle exec beaker'
-
-      add_common_beaker_options_to(cmd)
-
-      cmd.add_option do |presuite|
-        presuite.name = '--pre-suite'
-        presuite.add_argument do |arg|
-          arg.name = 'tests/reference/pre-suite'
-          arg.add_env({:name => 'BEAKER_PRESUITE', :message => 'Override the --pre-suite option'})
-        end
-      end
-      cmd.add_option do |tests|
-        tests.name = '--tests'
-        tests.add_argument do |arg|
-          arg.name = 'tests/reference/tests'
-          arg.add_env({:name => 'BEAKER_TESTSUITE', :message => 'Override the --tests option'})
-        end
-      end
-      cmd.add_option do |type|
-        type.name = '--type'
-        type.add_argument do |arg|
-          arg.name = 'aio'
-          arg.add_env({:name => 'PLATFORM_TYPE', :message => 'Override the --type option'})
-        end
-      end
-    end
-  end
-
-  desc 'Executes acceptance tests (master and agent) intended for use in CI'
-  rototiller_task :acceptance_tests do |task|
-    Rake::Task[:host_config].invoke("#{default_acceptance_platform}") # pass the default_acceptance_platform to the host_config task
-    task.add_env({:name => 'BEAKER_PE_DIR', :message => 'BEAKER_PE_DIR Must be set.', :default => internal_pe_host_location + internal_pe_version})
-    task.add_command do |cmd|
-      cmd.name = 'bundle exec beaker'
-
-      add_common_beaker_options_to(cmd)
-
-      cmd.add_option do |presuite|
-        presuite.name = '--pre-suite'
-        presuite.add_argument do |arg|
-          arg.name = 'tests/acceptance/pre-suite'
-          arg.add_env({:name => 'BEAKER_PRESUITE', :message => 'Override the --pre-suite option'})
-        end
-      end
-      cmd.add_option do |tests|
-        tests.name = '--tests'
-        tests.add_argument do |arg|
-          arg.name = 'tests/acceptance/tests'
-          arg.add_env({:name => 'BEAKER_TESTSUITE', :message => 'Override the --tests option'})
-        end
-      end
-    end
-  end
-rescue LoadError
-  #Do nothing, rototiller only installed with system_tests group
+  sh 'mkdir tests/configs'
+rescue => e
+  puts e.message
 end
+
+desc 'Executes reference tests (agent only) intended for use in CI'
+task :reference_tests do
+  command = "bundle exec beaker-hostgenerator --global-config {masterless=true} #{platform} > tests/configs/#{platform}" # should we assume the "configs" directory is present?
+  sh command
+
+  command =<<-EOS
+bundle exec beaker                          \
+    --debug                                 \
+    --preserve-hosts never                  \
+    --config tests/configs/$PLATFORM        \
+    --keyfile ~/.ssh/id_rsa-acceptance      \
+    --load-path tests/lib                   \
+    --type aio                              \
+    --pre-suite tests/reference/pre-suite   \
+    --tests tests/reference/tests
+    EOS
+  sh command
+end
+
+desc 'Executes acceptance tests (master and agent) intended for use in CI'
+task :acceptance_tests do
+  command = "bundle exec beaker-hostgenerator #{platform} > tests/configs/#{platform}"
+  sh command
+
+  command =<<-EOS
+bundle exec beaker                          \
+    --debug                                 \
+    --preserve-hosts never                  \
+    --config tests/configs/$PLATFORM        \
+    --keyfile ~/.ssh/id_rsa-acceptance      \
+    --load-path tests/lib                   \
+    --pre-suite tests/acceptance/pre-suite  \
+    --tests tests/acceptance/tests
+    EOS
+  sh command
+end
+
+task :acceptance_tests => [:basic_enviroment_variable_check, :acceptance_enviroment_varible_check]
+task :reference_tests => [:basic_enviroment_variable_check]
+
+task :basic_enviroment_variable_check do
+  abort('PLATFORM variable not present, aborting test.') unless ENV["PLATFORM"]
+  abort('MODULE_VERSION variable not present, aborting test.') unless ENV["MODULE_VERSION"]
+end
+
+task :acceptance_enviroment_varible_check do
+  if ENV["BEAKER_PE_DIR"] && ENV["PE_DIST_DIR"]
+      abort('Either BEAKER_PE_DIR or PE_DIST_DIR variable should be set but not both, aborting test.')
+  end
+  if !ENV["BEAKER_PE_DIR"] && !ENV["PE_DIST_DIR"]
+      abort('Neither BEAKER_PE_DIR or PE_DIST_DIR variable is set, aborting test.')
+  end
+end
+
