@@ -17,7 +17,7 @@ agents.each do |agent|
     install_dev_puppet_module_on(agent, staging)
   else
     step 'Install Chocolatey Module Dependencies'
-    %w(puppetlabs-stdlib puppetlabs-powershell badgerious/windows_env).each do |dep|
+    %w(puppetlabs-stdlib puppetlabs-powershell badgerious/windows_env puppetlabs/registry).each do |dep|
       on(agent, puppet("module install #{dep}"))
 	  end
     step 'Install Chocolatey Module from Local Source'

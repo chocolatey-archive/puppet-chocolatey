@@ -9,7 +9,7 @@ if options[:forge_host]
   install_dev_puppet_module_on(master, staging)
 else
   step 'Install Chocolatey Module Dependencies'
-  %w(puppetlabs-stdlib puppetlabs-powershell badgerious/windows_env).each do |dep|
+  %w(puppetlabs-stdlib puppetlabs-powershell badgerious/windows_env puppetlabs-registry).each do |dep|
     on(master, puppet("module install #{dep}"))
   end
 end

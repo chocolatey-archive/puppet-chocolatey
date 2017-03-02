@@ -39,6 +39,17 @@ RSpec::Core::RakeTask.new(:coverage) do |t|
   t.rcov_opts = ['--exclude', 'spec']
 end
 
+rototiller_gem_message = 'Ensure Rototiller gem is installed before using this task.'
+
+desc "#{rototiller_gem_message}"
+task :host_config
+
+desc "#{rototiller_gem_message}"
+task :acceptance_tests
+
+desc "#{rototiller_gem_message}"
+task :reference_tests
+
 begin
   require 'rototiller'
   default_reference_platform = 'windows2012r2-64'
@@ -82,8 +93,15 @@ begin
 
   desc 'Generate Beaker Host config'
   rototiller_task :host_config, [:default_platform] do |t, args|
+    # Create the directory, if it exists already you'll get an error, but this should not stop the execution
+    config_dir = 'tests/configs/'
+    begin
+      sh "mkdir #{config_dir}"
+    rescue => e
+      puts e.message
+    end
     t.add_env({:name => 'PLATFORM', :message => 'PLATFORM Must be set. For example "windows2012r2-64"', :default => args[:default_platform]})
-    hosts_file = "tests/configs/#{ENV['PLATFORM']}"
+    hosts_file = "#{config_dir}#{ENV['PLATFORM']}"
     t.add_command do |cmd|
       cmd.name = 'bundle exec beaker-hostgenerator'
       cmd.add_argument({:name => "#{ENV['PLATFORM']} > #{hosts_file}"})
