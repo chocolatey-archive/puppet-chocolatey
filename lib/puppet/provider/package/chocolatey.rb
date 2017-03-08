@@ -77,7 +77,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       end
 
       # Add the package version
-      args << @resource[:name][/\A\S*/] << '-version' << @resource[:ensure]
+      args << @resource[:name][/\A\S*/] << '--version' << @resource[:ensure]
     end
 
     if choco_exe
