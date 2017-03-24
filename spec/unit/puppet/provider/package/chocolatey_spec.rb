@@ -97,7 +97,7 @@ describe provider do
 
       it "should use upgrade command with versioned package" do
         resource[:ensure] = '1.2.3'
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-version', '1.2.3', '-y', nil)
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '--version', '1.2.3', '-y', nil)
 
         @provider.install
       end
@@ -135,7 +135,7 @@ describe provider do
 
       it "should use update command with versioned package" do
         resource[:ensure] = '1.2.3'
-        @provider.expects(:chocolatey).with('update', 'chocolatey', '-version', '1.2.3', nil)
+        @provider.expects(:chocolatey).with('update', 'chocolatey', '--version', '1.2.3', nil)
 
         @provider.install
       end
