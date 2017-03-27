@@ -29,6 +29,9 @@ Gemfile:
     ':system_tests':
       - gem: beaker-windows
         version: '~> 0.6'
+    ':development':
+      - gem: rototiller
+        version: '~> 1.0'
 Rakefile:
   unmanaged: true
 spec/spec_helper.rb:

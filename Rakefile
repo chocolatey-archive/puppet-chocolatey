@@ -166,6 +166,8 @@ begin
       end
     end
   end
-rescue LoadError
-  #Do nothing, rototiller only installed with system_tests group
+rescue LoadError => e
+  STDERR.puts "Unable to load rototiller:"
+  raise e
 end
+
