@@ -90,15 +90,15 @@ validate_re($choco_install_location, '^\w\:',
   validate_bool($enable_autouninstaller)
 
   if ((versioncmp($::clientversion, '3.4.0') >= 0) and (!defined('$::serverversion') or versioncmp($::serverversion, '3.4.0') >= 0)) {
-    class { '::chocolatey::install': } ->
-    class { '::chocolatey::config': }
+    class { '::chocolatey::install': }
+    -> class { '::chocolatey::config': }
 
     contain '::chocolatey::install'
     contain '::chocolatey::config'
   } else {
-    anchor {'before_chocolatey':} ->
-    class { '::chocolatey::install': } ->
-    class { '::chocolatey::config': } ->
-    anchor {'after_chocolatey':}
+    anchor {'before_chocolatey':}
+    -> class { '::chocolatey::install': }
+    -> class { '::chocolatey::config': }
+    -> anchor {'after_chocolatey':}
   }
 }
