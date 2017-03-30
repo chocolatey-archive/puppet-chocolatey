@@ -24,6 +24,11 @@
     - "/.vscode/"
     - ".config"
 
+.gitattributes:
+  # As this is for Windows, ERB files can be either LF or CRLF
+  exclude:
+  - "*.erb"
+
 Gemfile:
   optional:
     ':system_tests':
