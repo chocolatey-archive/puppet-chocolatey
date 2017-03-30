@@ -1,3 +1,14 @@
+## 2017-04-04 Supported Release 2.0.2
+
+### Summary
+
+This is a bug fix release
+
+### Bug Fixes
+
+- Fix: Use two dashes when getting package version ([MODULES-4508](https://tickets.puppetlabs.com/browse/MODULES-4508))
+
+
 ## 2017-01-03 Supported Release 2.0.1
 
 ### Summary
