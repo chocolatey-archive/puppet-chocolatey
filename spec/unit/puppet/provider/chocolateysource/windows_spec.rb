@@ -172,7 +172,7 @@ describe provider do
       before :each do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
-        File.expects(:new).with(choco_config,"r").returns choco_config_contents
+        File.expects(:read).with(choco_config).returns choco_config_contents
 
         sources = provider.get_sources
       end
@@ -379,7 +379,7 @@ describe provider do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall).at_most_once
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config).at_most_once
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true).at_most_once
-      File.expects(:new).with(choco_config,"r").returns(choco_config_contents).at_most_once
+      File.expects(:read).with(choco_config).returns(choco_config_contents).at_most_once
 
       resource[:name] = resource_name
       resource[:location] = resource_location

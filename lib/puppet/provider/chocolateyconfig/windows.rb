@@ -42,7 +42,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     raise Puppet::ResourceError, "An install was detected, but was unable to locate config file at #{choco_config}." unless PuppetX::Chocolatey::ChocolateyCommon.file_exists?(choco_config)
 
     Puppet.debug("Gathering sources from '#{choco_config}'.")
-    config = REXML::Document.new File.new(choco_config, 'r')
+    config = REXML::Document.new File.read(choco_config)
 
     config.elements.to_a( '//add' )
   end
