@@ -8,7 +8,7 @@ describe 'Chocolatey Version' do
     context "when Chocolatey is installed" do
       before :each do
         PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
-        File.expects(:exist?).with('c:\dude\bin\choco.exe').returns(true)
+        File.expects(:exist?).with('c:\dude\choco.exe').returns(true)
       end
 
       it "should return the value from running choco -v" do
@@ -63,7 +63,7 @@ Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
     context "When Chocolatey is not installed" do
       before :each do
         PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(nil)
-        File.expects(:exist?).with('\bin\choco.exe').returns(false)
+        File.expects(:exist?).with('\choco.exe').returns(false)
       end
 
       it "should return nil" do

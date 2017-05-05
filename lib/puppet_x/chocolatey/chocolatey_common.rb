@@ -30,12 +30,12 @@ module PuppetX
           #   it installs
           chocoInstallPath = PuppetX::Chocolatey::ChocolateyInstall.install_path
 
-          chocopath =  (chocoInstallPath if (chocoInstallPath && file_exists?("#{chocoInstallPath}\\bin\\choco.exe"))) ||
-              ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\bin\choco.exe')) ||
-              ('C:\Chocolatey' if file_exists?('C:\Chocolatey\bin\choco.exe')) ||
+          chocopath =  (chocoInstallPath if (chocoInstallPath && file_exists?("#{chocoInstallPath}\\choco.exe"))) ||
+              ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\choco.exe')) ||
+              ('C:\Chocolatey' if file_exists?('C:\Chocolatey\choco.exe')) ||
               "#{ENV['ALLUSERSPROFILE']}\\chocolatey"
 
-          chocopath += '\bin\choco.exe'
+          chocopath += '\choco.exe'
         else
           chocopath = 'choco.exe'
         end
