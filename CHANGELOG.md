@@ -1,8 +1,21 @@
+## 2017-06-02 Supported Release 3.0.0
+
+### Summary
+
+Major release which removes support for older versions of Puppet-Agent.
+
+### Bug Fixes
+
+- Fix: Explicitly close configuration files after reading ([MODULES-4678](https://tickets.puppetlabs.com/browse/MODULES-4678))
+- Fix: Use actual choco.exe instead of the shim ([MODULES-4562](https://tickets.puppetlabs.com/browse/MODULES-4562))
+- Fix: Updated puppet version compatibility for modern Puppet agents ([MODULES-4846](https://tickets.puppetlabs.com/browse/MODULES-4846))
+
+
 ## 2017-04-04 Supported Release 2.0.2
 
 ### Summary
 
-This is a bug fix release
+This is a bug fix release.
 
 ### Bug Fixes
 
@@ -51,17 +64,17 @@ Puppetlabs-Chocolatey is now a supported module! This includes everything from t
 
 This brings the unsupported puppetlabs-chocolatey provider on par with the approved chocolatey-chocolatey at 1.2.6 and adds additional features.
 
- * Includes community module releases up to 1.2.6 (changelog below).
- * Manage features - `chocolateyfeature` - see [MODULES-3034](https://tickets.puppet.com/browse/MODULES-3034)
- * Manage config settings - `chocolateyconfig` - see [MODULES-3035](https://tickets.puppet.com/browse/MODULES-3035)
+- Includes community module releases up to 1.2.6 (changelog below).
+- Manage features - `chocolateyfeature` - see [MODULES-3034](https://tickets.puppet.com/browse/MODULES-3034)
+- Manage config settings - `chocolateyconfig` - see [MODULES-3035](https://tickets.puppet.com/browse/MODULES-3035)
 
 
 ## 2016-06-01 Unsupported Release 0.7.0
 
- * Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
- * Includes community module releases up to 1.2.1 (changelog below up to 1.2.1), plus these additional fixes:
-   * $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
-   * Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
+- Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
+- Includes community module releases up to 1.2.1 (changelog below up to 1.2.1), plus these additional fixes:
+  - $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
+  - Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
 
 
 # Approved Community Module Changelog - Chocolatey Team
