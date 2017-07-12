@@ -20,8 +20,6 @@ environment:
     RUBY_VER: 24-x64
   - PUPPET_GEM_VERSION: 4.7.1
     RUBY_VER: 21-x64
-  - PUPPET_GEM_VERSION: 4.2.3
-    RUBY_VER: 21-x64
 matrix:
   fast_finish: true
 install:
