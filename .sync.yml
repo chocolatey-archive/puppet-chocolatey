@@ -37,6 +37,10 @@ Gemfile:
     ':development':
       - gem: rototiller
         version: '~> 1.0'
+      # rspec-puppet is pinned to < 2.6.0 due to https://github.com/rodjek/rspec-puppet/issues/577
+      - gem: 'rspec-puppet'
+        platforms: ["mswin", "mingw", "x64_mingw"]
+        version: '< 2.6.0'
 Rakefile:
   unmanaged: true
 spec/spec_helper.rb:
