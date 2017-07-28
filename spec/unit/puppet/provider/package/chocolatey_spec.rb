@@ -426,14 +426,7 @@ describe provider do
   end
 
   context "when fetching a package list" do
-    # Due to PUP-7772 should only test this on Windows.  Once this issue is resolved
-    # the confinements could be removed.
-    it "should invoke provider listcmd (Puppet 5.0 on Windows)", :if => Puppet::Util::Platform.windows? && Puppet.version == '5.0.0' do
-      provider.expects(:listcmd).returns('cmd /c exit 0')
-
-      provider.instances
-    end
-    it "should invoke provider listcmd (Puppet 4.x)", :if => /^4\./ =~ Puppet.version do
+    it "should invoke provider listcmd" do
       provider.expects(:listcmd)
 
       provider.instances
