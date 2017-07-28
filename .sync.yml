@@ -41,9 +41,6 @@ Rakefile:
   unmanaged: true
 spec/spec_helper.rb:
   unmanaged: true
-appveyor.yml:
-  test_script:
-    - 'bundle exec rspec spec/unit -fd -b'
 MAINTAINERS.md:
   maintainers:
     - "Puppet Windows Team `windows |at| puppet |dot| com`"
