@@ -51,6 +51,25 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     self.class.is_compiled_choco?
   end
 
+  def is_usepackageexitcodes_feature_enabled?
+    PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
+
+    choco_config = PuppetX::Chocolatey::ChocolateyCommon.choco_config_file
+    raise Puppet::ResourceError, "Config file not found for Chocolatey. Please make sure you have Chocolatey installed." if choco_config.nil?
+    raise Puppet::ResourceError, "An install was detected, but was unable to locate config file at #{choco_config}." unless PuppetX::Chocolatey::ChocolateyCommon.file_exists?(choco_config)
+
+    config = REXML::Document.new File.read(choco_config)
+    feature_tags = config.elements.to_a('//feature').select do |feature|
+      feature.attributes['name'].downcase == 'usepackageexitcodes'
+    end
+
+    return false if feature_tags.empty?
+    feature = feature_tags.first
+
+    return true if feature.attributes['enabled'].downcase == 'true'
+    false
+  end
+
   def install
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
      choco_exe = is_compiled_choco?
@@ -90,7 +109,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:install_options]
 
-    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES) and
+        not is_usepackageexitcodes_feature_enabled?
       args << '--ignore-package-exit-codes'
     end
 
@@ -119,7 +139,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:uninstall_options]
 
-    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES) and
+        not is_usepackageexitcodes_feature_enabled?
       args << '--ignore-package-exit-codes'
     end
 
@@ -145,7 +166,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:install_options]
 
-    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES) and
+        not is_usepackageexitcodes_feature_enabled?
       args << '--ignore-package-exit-codes'
     end
 

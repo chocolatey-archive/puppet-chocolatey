@@ -64,6 +64,7 @@ describe provider do
   context "when installing" do
     context "with compiled choco client" do
       before :each do
+        @provider.stubs(:is_usepackageexitcodes_feature_enabled?).returns(false)
         @provider.class.stubs(:is_compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
         PuppetX::Chocolatey::ChocolateyCommon.stubs(:file_exists?).with('c:\dude\bin\choco.exe').returns(true)
@@ -185,6 +186,7 @@ describe provider do
   context "when uninstalling" do
     context "with compiled choco client" do
       before :each do
+        @provider.stubs(:is_usepackageexitcodes_feature_enabled?).returns(false)
         @provider.class.stubs(:is_compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
@@ -259,6 +261,7 @@ describe provider do
   context "when updating" do
     context "with compiled choco client" do
       before :each do
+        @provider.stubs(:is_usepackageexitcodes_feature_enabled?).returns(false)
         @provider.class.stubs(:is_compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
