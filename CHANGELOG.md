@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - Ensure the `source` syntax in the provider is correct ([MODULES-8493](https://tickets.puppetlabs.com/browse/MODULES-8493)). Thanks, [@jcwest](https://github.com/jcwest)!
+- Ensure that if `usePackageExitCodes` is explicitly set to `true` in the Chocolatey configuration then it is observed ([MODULES-8353](https://tickets.puppetlabs.com/browse/MODULES-8353)). Thanks, [David Wood](https://github.com/davidtwco)!
 
 ## [3.1.1] - 2018-12-10
 
