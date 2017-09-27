@@ -26,6 +26,16 @@ describe 'chocolatey' do
     end
   end
 
+  context "accepts install_proxy parameter" do
+    let(:params) {{
+      :install_proxy => 'http://proxy.megacorp.com:3128',
+    }}
+
+    it 'should compile successfully' do
+      catalogue
+    end
+  end
+
   context "chocolatey_download_url =>" do
     ['https://chocolatey.org/api/v2/package/chocolatey/','http://location','file:///c:/somwhere/chocolatey.nupkg'].each do |param_value|
       context "#{param_value}" do
