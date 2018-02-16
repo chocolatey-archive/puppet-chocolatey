@@ -793,6 +793,10 @@ If you override the default installation directory you need to set appropriate p
 
 Specifies whether to use the built-in shell or allow the installer to download 7zip to extract `chocolatey.nupkg` during installation. Valid options: `true`, `false`. Default: `false`.
 
+##### `seven_zip_download_url`
+
+Specifies the source file for `7za.exe`. Supports all sources supported by Puppet's `file {}` resource. You should use a 32bit binary for compatibility.  Defaults to `https://chocolatey.org/7za.exe`
+
 ##### `choco_install_timeout_seconds`
 
 Specifies how long in seconds should be allowed for the install of Chocolatey (including .NET Framework 4 if necessary). Valid options: Number. Default: `1500` (25 minutes).
