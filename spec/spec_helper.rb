@@ -1,31 +1,7 @@
-#require 'ruby-prof'
-#RubyProf.start
-
-IDEAL_CONSOLE_WIDTH = 72
-def horizontal_rule(width = 5)
-  '=' * [width, IDEAL_CONSOLE_WIDTH].min
-end
-
+require 'pry' if Bundler.rubygems.find_name('pry').any?
 require 'puppetlabs_spec_helper/module_spec_helper'
-
-# require dependencies
-gems = [
-  #'minitest/autorun', # http://docs.seattlerb.org/minitest/
-  #'minitest/unit', # https://github.com/freerange/mocha#bundler
-  'mocha', # http://gofreerange.com/mocha/docs/Mocha/Configuration.html
-  'puppet',
-]
-begin
-  gems.each {|gem| require gem}
-rescue => e
-  # http://goo.gl/r3nFG
-  # emphasize dependency failures in case a task spews lots of output
-  warn horizontal_rule(e.message.length)
-  warn e.class
-  warn e.message
-  warn horizontal_rule(e.message.length)
-  exit(1)
-end
+require 'rake'
+require 'fileutils'
 
 RSpec.configure do |c|
   # set the environment variable before files are loaded, otherwise it is too late
