@@ -5,12 +5,6 @@ require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-bla
 require 'puppet'
 require 'bundler'
 
-require 'pry' if Bundler.rubygems.find_name('pry').any?
-Bundler.require(:rake)
-
-Dir.glob('build/*.rb').each { |r| import r }
-Dir.glob('build/*.rake').each { |r| import r }
-
 begin
   require 'beaker/tasks/test' unless RUBY_PLATFORM =~ /win32/
 rescue LoadError
