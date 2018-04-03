@@ -1,3 +1,0 @@
-# Ignore all configs in this directory, they will be created by beaker-hostgenerator
-*
-!.gitignore
