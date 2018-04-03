@@ -22,7 +22,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should now have proper priority' do
@@ -56,7 +56,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should have the correct properties' do
@@ -89,7 +89,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the results' do
@@ -120,7 +120,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify results' do
@@ -153,7 +153,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the results' do
@@ -186,7 +186,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the setup was added' do
@@ -204,7 +204,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src_change, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src_change, :catch_failures => true)
       end
 
       it 'Should verify results' do
@@ -234,7 +234,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the results' do
@@ -266,7 +266,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the results' do
@@ -287,7 +287,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src_change, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src_change, :catch_failures => true)
       end
 
       it 'Should validate the results' do
@@ -317,8 +317,8 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
-        apply_manifest_on(agent, chocolatey_src, :catch_changes => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_changes => true)
       end
 
       it 'Should verify the results' do
@@ -347,7 +347,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the results' do
@@ -376,7 +376,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/Error: Validation of Chocolateysource\[chocolatey\] failed: A non-empty location/, result.stderr, "stderr did not match expected")
         end
       end
@@ -402,7 +402,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/Error: Parameter ensure failed on Chocolateysource\[test\]: Invalid value "sad"/, result.stderr, "stderr did not match expected")
         end
       end
@@ -429,7 +429,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/Error: Validation of Chocolateysource\[chocolatey\] failed: If specifying user\/password, you must specify both values/, result.stderr, "stderr did not match expected")
         end
       end
@@ -456,7 +456,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/Error: Validation of Chocolateysource\[chocolatey\] failed: If specifying user\/password, you must specify both values/, result.stderr, "stderr did not match expected")
         end
       end
@@ -481,7 +481,7 @@ describe 'Chocolatey Source' do
           }
         PP
 
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the result' do
@@ -519,7 +519,7 @@ describe 'Chocolatey Source' do
       PP
 
       it 'Should apply a manifest' do
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify setup' do
@@ -529,7 +529,7 @@ describe 'Chocolatey Source' do
       end
 
       it 'Should apply remove manifest' do
-        apply_manifest_on(agent, chocolatey_src_remove, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src_remove, :catch_failures => true)
       end
 
       it 'Should verify results' do
@@ -568,7 +568,7 @@ describe 'Chocolatey Source' do
       PP
 
       it 'Should apply a manifest' do
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify setup' do
@@ -580,7 +580,7 @@ describe 'Chocolatey Source' do
       end
 
       it 'Should apply remove manifest' do
-        apply_manifest_on(agent, chocolatey_src_remove, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src_remove, :catch_failures => true)
       end
 
       it 'Should verify results' do

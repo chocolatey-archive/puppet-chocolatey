@@ -3,7 +3,7 @@ shared_examples 'a successful config change' do |manifest, key, expected_value|
   windows_agents.each do |agent|
     
     it 'Should apply the config manifest' do
-        apply_manifest_on(agent, manifest, :catch_failures => true)
+        execute_manifest_on(agent, manifest, :catch_failures => true)
     end
 
     it 'should validate the value' do

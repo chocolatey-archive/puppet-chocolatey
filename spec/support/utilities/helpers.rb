@@ -28,7 +28,7 @@ def install_chocolatey
 
     curl_on(agent, "#{get_latest_chocholatey_download_url} > C:/chocolatey.nupkg")
 
-    apply_manifest_on(agent, chocolatey_pp, opts) do |result|
+    execute_manifest_on(agent, chocolatey_pp, opts) do |result|
       assert_no_match(/Error:/, result.stderr, 'Unexpected error was detected!')
     end
 

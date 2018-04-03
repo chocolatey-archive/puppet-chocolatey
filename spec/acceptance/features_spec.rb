@@ -25,7 +25,7 @@ describe 'Chocolatey features' do
       end
 
       it 'Should apply the manifest to disable the feature' do
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'should verify the feature is still disabled' do
@@ -60,7 +60,7 @@ describe 'Chocolatey features' do
       end
 
       it 'should apply the manifest to disable the feature' do
-        apply_manifest_on(agent, chocolatey_src)
+        execute_manifest_on(agent, chocolatey_src)
       end
 
       it 'should validate the feature is now disabled' do
@@ -95,7 +95,7 @@ describe 'Chocolatey features' do
       end
 
       it 'should apply the manifest to enable the feature' do
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the feature is now enabled' do
@@ -130,7 +130,7 @@ describe 'Chocolatey features' do
       end
 
       it 'should apply the manifest to enable the feature' do
-        apply_manifest_on(agent, chocolatey_src, :catch_failures => true)
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
       end
 
       it 'Should verify the feature is still enabled' do
@@ -159,7 +159,7 @@ describe 'Chocolatey features' do
 
     windows_agents.each do | agent |
       it 'Should fail to apply the manifest' do
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/returned 1: Feature 'idontexistfeature123123' not found/, result.stderr, "stderr did not match expected")
         end
       end
@@ -184,7 +184,7 @@ describe 'Chocolatey features' do
 
     windows_agents.each do | agent |
       it 'Should fail to apply the manifest' do
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/returned 1: Feature 'idontexistfeature123123' not found/, result.stderr, "stderr did not match expected")
         end
       end
@@ -209,7 +209,7 @@ describe 'Chocolatey features' do
 
     windows_agents.each do | agent |
       it 'Should fail to apply the manifest' do
-        apply_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_src, :expect_failures => true) do | result |
           assert_match(/Error: Parameter ensure failed on Chocolateyfeature\[checksumFiles\]: Invalid value \"absent\"/, result.stderr, "stderr did not match expected")
         end
       end

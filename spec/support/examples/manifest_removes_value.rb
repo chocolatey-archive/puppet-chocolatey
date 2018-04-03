@@ -2,7 +2,7 @@ shared_examples 'a manifest that removes a config value' do |manifest, key|
   
   windows_agents.each do |agent|
     it 'should apply the manifest that removes the value' do
-      apply_manifest_on(agent, manifest, :catch_failures => true)
+      execute_manifest_on(agent, manifest, :catch_failures => true)
     end
 
     it 'should validate the key has been removed' do
