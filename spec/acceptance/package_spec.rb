@@ -40,7 +40,7 @@ describe 'Chocolatey Package' do
 
       it 'Should apply the manifest to install the package' do
 
-        apply_manifest_on(agent, chocolatey_package_manifest, :catch_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_package_manifest, :catch_failures => true) do | result |
           assert_match(/Notice\: \/Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: created/, result.stdout, "stdout did not report package creation of #{package_name}")
         end
       end
@@ -52,7 +52,7 @@ describe 'Chocolatey Package' do
       end
 
       it 'Should uninstall the package' do
-        apply_manifest_on(agent, chocolatey_package_manifest_chng, :catch_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_package_manifest_chng, :catch_failures => true) do | result |
           assert_match(/Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: removed/, result.stdout, "stdout did not report package removal of #{package_name}")
         end
       end
@@ -96,7 +96,7 @@ describe 'Chocolatey Package' do
       end
 
       it 'Should apply the manifest to install the package' do
-        apply_manifest_on(agent, chocolatey_package_manifest, :catch_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_package_manifest, :catch_failures => true) do | result |
           assert_match(/Notice\: \/Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: created/, result.stdout, "stdout did not report package creation of #{package_name}")
         end
       end
@@ -108,7 +108,7 @@ describe 'Chocolatey Package' do
       end
 
       it 'Should uninstall the package' do
-        apply_manifest_on(agent, chocolatey_package_manifest_chng, :catch_failures => true) do | result |
+        execute_manifest_on(agent, chocolatey_package_manifest_chng, :catch_failures => true) do | result |
           assert_match(/Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: removed/, result.stdout, "stdout did not report package removal of #{package_name}")
         end
       end

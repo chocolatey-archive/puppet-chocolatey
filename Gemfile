@@ -63,6 +63,7 @@ group :system_tests do
   gem "beaker-abs", *location_for(ENV['BEAKER_ABS_VERSION'] || '~> 0.1')        
   gem "puppet-blacksmith", '~> 3.4',                                             :require => false
   gem "beaker-windows", '~> 0.6',                                                :require => false
+  gem "beaker-testmode_switcher"
 end
 
 gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'])
