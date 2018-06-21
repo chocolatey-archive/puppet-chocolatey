@@ -1,4 +1,4 @@
-CHOCOLATEY_LATEST_INFO_URL = "http://nexus.delivery.puppetlabs.net/service/local/nuget/choco-pipeline-tests/Packages()?$filter=((Id%20eq%20%27chocolatey%27)%20and%20(not%20IsPrerelease))%20and%20IsLatestVersion"
+CHOCOLATEY_LATEST_INFO_URL = "https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/choco-pipeline-tests/Packages()?$filter=((Id%20eq%20%27chocolatey%27)%20and%20(not%20IsPrerelease))%20and%20IsLatestVersion"
 
 def get_latest_chocholatey_download_url
   uri = URI.parse(CHOCOLATEY_LATEST_INFO_URL)
