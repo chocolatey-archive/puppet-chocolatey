@@ -11,7 +11,7 @@ describe 'Chocolatey Package' do
       package { "#{package_name}":
         ensure   => present,
         provider => chocolatey,
-        source   => 'http://nexus.delivery.puppetlabs.net/service/local/nuget/choco-pipeline-tests/'
+        source   => 'https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/choco-pipeline-tests/'
       }
     PP
 
@@ -39,7 +39,6 @@ describe 'Chocolatey Package' do
       end
 
       it 'Should apply the manifest to install the package' do
-
         execute_manifest_on(agent, chocolatey_package_manifest, :catch_failures => true) do | result |
           assert_match(/Notice\: \/Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: created/, result.stdout, "stdout did not report package creation of #{package_name}")
         end
@@ -68,7 +67,7 @@ describe 'Chocolatey Package' do
       package { "#{package_name}":
         ensure  => present,
         provider => chocolatey,
-        source => 'http://nexus.delivery.puppetlabs.net/service/local/nuget/choco-pipeline-tests/'
+        source => 'https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/choco-pipeline-tests/'
       }
     PP
 
