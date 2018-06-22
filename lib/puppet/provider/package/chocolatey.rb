@@ -28,7 +28,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
   has_feature :install_options
   has_feature :uninstall_options
   has_feature :holdable
-  #has_feature :package_settings
+  has_feature :package_settings
 
   require Pathname.new(__FILE__).dirname + '../../../' + 'puppet_x/chocolatey/chocolatey_common'
   include PuppetX::Chocolatey::ChocolateyCommon
@@ -94,7 +94,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '--ignore-package-exit-codes'
     end
 
-    chocolatey(*args)
+    @resource[:package_settings] ||= {}
+    if @resource[:package_settings]['verbose']
+      Puppet.info "Calling chocolatey with arguments: " + args.join(' ')
+    end
+    output = chocolatey(*args)
+    if @resource[:package_settings]['log_output']
+      Puppet.info "Output from chocolatey: " + output
+    end
   end
 
   def uninstall
@@ -123,7 +130,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '--ignore-package-exit-codes'
     end
 
-    chocolatey(*args)
+    @resource[:package_settings] ||= {}
+    if @resource[:package_settings]['verbose']
+      Puppet.info "Calling chocolatey with arguments: " + args.join(' ')
+    end
+    output = chocolatey(*args)
+    if @resource[:package_settings]['log_output']
+      Puppet.info "Output from chocolatey: " + output
+    end
   end
 
   def update
@@ -150,7 +164,14 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
 
     if self.query
-      chocolatey(*args)
+    @resource[:package_settings] ||= {}
+      if @resource[:package_settings]['verbose']
+        Puppet.info "Calling chocolatey with arguments: " + args.join(' ')
+      end
+      output = chocolatey(*args)
+      if @resource[:package_settings]['log_output']
+        Puppet.info "Output from chocolatey: " + output
+      end
     else
       self.install
     end
@@ -179,7 +200,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '-r'
     end
 
-    [command(:chocolatey), *args]
+    [output = command(:chocolatey), *args]
   end
 
   def self.instances
@@ -232,6 +253,10 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
       args << '| findstr /R "latest" | findstr /V "latestCompare"'
     end
 
+    @resource[:package_settings] ||= {}
+    if @resource[:package_settings]['verbose']
+      Puppet.info "Calling chocolatey with arguments: " + args.join(' ')
+    end
     [command(:chocolatey), *args]
   end
 
@@ -275,6 +300,17 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     Puppet::Util::Execution.execute([command(:chocolatey), 'pin','remove', '-n', @resource[:name][/\A\S*/]], :failonfail => false)
   end
+
+  def package_settings
+    # Not actually used
+  end
+  def package_settings=
+    # Not actually used
+  end
+  def package_settings_insync?(should, is)
+    return true
+  end
+
 
 
 end
