@@ -7,23 +7,18 @@
   "source": "https://github.com/puppetlabs/puppetlabs-chocolatey",
   "project_page": "https://github.com/puppetlabs/puppetlabs-chocolatey",
   "issues_url": "https://tickets.puppet.com/CreateIssueDetails!init.jspa?pid=10707&issuetype=1&team=Modules&customfield_14200=14302&labels=triage&customfield_10005=2147&summary=Issue+found+with+module%3A+puppetlabs-chocolatey",
-  "description": "Chocolatey package provider for Puppet",
-  "tags": [
-    "microsoft",
-    "powershell",
-    ".NET Framework",
-    ".Net",
-    "dot_net",
-    "chocolatey",
-    "package",
-    "package manager",
-    "chocolatey for business",
-    "chocolatey professional"
-  ],
-  "requirements": [
+  "dependencies": [
     {
-      "name": "puppet",
-      "version_requirement": ">= 4.7.0 < 6.0.0"
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.6.0 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/powershell",
+      "version_requirement": ">= 1.0.1 < 3.0.0"
+    },
+    {
+      "name": "puppetlabs/registry",
+      "version_requirement": ">= 1.0.0 < 3.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -41,18 +36,26 @@
       ]
     }
   ],
-  "dependencies": [
+  "requirements": [
     {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.6.0 < 5.0.0"
-    },
-    {
-      "name": "puppetlabs/powershell",
-      "version_requirement": ">= 1.0.1 < 3.0.0"
-    },
-    {
-      "name": "puppetlabs/registry",
-      "version_requirement": ">= 1.0.0 < 3.0.0"
+      "name": "puppet",
+      "version_requirement": ">= 4.7.0 < 6.0.0"
     }
-  ]
+  ],
+  "description": "Chocolatey package provider for Puppet",
+  "tags": [
+    "microsoft",
+    "powershell",
+    ".NET Framework",
+    ".Net",
+    "dot_net",
+    "chocolatey",
+    "package",
+    "package manager",
+    "chocolatey for business",
+    "chocolatey professional"
+  ],
+  "pdk-version": "1.6.0",
+  "template-url": "file://C:/Program Files/Puppet Labs/DevelopmentKit/share/cache/pdk-templates.git",
+  "template-ref": "1.6.0-0-gf5564c0"
 }
