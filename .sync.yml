@@ -14,19 +14,6 @@ Gemfile:
           - mswin
           - mingw
           - x64_mingw
-      - gem: beaker
-        version: '~> 3.13'
-        from_env: BEAKER_VERSION
-      - gem: beaker-abs
-        version: '~> 0.1'
-        from_env: BEAKER_ABS_VERSION
-      - gem: beaker-pe
-      - gem: beaker-hostgenerator
-        version: '>= 0.0'
-        from_env: BEAKER_HOSTGENERATOR_VERSION
-      - gem: beaker-rspec
-        version: '>= 0.0'
-        from_env: BEAKER_RSPEC_VERSION
       - gem: beaker-testmode_switcher
         version: '~> 0.4'
       - gem: master_manipulator
