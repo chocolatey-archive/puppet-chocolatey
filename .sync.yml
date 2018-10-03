@@ -31,6 +31,15 @@ Gemfile:
   include_todos: true
   selected_profile: off
 
+appveyor.yml:
+  matrix_extras:
+    - PUPPET_GEM_VERSION: ~> 6.0
+      RUBY_VERSION: 25
+      CHECK: parallel_spec
+    - PUPPET_GEM_VERSION: ~> 6.0
+      RUBY_VERSION: 25-x64
+      CHECK: parallel_spec
+
 spec/default_facts.yml:
   unmanaged: true
 
