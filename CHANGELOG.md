@@ -1,3 +1,26 @@
+## 2018-10-10 Supported Release 3.1.0
+
+### Summary
+
+Minor release which adds support for Puppet 5, Puppet 6, Windows Server 2016 and the PDK.
+
+### Features
+
+- Add support for Puppet 5 ([MODULES-5144](https://tickets.puppetlabs.com/browse/MODULES-5144))
+- Add support for Server 2016 ([MODULES-4271](https://tickets.puppetlabs.com/browse/MODULES-4271))
+- Convert module for PDK ([MODULES-7398](https://tickets.puppetlabs.com/browse/MODULES-7398))
+- Add support for Puppet 6 ([MODULES-7832](https://tickets.puppetlabs.com/browse/MODULES-7832))
+
+### Improvements
+
+- Add Beaker Testmode Switcher ([MODULES-6734](https://tickets.puppetlabs.com/browse/MODULES-6734))
+- Update Stdlib to 6.0.0 ([MODULES-7705](https://tickets.puppetlabs.com/browse/MODULES-7705))
+
+### Bug Fixes
+
+- Fix: Choco version rendering error ([MODULES-5788](https://tickets.puppetlabs.com/browse/MODULES-5788))
+- Fix: Convert tests to rspec format ([MODULES-6746](https://tickets.puppetlabs.com/browse/MODULES-6746))
+
 ## 2017-06-02 Supported Release 3.0.0
 
 ### Summary
