@@ -5,7 +5,7 @@ module PuppetX
   module Chocolatey
     class ChocolateyVersion
 
-      OLD_CHOCO_MESSAGE = "Please run chocolatey /? or chocolatey help - chocolatey v"
+      OLD_CHOCO_MESSAGE = "Please run chocolatey /? or chocolatey help - chocolatey v" unless defined? OLD_CHOCO_MESSAGE
 
       def self.version
         version = nil
