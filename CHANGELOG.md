@@ -1,219 +1,274 @@
-## 2018-10-10 Supported Release 3.1.0
+# Changelog
+All notable changes to this project will be documented in this file.
 
-### Summary
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-Minor release which adds support for Puppet 5, Puppet 6, Windows Server 2016 and the PDK.
+## [Unreleased]
 
-### Features
+## [3.1.0] - 2018-10-10
+
+### Fixed
+
+- Choco version rendering error ([MODULES-5788](https://tickets.puppetlabs.com/browse/MODULES-5788))
+- Convert tests to rspec format ([MODULES-6746](https://tickets.puppetlabs.com/browse/MODULES-6746))
+
+### Added
 
 - Add support for Puppet 5 ([MODULES-5144](https://tickets.puppetlabs.com/browse/MODULES-5144))
 - Add support for Server 2016 ([MODULES-4271](https://tickets.puppetlabs.com/browse/MODULES-4271))
-- Convert module for PDK ([MODULES-7398](https://tickets.puppetlabs.com/browse/MODULES-7398))
 - Add support for Puppet 6 ([MODULES-7832](https://tickets.puppetlabs.com/browse/MODULES-7832))
-
-### Improvements
-
 - Add Beaker Testmode Switcher ([MODULES-6734](https://tickets.puppetlabs.com/browse/MODULES-6734))
+
+### Changed
+
+- Convert module for PDK ([MODULES-7398](https://tickets.puppetlabs.com/browse/MODULES-7398))
 - Update Stdlib to 6.0.0 ([MODULES-7705](https://tickets.puppetlabs.com/browse/MODULES-7705))
 
-### Bug Fixes
+## [3.0.0] - 2017-06-02
 
-- Fix: Choco version rendering error ([MODULES-5788](https://tickets.puppetlabs.com/browse/MODULES-5788))
-- Fix: Convert tests to rspec format ([MODULES-6746](https://tickets.puppetlabs.com/browse/MODULES-6746))
+### Fixed
 
-## 2017-06-02 Supported Release 3.0.0
+- Explicitly close configuration files after reading ([MODULES-4678](https://tickets.puppetlabs.com/browse/MODULES-4678))
+- Use actual choco.exe instead of the shim ([MODULES-4562](https://tickets.puppetlabs.com/browse/MODULES-4562))
+- Updated puppet version compatibility for modern Puppet agents ([MODULES-4846](https://tickets.puppetlabs.com/browse/MODULES-4846))
 
-### Summary
+## [2.0.2] - 2017-04-04
 
-Major release which removes support for older versions of Puppet-Agent.
+### Fixed
 
-### Bug Fixes
+- Use two dashes when getting package version ([MODULES-4508](https://tickets.puppetlabs.com/browse/MODULES-4508))
 
-- Fix: Explicitly close configuration files after reading ([MODULES-4678](https://tickets.puppetlabs.com/browse/MODULES-4678))
-- Fix: Use actual choco.exe instead of the shim ([MODULES-4562](https://tickets.puppetlabs.com/browse/MODULES-4562))
-- Fix: Updated puppet version compatibility for modern Puppet agents ([MODULES-4846](https://tickets.puppetlabs.com/browse/MODULES-4846))
+## [2.0.1] - 2017-01-03
 
+### Fixed
 
-## 2017-04-04 Supported Release 2.0.2
+- ChocolateyInstall environment variable not set for alternate installation directory ([MODULES-4091](https://tickets.puppetlabs.com/browse/MODULES-4091))
+- Unsuitable providers should not cause errors ([MODULES-4149](https://tickets.puppetlabs.com/browse/MODULES-4149))
+- Version is malformed with any extraneous messages ([MODULES-4135](https://tickets.puppetlabs.com/browse/MODULES-4135))
+- Module does not propagate null source error correctly ([MODULES-4056](https://tickets.puppetlabs.com/browse/MODULES-4056))
+- Install fails on Windows 10 when using built-in compression ([MODULES-4210](https://tickets.puppetlabs.com/browse/MODULES-4210))
 
-### Summary
+### Added
 
-This is a bug fix release.
-
-### Bug Fixes
-
-- Fix: Use two dashes when getting package version ([MODULES-4508](https://tickets.puppetlabs.com/browse/MODULES-4508))
-
-
-## 2017-01-03 Supported Release 2.0.1
-
-### Summary
-
-This is a bug fix release, correcting some issues in the original supported release and one that was introduced by the switchover to the puppetlabs-powershell v2 module.
-
-### Bug Fixes
-
-- Fix: ChocolateyInstall environment variable not set for alternate installation directory ([MODULES-4091](https://tickets.puppetlabs.com/browse/MODULES-4091))
-- Fix: Unsuitable providers should not cause errors ([MODULES-4149](https://tickets.puppetlabs.com/browse/MODULES-4149))
-- Fix: version is malformed with any extraneous messages ([MODULES-4135](https://tickets.puppetlabs.com/browse/MODULES-4135))
-- Fix: module does not propagate null source error correctly ([MODULES-4056](https://tickets.puppetlabs.com/browse/MODULES-4056))
-- Fix: install fails on Windows 10 when using built-in compression ([MODULES-4210](https://tickets.puppetlabs.com/browse/MODULES-4210))
-
-### Improvements
-
-- Set TLS 1.1+ when available
 - Document considerations for install to "C:\Chocolatey" ([MODULES-4090](https://tickets.puppetlabs.com/browse/MODULES-4090))
 
+### Changed
 
-## 2016-09-29 First Supported Release 2.0.0
+- Set TLS 1.1+ when available
 
-### Summary
+## [2.0.0] - 2016-09-29
 
-Puppetlabs-Chocolatey is now a supported module! This includes everything from the approved chocolatey-chocolatey module, plus the improvements in the unsupported releases 0.7.0 and 0.8.0. It also adds the following additional changes and fixes.
-
-### Features
+### Added
 
 - `chocolateysource` - explicitly require location in ensure ([MODULES-3430](https://tickets.puppet.com/browse/MODULES-3430))
+- Supported tag on the forge.
+
+### Changed
+
 - set ignore package exit codes when Chocolatey is on version 0.9.10+ ([MODULES-3880](https://tickets.puppet.com/browse/MODULES-3880))
 
-### Bug Fixes
+### Fixed
 
-- Fix: Ensure config file exists before `chocolateyfeature`, `chocolateyconfig`, or `chocolateysource` ([MODULES-3677](https://tickets.puppet.com/browse/MODULES-3677))
-- Fix: `chocolateysource` - ensure flush when disabling source ([MODULES-3430](https://tickets.puppet.com/browse/MODULES-3430))
-- Fix: `chocolateysource` - erroneous user sync messages ([MODULES-3758](https://tickets.puppet.com/browse/MODULES-3758))
+- Ensure config file exists before `chocolateyfeature`, `chocolateyconfig`, or `chocolateysource` ([MODULES-3677](https://tickets.puppet.com/browse/MODULES-3677))
+- `chocolateysource` - ensure flush when disabling source ([MODULES-3430](https://tickets.puppet.com/browse/MODULES-3430))
+- `chocolateysource` - erroneous user sync messages ([MODULES-3758](https://tickets.puppet.com/browse/MODULES-3758))
 
+## [0.8.0] - Unsupported 2016-07-13
 
-## 2016-07-13 Unsupported Release 0.8.0
-
-This brings the unsupported puppetlabs-chocolatey provider on par with the approved chocolatey-chocolatey at 1.2.6 and adds additional features.
+### Added
 
 - Includes community module releases up to 1.2.6 (changelog below).
 - Manage features - `chocolateyfeature` - see [MODULES-3034](https://tickets.puppet.com/browse/MODULES-3034)
 - Manage config settings - `chocolateyconfig` - see [MODULES-3035](https://tickets.puppet.com/browse/MODULES-3035)
 
+## [0.7.0] - Unsupported 2016-06-01
 
-## 2016-06-01 Unsupported Release 0.7.0
+### Added
 
 - Manage sources - `chocolateysource` - see [MODULES-3037](https://tickets.puppetlabs.com/browse/MODULES-3037)
-- Includes community module releases up to 1.2.1 (changelog below up to 1.2.1), plus these additional fixes:
-  - $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
-  - Fix: puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
+- Includes community module releases up to 1.2.1 (changelog below up to 1.2.1)
 
+### Fixed
 
-# Approved Community Module Changelog - Chocolatey Team
+- $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
+- puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
 
-The Chocolatey team has graciously agreed to allow Puppet to take this module
-to the next level. Puppet will rerelease a supported module under the original
-versioning scheme. For now we are using a number less than 1.0 to show that this
-could have some technical issues and should be treated as a prerelease version.
+# Note:
+The changelog below is for changes to the Community chocolatey-chocolatey module from which this current module takes over. It is retained below for historical purposes since for a couple releases this module did track its changes and bug fixes.
 
-## 2016-07-11 Release 1.2.6
+## [1.2.6] - 2016-07-11
 
-- Fix - AutoUninstaller runs every time in 0.9.9.x [#134](https://github.com/chocolatey/puppet-chocolatey/issues/134)
+### Fixed
 
+- AutoUninstaller runs every time in 0.9.9.x [#134](https://github.com/chocolatey/puppet-chocolatey/issues/134)
 
-## 2016-06-20 Release 1.2.5
+## [1.2.5] - 2016-06-20
+
+### Changed
 
 - Support feature list changes in v0.9.10+ [#133](https://github.com/chocolatey/puppet-chocolatey/issues/133)
-- Fix - Chocolatey fails to install in PowerShell v2 with PowerShell Module 1.x [#128](https://github.com/chocolatey/puppet-chocolatey/issues/128)
 
+### Fixed
 
-## 2016-06-04 Release 1.2.4
+- Chocolatey fails to install in PowerShell v2 with PowerShell Module 1.x [#128](https://github.com/chocolatey/puppet-chocolatey/issues/128)
+
+## [1.2.4] - 2016-06-04
+
+### Added
 
 - Compatibility with puppetlabs-powershell 2.x [#125](https://github.com/chocolatey/puppet-chocolatey/issues/125).
 
+## [1.2.3] - 2016-05-06
 
-## 2016-05-06 Release 1.2.3
+### Added
 
-- Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
 - Announce [Chocolatey for Business](https://chocolatey.org/compare) in ReadMe.
 
-
-## 2016-05-06 Release 1.2.3
+### Changed
 
 - Do not call choco with --debug --verbose by default [#100](https://github.com/chocolatey/puppet-chocolatey/issues/100).
-- Announce Chocolatey for Business in ReadMe.
 
+## [1.2.2] - 2016-04-06
 
-## 2016-04-06 Release 1.2.2
+### Changed
 
-- Fix: puppet apply works again [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105).
 - `$::chocolateyversion` fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
-- Fix: Implement PowerShell Redirection Fix for Windows 2008 / PowerShell v2 - see [#119](https://github.com/chocolatey/puppet-chocolatey/issues/119)
 
+### Fixed
 
-## 2015-12-08 Release 1.2.1
+- puppet apply works again [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105).
+- Implement PowerShell Redirection Fix for Windows 2008 / PowerShell v2 - see [#119](https://github.com/chocolatey/puppet-chocolatey/issues/119)
 
-- Small release for support of newer PE versions.
+## [1.2.1] - 2015-12-08
 
+### Added
 
-##2015-11-03 Release 1.2.0
+- Support for newer versions of PE
 
-- Implement holdable ([#95](https://github.com/chocolatey/puppet-chocolatey/issues/95))
-- Fix - Use install unless version specified in install ([#71](https://github.com/chocolatey/puppet-chocolatey/issues/71))
+## [1.2.0] - 2015-11-03
 
+### Added
 
-## 2015-10-02 Release 1.1.2
+- holdable ([#95](https://github.com/chocolatey/puppet-chocolatey/issues/95))
+
+### Fixed
+
+- Use install unless version specified in install ([#71](https://github.com/chocolatey/puppet-chocolatey/issues/71))
+
+## [1.1.2] - 2015-10-02
+
+### Fixed
 
 - Ensure 0.9.9.9 compatibility ([#94](https://github.com/chocolatey/puppet-chocolatey/issues/94))
-- Fix - Mixed stale environment variables of existing choco install causing issues ([#86](https://github.com/chocolatey/puppet-chocolatey/issues/86))
+- Mixed stale environment variables of existing choco install causing issues ([#86](https://github.com/chocolatey/puppet-chocolatey/issues/86))
 - Upgrade From POSH Version of Chocolatey Fails from Puppet ([#60](https://github.com/chocolatey/puppet-chocolatey/issues/60))
 
+## [1.1.1] - 2015-09-25
 
-## 2015-09-25 Release 1.1.1
+### Added
 
 - Add log_output for chocolatey bootstrap installer script
-- Ensure bootstrap enforces chocolatey.nupkg in libs folder
 - Allow file location for installing nupkg file.
 
+### Changed
 
-## 2015-09-09 Release 1.1.0
+- Ensure bootstrap enforces chocolatey.nupkg in libs folder
 
-- Install Chocolatey itself / ensure Chocolatey is installed (PUP-1691)
-- Adds custom facts for chocolateyversion and choco_install_path
+### [1.1.0] - 2015-09-09
 
+- Install Chocolatey itself / ensure Chocolatey is installed ([PUP-1691](https://tickets.puppetlabs.com/browse/PUP-1691))
+- Custom facts for chocolateyversion and choco_install_path
 
-## 2015-07-23 Release 1.0.2
+## [1.0.2] - 2015-07-23
 
-- Fixes [#71](https://github.com/chocolatey/puppet-chocolatey/issues/71) - Allow `ensure => $version` to work with already installed packages
+### Fixed
 
+- Allow `ensure => $version` to work with already installed packages [#71](https://github.com/chocolatey/puppet-chocolatey/issues/71)
 
-## 2015-07-01 Release 1.0.1
+## [1.0.1] - 2015-07-01
 
-- Fixes [#66](https://github.com/chocolatey/puppet-chocolatey/issues/66) - Check for choco existence more comprehensively
+### Fixed
 
+- Check for choco existence more comprehensively [#66](https://github.com/chocolatey/puppet-chocolatey/issues/66)
 
-## 2015-06-08 Release 1.0.0
+## [1.0.0] - 2015-06-08
 
-- No change, bumping to 1.0.0
+## [0.5.3] - 2015-05-22
 
+### Changed
 
-## 2015-05-22 Release 0.5.3
-
-- Fix manifest issue
-- Fix choco path issue
 - Update ReadMe - fix/clarify how options with quotes need to be passed.
 
+### Fixed
 
-## 2015-04-23 Release 0.5.2
+- Manifest issue
+- Choco path issue
 
-- Update ReadMe
-- Add support for Windows 10.
-- Fixes [#56](https://github.com/chocolatey/puppet-chocolatey/pull/56) - Avoiding puppet returning 2 instead of 0 when there are no changes to be done.
+## [0.5.2] - 2015-04-23
 
+### Changed
 
-## 2015-03-31 Release 0.5.1
+- Readme
 
-- Fixes [#54](https://github.com/chocolatey/puppet-chocolatey/issues/54) - Blocking: Linux masters throw error if module is present
+### Added
 
+- Support for Windows 10
 
-## 2015-03-30 Release 0.5.0
+### Fixed
+
+- Avoiding puppet returning 2 instead of 0 when there are no changes to be done [#56](https://github.com/chocolatey/puppet-chocolatey/pull/56)
+
+## [0.5.1] - 2015-03-31
+
+### Fixed
+
+- Blocking: Linux masters throw error if module is present [#54](https://github.com/chocolatey/puppet-chocolatey/issues/54)
+
+## [0.5.0] - 2015-03-30
+
+### Added
 
 - Provider enhancements
 - Better docs
 - Works with both compiled and powershell Chocolatey clients
-- Fixes #50 - work with newer compiled Chocolatey client (0.9.9+)
-- Fixes #43 - check for installed packages is case sensitive
-- Fixes #18 - The OS handle's position is not what FileStream expected.
-- Fixes #52 - Document best way to pass options with spaces (#15 also related)
-- Fixes #26 - Document Chocolatey needs to be installed by other means
+- Document best way to pass options with spaces (#15 also related) - [#52](https://github.com/chocolatey/puppet-chocolatey/issues/52)
+- Document Chocolatey needs to be installed by other means - [#26](https://github.com/chocolatey/puppet-chocolatey/issues/26)
+
+### Fixed
+
+- work with newer compiled Chocolatey client (0.9.9+) - [#50](https://github.com/chocolatey/puppet-chocolatey/issues/50)
+- check for installed packages is case sensitive - [#43](https://github.com/chocolatey/puppet-chocolatey/issues/43)
+- The OS handle's position is not what FileStream expected. - [#18](https://github.com/chocolatey/puppet-chocolatey/issues/18)
+
+## [0.3]
+
+## [0.2]
+
+[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.0...master
+[3.1.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.0.0...3.1.0
+[3.0.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.2...3.0.0
+[2.0.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.6...2.0.0
+[1.2.6]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.5...1.2.6
+[1.2.5]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.4...1.2.5
+[1.2.4]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.3...1.2.4
+[1.2.3]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.2...1.2.3
+[1.2.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.1...1.2.2
+[1.2.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.1.2...1.2.0
+[1.1.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.0.2...1.1.0
+[1.0.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.8.0...1.0.0
+[0.8.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.7.0...0.8.0
+[0.7.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.5.3...0.7.0
+[0.5.3]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.5.2...0.5.3
+[0.5.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.5.1...0.5.2
+[0.5.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.5.0...0.5.1
+[0.5.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.4.0...0.5.0
+[0.4.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.3...0.4.0
+[0.3]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/0.2...0.3
+[0.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/af285ea8dbb2b9dd2a08c5374f174cc73ca19e3b...0.2
