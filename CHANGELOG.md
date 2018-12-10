@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [3.1.1] - 2018-12-10
+
+### Fixed
+
+- Already Initialized Constant Warning ([MODULES-5859](https://tickets.puppetlabs.com/browse/MODULES-5859)). Thanks Paul Reed ([@psreed](https://github.com/psreed))
+
 ## [3.1.0] - 2018-10-10
 
 ### Fixed
@@ -244,8 +250,8 @@ The puppetlabs-chocolatey module replaces the community chocolatey-chocolatey mo
 
 ## [0.2]
 
-[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.0...master
-[3.1.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.0.0...3.1.0
+[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.1...master
+[3.1.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.0...3.1.1
 [3.0.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.2...3.0.0
 [2.0.2]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.0...2.0.1
