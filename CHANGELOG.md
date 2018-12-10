@@ -30,13 +30,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Explicitly close configuration files after reading ([MODULES-4678](https://tickets.puppetlabs.com/browse/MODULES-4678))
 - Use actual choco.exe instead of the shim ([MODULES-4562](https://tickets.puppetlabs.com/browse/MODULES-4562))
-- Updated puppet version compatibility for modern Puppet agents ([MODULES-4846](https://tickets.puppetlabs.com/browse/MODULES-4846))
+- Updated Puppet version compatibility for modern Puppet agents ([MODULES-4846](https://tickets.puppetlabs.com/browse/MODULES-4846))
 
 ## [2.0.2] - 2017-04-04
 
 ### Fixed
 
-- Use two dashes when getting package version ([MODULES-4508](https://tickets.puppetlabs.com/browse/MODULES-4508))
+- Use two dashes when getting the package version ([MODULES-4508](https://tickets.puppetlabs.com/browse/MODULES-4508))
 
 ## [2.0.1] - 2017-01-03
 
@@ -90,11 +90,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
-- $::chocolateyversion fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
+- `$::chocolateyversion` fact is optional - see [#110](https://github.com/chocolatey/puppet-chocolatey/issues/110)
 - puppet apply works again - see [#105](https://github.com/chocolatey/puppet-chocolatey/issues/105)
 
 # Note:
-The changelog below is for changes to the Community chocolatey-chocolatey module from which this current module takes over. It is retained below for historical purposes since for a couple releases this module did track its changes and bug fixes.
+The puppetlabs-chocolatey module replaces the community chocolatey-chocolatey module. We have retained its changelog below as there were a couple of releases where we tracked the puppetlabs-chocolatey modules changes and bug fixes here.
 
 ## [1.2.6] - 2016-07-11
 
@@ -153,7 +153,7 @@ The changelog below is for changes to the Community chocolatey-chocolatey module
 
 ### Fixed
 
-- Use install unless version specified in install ([#71](https://github.com/chocolatey/puppet-chocolatey/issues/71))
+- Use install unless the version is specified in install ([#71](https://github.com/chocolatey/puppet-chocolatey/issues/71))
 
 ## [1.1.2] - 2015-10-02
 
@@ -216,13 +216,13 @@ The changelog below is for changes to the Community chocolatey-chocolatey module
 
 ### Fixed
 
-- Avoiding puppet returning 2 instead of 0 when there are no changes to be done [#56](https://github.com/chocolatey/puppet-chocolatey/pull/56)
+- Avoiding Puppet returning 2 instead of 0 when there are no changes to be made [#56](https://github.com/chocolatey/puppet-chocolatey/pull/56)
 
 ## [0.5.1] - 2015-03-31
 
 ### Fixed
 
-- Blocking: Linux masters throw error if module is present [#54](https://github.com/chocolatey/puppet-chocolatey/issues/54)
+- Blocking: Linux masters throw error if the module is present [#54](https://github.com/chocolatey/puppet-chocolatey/issues/54)
 
 ## [0.5.0] - 2015-03-30
 
@@ -237,7 +237,7 @@ The changelog below is for changes to the Community chocolatey-chocolatey module
 ### Fixed
 
 - work with newer compiled Chocolatey client (0.9.9+) - [#50](https://github.com/chocolatey/puppet-chocolatey/issues/50)
-- check for installed packages is case sensitive - [#43](https://github.com/chocolatey/puppet-chocolatey/issues/43)
+- check for installed packages that are case sensitive - [#43](https://github.com/chocolatey/puppet-chocolatey/issues/43)
 - The OS handle's position is not what FileStream expected. - [#18](https://github.com/chocolatey/puppet-chocolatey/issues/18)
 
 ## [0.3]
