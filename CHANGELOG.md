@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.1.1] - 2018-12-10
 
+### Changed
+
+- Changelog converted to KAC format
+
 ### Fixed
 
 - Already Initialized Constant Warning ([MODULES-5859](https://tickets.puppetlabs.com/browse/MODULES-5859)). Thanks Paul Reed ([@psreed](https://github.com/psreed))
