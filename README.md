@@ -44,7 +44,14 @@ compatible Puppet and Puppet Enterprise versions.
 ## Module Description
 
 This is the official module for working with the [Chocolatey](https://chocolatey.org/about)
-package manager.
+package manager. There are two versions available:
+
+* [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey)
+   * This is the stable version and is commercially supported by Puppet.
+   * It is slower moving, but should offer greater stability and fewer changes.
+* [chocolatey/chocolatey](https://forge.puppet.com/chocolatey/chocolatey)
+   * This is the bleeding edge version and is *not commercially supported* by Puppet.
+   * It keeps up with all the new features, but as such is not as fully tested.
 
 This module supports all editions of Chocolatey, including FOSS, [Professional](https://chocolatey.org/compare) and [Chocolatey for Business](https://chocolatey.org/compare).
 
