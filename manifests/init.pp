@@ -59,6 +59,8 @@
 #   `false`.
 # @param [String] chocolatey_version chocolatey version, falls back to
 #   `$::chocolateyversion`.
+# @param install_proxy Proxy server to use to use for installation of chocolatey itself or
+#   `undef` to not use a proxy
 class chocolatey (
   $choco_install_location         = $::chocolatey::params::install_location,
   $use_7zip                       = $::chocolatey::params::use_7zip,
@@ -66,7 +68,8 @@ class chocolatey (
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
   $log_output                     = false,
-  $chocolatey_version             = $::chocolatey::params::chocolatey_version
+  $chocolatey_version             = $::chocolatey::params::chocolatey_version,
+  $install_proxy                  = undef,
 ) inherits ::chocolatey::params {
 
 
