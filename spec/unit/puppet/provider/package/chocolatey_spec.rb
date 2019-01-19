@@ -112,7 +112,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey','-y', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('install','chocolatey','-y', '--source', 'c:\packages', nil)
 
         @provider.install
       end
@@ -142,7 +142,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('install','chocolatey', '--source', 'c:\packages', nil)
 
         @provider.install
       end
@@ -221,7 +221,7 @@ describe provider do
       it "should use source if it is specified and the version is at least 0.9.10" do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_uninstall_source).at_least_once
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil, '--ignore-package-exit-codes')
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '--source', 'c:\packages', nil, '--ignore-package-exit-codes')
 
         @provider.uninstall
       end
@@ -229,7 +229,7 @@ describe provider do
       it "should use source if it is specified and the version is greater than 0.9.10" do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '-source', 'c:\packages', nil, '--ignore-package-exit-codes')
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '--source', 'c:\packages', nil, '--ignore-package-exit-codes')
 
         @provider.uninstall
       end
@@ -249,7 +249,7 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('uninstall','chocolatey', '--source', 'c:\packages', nil)
 
         @provider.uninstall
       end
@@ -317,7 +317,7 @@ describe provider do
           :provider => :chocolatey,
         })]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', '--source', 'c:\packages', nil)
 
         @provider.update
       end
@@ -354,7 +354,7 @@ describe provider do
           :provider => :chocolatey,
         })]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('update','chocolatey', '-source', 'c:\packages', nil)
+        @provider.expects(:chocolatey).with('update','chocolatey', '--source', 'c:\packages', nil)
 
         @provider.update
       end
@@ -376,8 +376,8 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages']
-        #@provider.expects(:chocolatey).with('upgrade', '--noop', 'chocolatey','-r', '-source', 'c:\packages')
+        @provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey','-r', '--source', 'c:\packages']
+        #@provider.expects(:chocolatey).with('upgrade', '--noop', 'chocolatey','-r', '--source', 'c:\packages')
 
         #@provider.latest
       end
@@ -395,8 +395,8 @@ describe provider do
 
       it "should use source if it is specified" do
         resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
-        #@provider.expects(:chocolatey).with('version', 'chocolatey', '-source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"')
+        @provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+        #@provider.expects(:chocolatey).with('version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"')
 
         #@provider.latest
       end

@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure the `source` syntax in the provider is correct ([MODULES-8493](https://tickets.puppetlabs.com/browse/MODULES-8493)). Thanks, [@jcwest](https://github.com/jcwest)!
+
 ## [3.1.1] - 2018-12-10
 
 ### Changed

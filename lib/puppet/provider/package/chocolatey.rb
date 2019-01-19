@@ -85,7 +85,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
 
     if @resource[:source]
-      args << '-source' << @resource[:source]
+      args << '--source' << @resource[:source]
     end
 
     args << @resource[:install_options]
@@ -113,7 +113,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     if !choco_exe || choco_version >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE)
       if @resource[:source]
-        args << '-source' << @resource[:source]
+        args << '--source' << @resource[:source]
       end
     end
 
@@ -140,7 +140,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
 
     if @resource[:source]
-      args << '-source' << @resource[:source]
+      args << '--source' << @resource[:source]
     end
 
     args << @resource[:install_options]
@@ -225,7 +225,7 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
 
     if @resource[:source]
-      args << '-source' << @resource[:source]
+      args << '--source' << @resource[:source]
     end
 
     unless choco_exe
