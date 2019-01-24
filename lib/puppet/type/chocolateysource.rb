@@ -107,6 +107,21 @@ Puppet::Type.newtype(:chocolateysource) do
     defaultto(0)
   end
 
+  newproperty(:bypass_proxy, :boolean => true) do
+    desc "Option to specify whether this source should
+      explicitly bypass any explicitly or system
+      configured proxies.
+      Requires at least Chocolatey v0.10.4.
+      Defaults to false."
+    
+    newvalues(:true, :false)
+    defaultto(:false)
+
+    munge do |value|
+      resource.munge_boolean(value)
+    end
+  end
+
   validate do
     if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
       raise ArgumentError, "If specifying user/password, you must specify both values."

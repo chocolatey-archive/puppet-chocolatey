@@ -677,6 +677,14 @@ Specifies an optional user password for authenticated feeds. Not ensurable. Valu
 
 Specifies an optional priority for explicit feed order when searching for packages across multiple feeds. The lower the number, the higher the priority. Sources with a 0 priority are considered no priority and are added after other sources with a priority number. Requires at least Chocolatey v0.9.9.9. Default: `0`.
 
+#### `bypass_proxy`
+
+(**Property**: This parameter represents a concrete state on the target system.)
+
+Specifies an option to specify whether this source should explicitly bypass any explicitly or system configured proxies.
+Requires at least Chocolatey v0.10.4.
+Defaults to `false`.
+
 ### ChocolateyFeature
 
 Allows managing features for Chocolatey. Features are configurations that
