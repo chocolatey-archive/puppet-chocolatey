@@ -33,6 +33,38 @@ describe 'Chocolatey Source' do
     end
   end
 
+  context 'MODULES-4418 - Add Bypass Proxy to an Existing Source' do
+
+    before(:all) do
+      backup_config
+    end
+
+    after(:all) do
+      reset_config
+    end
+
+    windows_agents.each do | agent |
+
+      it 'Should Apply the Manifest' do
+        chocolatey_src = <<-PP
+          chocolateysource {'chocolatey':
+            ensure   => present,
+            location => 'https://chocolatey.org/api/v2',
+            bypass_proxy => true,
+          }
+        PP
+
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+      end
+
+      it 'Should now bypass system proxies' do
+        on(agent, config_content_command) do |result|
+          assert_match(/true/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
+        end
+      end
+    end
+  end
+
   context 'MODULES-3037 - Add Source With All Options' do
 
     before(:all) do
@@ -48,11 +80,12 @@ describe 'Chocolatey Source' do
       it 'Should Apply the Manifest' do
         chocolatey_src = <<-PP
           chocolateysource {'test':
-            ensure   => present,
-            location => 'c:\\packages',
-            priority => 2,
-            user     => 'bob',
-            password => 'yes',
+            ensure       => present,
+            location     => 'c:\\packages',
+            priority     => 2,
+            user         => 'bob',
+            password     => 'yes',
+            bypass_proxy => true,
           }
         PP
 
@@ -66,6 +99,7 @@ describe 'Chocolatey Source' do
           assert_match(/bob/, get_xml_value("//sources/source[@id='test']/@user", result.output).to_s, 'User did not match')
           assert_match(/.+/, get_xml_value("//sources/source[@id='test']/@password", result.output).to_s, 'Password was not saved')
           assert_match(/false/, get_xml_value("//sources/source[@id='test']/@disabled", result.output).to_s, 'Disabled did not match')
+          assert_match(/true/, get_xml_value("//sources/source[@id='test']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
         end
       end
     end
@@ -210,6 +244,55 @@ describe 'Chocolatey Source' do
       it 'Should verify results' do
         on(agent, config_content_command) do | result |
           assert_match(/5/, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority change did not match')
+        end
+      end
+    end
+  end
+
+  context 'MODULES-4418 - Change Existing Bypass Proxy Setting' do
+
+    before(:all) do
+      backup_config
+    end
+    
+    after(:all) do
+      reset_config
+    end
+
+    windows_agents.each do | agent |
+      it 'Should apply a manifest to set bypass_proxy' do
+        chocolatey_src = <<-PP
+          chocolateysource {'chocolatey':
+            ensure   => present,
+            location => 'https://chocolatey.org/api/v2',
+            bypass_proxy => true,
+          }
+        PP
+
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+      end
+
+      it 'Should verify the setup was added' do
+        on(agent, config_content_command) do | result |
+          assert_match(/true/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy setup did not match')
+        end
+      end
+
+      it 'Should apply a manifest to set bypass_proxy to false' do
+        chocolatey_src_change = <<-PP
+          chocolateysource {'chocolatey':
+            ensure   => present,
+            location => 'https://chocolatey.org/api/v2',
+            bypass_proxy => false,
+          }
+        PP
+
+        execute_manifest_on(agent, chocolatey_src_change, :catch_failures => true)
+      end
+
+      it 'Should verify results' do
+        on(agent, config_content_command) do | result |
+          assert_match(/false/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy change did not match')
         end
       end
     end
@@ -535,6 +618,54 @@ describe 'Chocolatey Source' do
       it 'Should verify results' do
         on(agent, config_content_command) do | result |
           assert_match(/0/, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority change did not match')
+        end
+      end
+    end
+  end
+
+  context 'MODULES-4418 Remove Bypass Proxy from an Existing Source' do
+
+    before(:all) do
+      backup_config
+    end
+
+    after(:all) do
+      reset_config
+    end
+
+    windows_agents.each do | agent |
+      chocolatey_src = <<-PP
+        chocolateysource {'chocolatey':
+          ensure   => present,
+          location => 'https://chocolatey.org/api/v2',
+          bypass_proxy => true,
+        }
+      PP
+
+      chocolatey_src_remove = <<-PP
+        chocolateysource {'chocolatey':
+          ensure   => present,
+          location => 'https://chocolatey.org/api/v2',
+        }
+      PP
+
+      it 'Should apply a manifest' do
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+      end
+
+      it 'Should verify setup' do
+        on(agent, config_content_command) do | result |
+          assert_match(/true/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
+        end
+      end
+
+      it 'Should apply remove manifest' do
+        execute_manifest_on(agent, chocolatey_src_remove, :catch_failures => true)
+      end
+
+      it 'Should verify results' do
+        on(agent, config_content_command) do | result |
+          assert_match(/false/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy change did not match')
         end
       end
     end
