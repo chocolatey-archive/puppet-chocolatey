@@ -122,6 +122,23 @@ Puppet::Type.newtype(:chocolateysource) do
     end
   end
 
+  newproperty(:admin_only, :boolean => true) do
+    desc "Option to specify whether this source should
+      visible to Windows user accounts in the Administrators
+      group only.
+
+      Requires Chocolatey for Business (C4B) v1.12.2+ and at
+      least Chocolatey v0.10.8 for the setting to be respected.
+      Defaults to false."
+    
+    newvalues(:true, :false)
+    defaultto(:false)
+
+    munge do |value|
+      resource.munge_boolean(value)
+    end
+  end
+
   validate do
     if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
       raise ArgumentError, "If specifying user/password, you must specify both values."

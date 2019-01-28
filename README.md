@@ -685,6 +685,15 @@ Specifies an option to specify whether this source should explicitly bypass any 
 Requires at least Chocolatey v0.10.4.
 Defaults to `false`.
 
+#### `admin_only`
+
+(**Property**: This parameter represents a concrete state on the target system.)
+
+Specifies an option to specify whether this source should visible to Windows user accounts in the Administrators group only.
+
+Requires Chocolatey for Business (C4B) v1.12.2+ and at least Chocolatey v0.10.8 for the setting to be respected.
+Defaults to false.
+
 ### ChocolateyFeature
 
 Allows managing features for Chocolatey. Features are configurations that

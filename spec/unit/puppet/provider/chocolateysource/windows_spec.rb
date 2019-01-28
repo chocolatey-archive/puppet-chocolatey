@@ -55,11 +55,13 @@ describe provider do
   EOT
   }
 
-  let (:newer_choco_version) {'0.10.5'}
+  let (:newer_choco_version) {'0.10.9'}
   let (:minimum_supported_version_priority) {'0.9.9.9'}
   let (:last_unsupported_version_priority) {'0.9.9.8'}
   let (:minimum_supported_version_bypass_proxy) {'0.10.4'}
   let (:last_unsupported_version_bypass_proxy) {'0.10.3'}
+  let (:minimum_supported_version_admin_only) {'0.10.8'}
+  let (:last_unsupported_version_admin_only) {'0.10.7'}
   let (:minimum_supported_version) {'0.9.9.0'}
   let (:last_unsupported_version) {'0.9.8.33'}
 
@@ -153,6 +155,15 @@ describe provider do
         resource[:bypass_proxy] = true
       end
     end
+
+    context ":admin_only" do
+      it "should accept 'true' as a string" do
+        resource[:admin_only] = 'true'
+      end
+      it "should accept 'true as a boolean'" do
+        resource[:admin_only] = true
+      end
+    end
   end
 
   context "self.get_sources" do
@@ -208,6 +219,7 @@ describe provider do
     element_user = "thisguy"
     element_password = "super/encrypted+value=="
     element_bypass_proxy = "true"
+    element_admin_only = "true"
 
 
     before :each do
@@ -218,6 +230,7 @@ describe provider do
                                 "user"        => element_user,
                                 "password"    => element_password,
                                 "bypassProxy" => element_bypass_proxy,
+                                "adminOnly"   => element_admin_only,
                               } )
     end
 
@@ -234,6 +247,7 @@ describe provider do
       source[:user].must eq element_user
       source[:ensure].must eq :present
       source[:bypass_proxy].must eq element_bypass_proxy
+      source[:admin_only].must eq element_admin_only
     end
 
     it "should convert a bare bones element to a source" do
@@ -242,6 +256,7 @@ describe provider do
       element.delete_attribute('user')
       element.delete_attribute('password')
       element.delete_attribute('bypassProxy')
+      element.delete_attribute('adminOnly')
 
       source = provider.get_source(element)
 
@@ -339,6 +354,33 @@ describe provider do
       resource.provider.validate
     end
 
+    it "should not warn on admin_only when choco version is newer than the minimum supported version" do
+      resource[:admin_only] = true
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
+      Puppet.expects(:warning).never
+
+      resource.provider.validate
+    end
+
+    it "should not warn on admin_only when choco version is the minimum supported version" do
+      resource[:admin_only] = true
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_admin_only)
+      Puppet.expects(:warning).never
+
+      resource.provider.validate
+    end
+
+    it "should warn on admin_only when choco version is less than the minimum supported version" do
+      resource[:admin_only] = true
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_admin_only)
+      Puppet.expects(:warning).with("Chocolatey is unable to specify administrator only visibility for sources when version is less than 0.10.8. The value you set will be ignored.")
+
+      resource.provider.validate
+    end
+
     it "should not warn if priority is not set" do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
       Puppet.expects(:warning).never
@@ -417,6 +459,7 @@ describe provider do
     resource_user = "thatguy"
     resource_password = "secrets!"
     resource_bypass_proxy = :true
+    resource_admin_only = :true
 
     before :each do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall).at_most_once
@@ -451,6 +494,7 @@ describe provider do
       resource[:user] = resource_user
       resource[:password] = resource_password
       resource[:bypass_proxy] = resource_bypass_proxy
+      resource[:admin_only] = resource_admin_only
 
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
       Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
@@ -460,6 +504,7 @@ describe provider do
                                                       '--user', resource_user,
                                                       '--password', resource_password,
                                                       '--bypass-proxy',
+                                                      '--admin-only',
                                                       '--priority', resource_priority,
                                                      ])
 
@@ -498,6 +543,26 @@ describe provider do
                                                       '--name', resource_name,
                                                       '--source', resource_location,
                                                       '--bypass-proxy',
+                                                      '--priority', 0,
+                                                     ])
+
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'enable',
+                                                      '--name', resource_name
+                                                     ])
+
+      resource.flush
+    end
+
+    it "should set admin_only when present" do
+      resource[:admin_only] = resource_admin_only
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'add',
+                                                      '--name', resource_name,
+                                                      '--source', resource_location,
+                                                      '--admin-only',
                                                       '--priority', 0,
                                                      ])
 
@@ -622,6 +687,65 @@ describe provider do
                                                       '--name', resource_name,
                                                       '--source', resource_location,
                                                       '--bypass-proxy',
+                                                      '--priority', 0,
+                                                     ])
+
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'enable',
+                                                      '--name', resource_name,
+                                                     ])
+
+      resource.flush
+    end
+
+    it "should not set admin_only when choco version is less than the minimum supported version" do
+      resource[:admin_only] = resource_admin_only
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_admin_only)
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'add',
+                                                      '--name', resource_name,
+                                                      '--source', resource_location,
+                                                      '--priority', 0,
+                                                     ])
+
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'enable',
+                                                      '--name', resource_name,
+                                                     ])
+
+      resource.flush
+    end
+
+    it "should set admin_only when choco version is newer than the minimum supported version" do
+      resource[:admin_only] = resource_admin_only
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'add',
+                                                      '--name', resource_name,
+                                                      '--source', resource_location,
+                                                      '--admin-only',
+                                                      '--priority', 0,
+                                                     ])
+
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'enable',
+                                                      '--name', resource_name,
+                                                     ])
+
+      resource.flush
+    end
+
+    it "should set admin_only when choco version is the minimum supported version" do
+      resource[:admin_only] = resource_admin_only
+
+      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_admin_only)
+      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+                                                      'source', 'add',
+                                                      '--name', resource_name,
+                                                      '--source', resource_location,
+                                                      '--admin-only',
                                                       '--priority', 0,
                                                      ])
 
