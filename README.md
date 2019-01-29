@@ -694,6 +694,17 @@ Specifies an option to specify whether this source should visible to Windows use
 Requires Chocolatey for Business (C4B) v1.12.2+ and at least Chocolatey v0.10.8 for the setting to be respected.
 Defaults to false.
 
+#### `allow_self_service`
+
+(**Property**: This parameter represents a concrete state on the target system.)
+
+Specifies whether this source should be allowed to be used with Chocolatey Self Service.
+
+Requires Chocolatey for Business (C4B) v1.10.0+ with the feature `useBackgroundServiceWithSelfServiceSourcesOnly` turned on in order to be respected.
+Also requires at least Chocolatey v0.10.4 for the setting to be enabled.
+
+Defaults to `false`.
+
 ### ChocolateyFeature
 
 Allows managing features for Chocolatey. Features are configurations that

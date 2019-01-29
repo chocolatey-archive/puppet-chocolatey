@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Configuration option for `chocolateysource` to allow bypassing any system-configured proxies ([MODULES-4418](https://tickets.puppetlabs.com/browse/MODULES-4418)).
 - Configuration option for `chocolateysource` to make a source visible only to Windows users in the Administrators group ([MODULES-5898](https://tickets.puppetlabs.com/browse/MODULES-5898)).
+- Configuration option for `chocolateysource` to make a source usable with Chocolatey Self Service ([MODULES-5897](https://tickets.puppetlabs.com/browse/MODULES-5897))
 
 ### Fixed
 

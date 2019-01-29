@@ -139,6 +139,25 @@ Puppet::Type.newtype(:chocolateysource) do
     end
   end
 
+  newproperty(:allow_self_service, :boolean => true) do
+    desc "Option to specify whether this source should be
+      allowed to be used with Chocolatey Self Service.
+
+      Requires Chocolatey for Business (C4B) v1.10.0+ with the
+      feature useBackgroundServiceWithSelfServiceSourcesOnly
+      turned on in order to be respected.
+      Also requires at least Chocolatey v0.10.4 for the setting
+      to be enabled.
+      Defaults to false."
+    
+    newvalues(:true, :false)
+    defaultto(:false)
+
+    munge do |value|
+      resource.munge_boolean(value)
+    end
+  end
+
   validate do
     if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
       raise ArgumentError, "If specifying user/password, you must specify both values."
