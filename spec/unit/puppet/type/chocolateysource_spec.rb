@@ -35,7 +35,7 @@ describe Puppet::Type.type(:chocolateysource) do
   end
 
   #boolean values
-  ['bypass_proxy','admin_only'].each do |param|
+  ['bypass_proxy','admin_only','allow_self_service'].each do |param|
     context "parameter :#{param}" do
       let (:param_symbol) { param.to_sym }
 

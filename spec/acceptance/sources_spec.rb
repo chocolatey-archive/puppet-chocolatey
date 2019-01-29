@@ -65,6 +65,38 @@ describe 'Chocolatey Source' do
     end
   end
 
+  context 'MODULES-5897 - Add Self Service to an Existing Source' do
+
+    before(:all) do
+      backup_config
+    end
+
+    after(:all) do
+      reset_config
+    end
+
+    windows_agents.each do | agent |
+
+      it 'Should Apply the Manifest' do
+        chocolatey_src = <<-PP
+          chocolateysource {'chocolatey':
+            ensure             => present,
+            location           => 'https://chocolatey.org/api/v2',
+            allow_self_service => true,
+          }
+        PP
+
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+      end
+
+      it 'Should now mark the source as usable for self-service' do
+        on(agent, config_content_command) do |result|
+          assert_match(/true/, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service did not match')
+        end
+      end
+    end
+  end
+
   context 'MODULES-5898 - Add Admin Only to an Existing Source' do
 
     before(:all) do
@@ -112,13 +144,14 @@ describe 'Chocolatey Source' do
       it 'Should Apply the Manifest' do
         chocolatey_src = <<-PP
           chocolateysource {'test':
-            ensure       => present,
-            location     => 'c:\\packages',
-            priority     => 2,
-            user         => 'bob',
-            password     => 'yes',
-            bypass_proxy => true,
-            admin_only   => true,
+            ensure             => present,
+            location           => 'c:\\packages',
+            priority           => 2,
+            user               => 'bob',
+            password           => 'yes',
+            bypass_proxy       => true,
+            allow_self_service => true,
+            admin_only         => true,
           }
         PP
 
@@ -133,6 +166,7 @@ describe 'Chocolatey Source' do
           assert_match(/.+/, get_xml_value("//sources/source[@id='test']/@password", result.output).to_s, 'Password was not saved')
           assert_match(/false/, get_xml_value("//sources/source[@id='test']/@disabled", result.output).to_s, 'Disabled did not match')
           assert_match(/true/, get_xml_value("//sources/source[@id='test']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
+          assert_match(/true/, get_xml_value("//sources/source[@id='test']/@selfService", result.output).to_s, 'Self Service did not match')
           assert_match(/true/, get_xml_value("//sources/source[@id='test']/@adminOnly", result.output).to_s, 'Admin Only did not match')
         end
       end
@@ -327,6 +361,55 @@ describe 'Chocolatey Source' do
       it 'Should verify results' do
         on(agent, config_content_command) do | result |
           assert_match(/false/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy change did not match')
+        end
+      end
+    end
+  end
+
+  context 'MODULES-5897 - Change Existing Self Service Setting' do
+
+    before(:all) do
+      backup_config
+    end
+    
+    after(:all) do
+      reset_config
+    end
+
+    windows_agents.each do | agent |
+      it 'Should apply a manifest to set allow_self_service' do
+        chocolatey_src = <<-PP
+          chocolateysource {'chocolatey':
+            ensure             => present,
+            location           => 'https://chocolatey.org/api/v2',
+            allow_self_service => true,
+          }
+        PP
+
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+      end
+
+      it 'Should verify the setup was added' do
+        on(agent, config_content_command) do | result |
+          assert_match(/true/, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service setup did not match')
+        end
+      end
+
+      it 'Should apply a manifest to set allow_self_service to false' do
+        chocolatey_src_change = <<-PP
+          chocolateysource {'chocolatey':
+            ensure             => present,
+            location           => 'https://chocolatey.org/api/v2',
+            allow_self_service => false,
+          }
+        PP
+
+        execute_manifest_on(agent, chocolatey_src_change, :catch_failures => true)
+      end
+
+      it 'Should verify results' do
+        on(agent, config_content_command) do | result |
+          assert_match(/false/, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service change did not match')
         end
       end
     end
@@ -749,6 +832,54 @@ describe 'Chocolatey Source' do
       it 'Should verify results' do
         on(agent, config_content_command) do | result |
           assert_match(/false/, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy change did not match')
+        end
+      end
+    end
+  end
+
+  context 'MODULES-5897 Remove Self Service from an Existing Source' do
+
+    before(:all) do
+      backup_config
+    end
+
+    after(:all) do
+      reset_config
+    end
+
+    windows_agents.each do | agent |
+      chocolatey_src = <<-PP
+        chocolateysource {'chocolatey':
+          ensure             => present,
+          location           => 'https://chocolatey.org/api/v2',
+          allow_self_service => true,
+        }
+      PP
+
+      chocolatey_src_remove = <<-PP
+        chocolateysource {'chocolatey':
+          ensure   => present,
+          location => 'https://chocolatey.org/api/v2',
+        }
+      PP
+
+      it 'Should apply a manifest' do
+        execute_manifest_on(agent, chocolatey_src, :catch_failures => true)
+      end
+
+      it 'Should verify setup' do
+        on(agent, config_content_command) do | result |
+          assert_match(/true/, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service did not match')
+        end
+      end
+
+      it 'Should apply remove manifest' do
+        execute_manifest_on(agent, chocolatey_src_remove, :catch_failures => true)
+      end
+
+      it 'Should verify results' do
+        on(agent, config_content_command) do | result |
+          assert_match(/false/, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service change did not match')
         end
       end
     end
