@@ -92,9 +92,18 @@ describe provider do
     it "should have a query method" do
       @provider.should respond_to(:query)
     end
+
+    it "should have the standard feautures method" do
+      @provider.should respond_to(:features)
+    end
+
+    it "should return nil feature when element is nil" do
+      provider.features.must be == []
+    end
+
   end
 
-  context "self.get_features" do
+  context "self.get_choco_features" do
     before :each do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
     end
@@ -103,7 +112,7 @@ describe provider do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(nil)
 
       expect {
-        provider.get_features
+        provider.get_choco_features
       }.to raise_error(Puppet::ResourceError, /Config file not found for Chocolatey/)
     end
 
@@ -112,7 +121,7 @@ describe provider do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(false)
 
       expect {
-        provider.get_features
+        provider.get_choco_features
       }.to raise_error(Puppet::ResourceError, /was unable to locate config file at/)
     end
 
@@ -124,7 +133,7 @@ describe provider do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
 
-        features = provider.get_features
+        features = provider.get_choco_features
       end
 
       it "should match the count of features in the config" do
@@ -138,7 +147,7 @@ describe provider do
     end
   end
 
-  context "self.get_feature" do
+  context "self.get_choco_feature" do
     let (:element) {  REXML::Element.new('feature') }
     element_name = "default"
     element_enabled = 'true'
@@ -148,11 +157,11 @@ describe provider do
     end
 
     it "should return nil feature when element is nil" do
-      provider.get_feature(nil).must be == {}
+      provider.get_choco_feature(nil).must be == {}
     end
 
     it "should convert an element to a feature" do
-      feature = provider.get_feature(element)
+      feature = provider.get_choco_feature(element)
 
       feature[:name].must eq element_name
       feature[:ensure].must eq :enabled
@@ -162,7 +171,7 @@ describe provider do
       element.delete_attribute('enabled')
       element.add_attribute('enabled', 'false')
 
-      feature = provider.get_feature(element)
+      feature = provider.get_choco_feature(element)
       feature[:ensure].must eq :disabled
     end
   end

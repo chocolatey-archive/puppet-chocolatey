@@ -26,14 +26,14 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
   end
 
   def query
-    self.class.features.each do |feature|
+    self.class.choco_features.each do |feature|
       return feature.properties if @resource[:name][/\A\S*/].downcase == feature.name.downcase
     end
 
     return {}
   end
 
-  def self.get_features
+  def self.get_choco_features
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
 
     choco_config = PuppetX::Chocolatey::ChocolateyCommon.choco_config_file
@@ -46,7 +46,7 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
     config.elements.to_a( '//feature' )
   end
 
-  def self.get_feature(element)
+  def self.get_choco_feature(element)
     feature = {}
     return feature if element.nil?
 
@@ -64,15 +64,15 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
     feature
   end
 
-  def self.features
-    get_features.collect do |item|
-      feature = get_feature(item)
+  def self.choco_features
+    get_choco_features.collect do |item|
+      feature = get_choco_feature(item)
       new(feature)
     end
   end
 
   def self.instances
-    features
+    choco_features
   end
 
   def self.prefetch(resources)
@@ -119,7 +119,7 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
     @property_hash.clear
     @property_flush.clear
 
-    self.class.features
+    self.class.choco_features
     @property_hash = query
   end
 
