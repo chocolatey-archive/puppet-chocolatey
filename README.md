@@ -533,7 +533,7 @@ alternative method to pass args if you have 0.9.8.x and below.
 
 ### Facts
 
-* `chocolateyversion` - The version of the installed Chocolatey client (could also be provided by class parameter `chocolatey_version`).
+* `chocolateyversion` - The version of the installed Chocolatey client (could also be informationally provided by class parameter `chocolatey_version`).
 * `choco_install_path` - The location of the installed Chocolatey client (could also be provided by class parameter `choco_install_location`).
 
 ### Types/Providers
@@ -783,6 +783,10 @@ Specifies whether to use the built-in shell or allow the installer to download 7
 ##### `choco_install_timeout_seconds`
 
 Specifies how long in seconds should be allowed for the install of Chocolatey (including .NET Framework 4 if necessary). Valid options: Number. Default: `1500` (25 minutes).
+
+##### `chocolatey_install_version`
+
+This is an **informational** parameter to tell Chocolatey what version to expect and to pre-load features with, falls back to the value of the `chocolateyversion` fact.
 
 ##### `chocolatey_download_url`
 

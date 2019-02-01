@@ -57,8 +57,9 @@
 #   package. Defaults to `true`. Setting is ignored in Chocolatey v0.9.10+.
 # @param [Boolean] log_output Log output from the installer. Defaults to
 #   `false`.
-# @param [String] chocolatey_version chocolatey version, falls back to
-#   `$::chocolateyversion`.
+# @param [String] chocolatey_version - **Informational** parameter to tell
+#   Chocolatey what version to expect and to pre-load features with, falls
+#   back to `$::chocolateyversion`.
 # @param install_proxy Proxy server to use to use for installation of chocolatey itself or
 #   `undef` to not use a proxy
 class chocolatey (
