@@ -269,6 +269,9 @@ non-zero (this value can come from a dependency package). Chocolatey
 defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature
 disabled, Chocolatey exits with a 0 or a 1 (matching previous behavior).
 
+Note that this behavior _may_ cause Puppet to think that the run has failed.
+We advise that you leave this at the default setting or explicitly disable it but that you do _not_ explicitly enable it.
+
 ~~~puppet
 chocolateyfeature {'usepackageexitcodes':
   ensure => disabled,

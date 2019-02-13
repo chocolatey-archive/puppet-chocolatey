@@ -51,6 +51,50 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     self.class.is_compiled_choco?
   end
 
+  def get_choco_features
+    PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
+
+    choco_config = PuppetX::Chocolatey::ChocolateyCommon.choco_config_file
+    raise Puppet::ResourceError, "Config file not found for Chocolatey. Please make sure you have Chocolatey installed." if choco_config.nil?
+    raise Puppet::ResourceError, "An install was detected, but was unable to locate config file at #{choco_config}." unless PuppetX::Chocolatey::ChocolateyCommon.file_exists?(choco_config)
+
+    Puppet.debug("Gathering sources from '#{choco_config}'.")
+    config = REXML::Document.new File.read(choco_config)
+
+    config.elements.to_a( '//feature' )
+  end
+
+  def get_choco_feature(element)
+    feature = {}
+    return feature if element.nil?
+
+    feature[:name]           = element.attributes['name'].downcase if element.attributes['name']
+    feature[:enabled]        = element.attributes['enabled'].downcase if element.attributes['enabled']
+    feature[:set_explicitly] = element.attributes['setExplicitly'].downcase if element.attributes['setExplicitly']
+    feature[:description]    = element.attributes['description'].downcase if element.attributes['description']
+
+    Puppet.debug("Loaded feature '#{feature.inspect}'.")
+
+    feature
+  end
+
+  def choco_features
+    @choco_features ||=  get_choco_features.collect do |item|
+      get_choco_feature(item)
+    end
+  end
+
+  def is_use_package_exit_codes_feature_enabled?
+    use_package_exit_codes_feature = choco_features.find { |choco_feature| choco_feature[:name] == "usepackageexitcodes" }
+    return false if use_package_exit_codes_feature.nil?
+    # Verifies that the feature has been explicitly set - true is the default value,
+    # but implementing this without an explicit check would break existing users.
+    # This is unlikely to work because Puppet itself will not know how to handle these
+    # alternate exit codes.
+    return true if use_package_exit_codes_feature[:enabled].downcase == 'true' and use_package_exit_codes_feature[:set_explicitly].downcase == 'true'
+    false
+  end
+
   def install
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
      choco_exe = is_compiled_choco?
@@ -90,7 +134,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:install_options]
 
-    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES) and
+        not is_use_package_exit_codes_feature_enabled?
       args << '--ignore-package-exit-codes'
     end
 
@@ -119,7 +164,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:uninstall_options]
 
-    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES) and
+        not is_use_package_exit_codes_feature_enabled?
       args << '--ignore-package-exit-codes'
     end
 
@@ -145,7 +191,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
 
     args << @resource[:install_options]
 
-    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES)
+    if Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES) and
+        not is_use_package_exit_codes_feature_enabled?
       args << '--ignore-package-exit-codes'
     end
 
