@@ -1,5 +1,6 @@
 require 'puppet/provider/package'
 require 'pathname'
+require 'rexml/document'
 require Pathname.new(__FILE__).dirname + '../../../' + 'puppet_x/chocolatey/chocolatey_install'
 
 Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Package) do
