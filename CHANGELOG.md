@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [3.2.0] - 2019-02-19
+
 ### Added
 
 - Configuration option for `chocolateysource` to allow bypassing any system-configured proxies ([MODULES-4418](https://tickets.puppetlabs.com/browse/MODULES-4418)).
