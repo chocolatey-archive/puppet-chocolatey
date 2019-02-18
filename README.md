@@ -48,10 +48,10 @@ package manager. There are two versions available:
 
 * [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey)
    * This is the stable version and is commercially supported by Puppet.
-   * It is slower moving, but should offer greater stability and fewer changes.
+   * It is slower moving, but offers greater stability and fewer changes.
 * [chocolatey/chocolatey](https://forge.puppet.com/chocolatey/chocolatey)
    * This is the bleeding edge version and is *not commercially supported* by Puppet.
-   * It keeps up with all the new features, but as such is not as fully tested.
+   * It keeps up with all the new features, but is not as fully tested.
 
 This module supports all editions of Chocolatey, including FOSS, [Professional](https://chocolatey.org/compare) and [Chocolatey for Business](https://chocolatey.org/compare).
 
@@ -270,7 +270,7 @@ defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature
 disabled, Chocolatey exits with a 0 or a 1 (matching previous behavior).
 
 Note that this behavior _may_ cause Puppet to think that the run has failed.
-We advise that you leave this at the default setting or explicitly disable it but that you do _not_ explicitly enable it.
+We advise that you leave this at the default setting or disable it. Do _not_ enable it.
 
 ~~~puppet
 chocolateyfeature {'usepackageexitcodes':
@@ -684,7 +684,7 @@ Specifies an optional priority for explicit feed order when searching for packag
 
 (**Property**: This parameter represents a concrete state on the target system.)
 
-Specifies an option to specify whether this source should explicitly bypass any explicitly or system configured proxies.
+Specifies an option for whether this source should explicitly bypass system configured proxies.
 Requires at least Chocolatey v0.10.4.
 Defaults to `false`.
 
@@ -692,7 +692,7 @@ Defaults to `false`.
 
 (**Property**: This parameter represents a concrete state on the target system.)
 
-Specifies an option to specify whether this source should visible to Windows user accounts in the Administrators group only.
+Specifies an option for whether this source is visible to Windows user accounts in the Administrators group only.
 
 Requires Chocolatey for Business (C4B) v1.12.2+ and at least Chocolatey v0.10.8 for the setting to be respected.
 Defaults to false.
@@ -703,8 +703,7 @@ Defaults to false.
 
 Specifies whether this source should be allowed to be used with Chocolatey Self Service.
 
-Requires Chocolatey for Business (C4B) v1.10.0+ with the feature `useBackgroundServiceWithSelfServiceSourcesOnly` turned on in order to be respected.
-Also requires at least Chocolatey v0.10.4 for the setting to be enabled.
+Requires Chocolatey for Business (C4B) v1.10.0+ with the feature `useBackgroundServiceWithSelfServiceSourcesOnly` turned on in order to be respected. Requires at least Chocolatey v0.10.4 for the setting to be enabled.
 
 Defaults to `false`.
 
@@ -789,7 +788,7 @@ Specifies how long in seconds should be allowed for the install of Chocolatey (i
 
 ##### `chocolatey_install_version`
 
-This is an **informational** parameter to tell Chocolatey what version to expect and to pre-load features with, falls back to the value of the `chocolateyversion` fact.
+This is an **informational** parameter to tell Chocolatey what version to expect and to pre-load features with — falls back to the value of the `chocolateyversion` fact.
 
 ##### `chocolatey_download_url`
 
