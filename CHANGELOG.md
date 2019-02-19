@@ -17,7 +17,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - Ensure the `source` syntax in the provider is correct ([MODULES-8493](https://tickets.puppetlabs.com/browse/MODULES-8493)). Thanks, [@jcwest](https://github.com/jcwest)!
-- Ensure that if `usePackageExitCodes` is explicitly set to `true` in the Chocolatey configuration then it is observed ([MODULES-8353](https://tickets.puppetlabs.com/browse/MODULES-8353)). Thanks, [David Wood](https://github.com/davidtwco)!
+- Ensure that if `usePackageExitCodes` is explicitly set to `true` in the Chocolatey configuration then it is observed ([MODULES-5383](https://tickets.puppetlabs.com/browse/MODULES-5383)). Thanks, [David Wood](https://github.com/davidtwco)!
+- Only initialize constant when not defined. ([MODULES-7068](https://tickets.puppetlabs.com/browse/MODULES-7068)). Thanks, [Bas Toonk](https://github.com/btoonk)!
+- Fix collision in type generation ([MODULES-6948](https://tickets.puppetlabs.com/browse/MODULES-6948)). Thanks [Rico Spiess](https://github.com/rico89)!
 
 ## [3.1.1] - 2018-12-10
 
@@ -268,7 +270,8 @@ The puppetlabs-chocolatey module replaces the community chocolatey-chocolatey mo
 
 ## [0.2]
 
-[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.1...master
+[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.2.0...master
+[3.2.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.1...3.2.0
 [3.1.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/2.0.2...3.0.0
