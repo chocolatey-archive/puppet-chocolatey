@@ -211,6 +211,30 @@ describe provider do
         resource.provider.validate
       }.to raise_error(Puppet::ResourceError, /Chocolatey version must be '0.9.10.0' to manage configuration values. Detected '#{last_unsupported_version}'/)
     end
+
+    it "should error when the property_hash is empty, :ensure is :present, and no :value is supplied" do
+      resource.delete(:value)
+
+      expect {
+        resource.provider.validate
+      }.to raise_error(ArgumentError, "Unless ensure => absent, value is required.")
+    end
+
+    it "should not error when the property_hash is defined, even if :ensure is :present and no :value is supplied" do
+      resource.delete(:value)
+      resource.provider.instance_variable_set("@property_hash", {:value => "something"})
+      resource.provider.validate
+    end
+
+    it "should not error when the property_hash is empty, :ensure is :present and a :value is supplied" do
+      resource.provider.validate
+    end
+
+    it "should not error when the property_hash is empty, :ensure is :absent and no :value is supplied" do
+      resource[:ensure] = :absent
+      resource.delete(:value)
+      resource.provider.validate
+    end
   end
 
   context ".flush" do

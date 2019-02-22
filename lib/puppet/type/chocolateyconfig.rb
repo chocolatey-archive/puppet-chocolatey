@@ -70,10 +70,6 @@ Puppet::Type.newtype(:chocolateyconfig) do
   end
 
   validate do
-    if self[:ensure] != :absent
-      raise ArgumentError, "Unless ensure => absent, value is required." if self[:value].nil? || self[:value].empty?
-    end
-
     if provider.respond_to?(:validate)
       provider.validate
     end
