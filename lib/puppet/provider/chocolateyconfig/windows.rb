@@ -54,9 +54,9 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     config[:name] = element.attributes['key'] if element.attributes['key']
     config[:value] = element.attributes['value'] if element.attributes['value']
     config[:description] = element.attributes['description'] if element.attributes['description']
-
-    config[:ensure] = :present
-
+    # If the value is empty it is the default value and so is not set by Puppet.
+    # If a config item is ensured as absent it sets the value to an empty string.
+    config[:ensure] = element.attributes['value'].to_s.empty? ? :absent : :present
     Puppet.debug("Loaded config '#{config.inspect}'.")
 
     config
@@ -99,6 +99,15 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
   end
 
   def validate
+    # We want to ensure that specifying a config item as :present fails if no :value for the config
+    # is specified. However, during puppet resource runs the resource has an :ensure of present.
+    # We are able to overcome this by checking if the hash is empty:
+    # The hash *is* empty when the validate block is called during a puppet apply run.
+    # The hash is *not* empty when the validate block is called during a puppet resource run.
+    # If the hash is empty, fail only if :ensure is true and :value is not specified or is an empty string.
+    if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
+      raise ArgumentError, "Unless ensure => absent, value is required."
+    end
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     if PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) && choco_version < Gem::Version.new(CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION)
       raise Puppet::ResourceError, "Chocolatey version must be '#{CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values. Detected '#{choco_version}' as your version. Please upgrade Chocolatey."
