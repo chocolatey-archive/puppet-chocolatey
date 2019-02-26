@@ -594,6 +594,17 @@ This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
 
+**WARNING** about Secrets in `install_options`:
+
+There is no guarantee that secrets in `install_options` will not show up in debug runs of either `puppet agent` or `puppet apply` calls.
+This is another reason to _not_ set your production runs to debug mode.
+However, this information is not written to puppetdb or any other Puppet logs.
+
+It **is** written to the Chocolatey log on each machine unless you have C4B and use the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameters, which will redact specified values from the Chocolatey log.
+For more information on these Chocolatey parameters, see the Chocolatey reference documentation on the [install command](https://chocolatey.org/docs/commands-install#options-and-switches) and the [upgrade command](https://chocolatey.org/docs/commands-upgrade#options-and-switches).
+
+If you need to include a secret in your `install_options`, do not run in debug mode in production and use C4B and the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameter.
+
 ##### `name`
 
 Specifies the package name. This is the name that the packaging system uses internally. Valid options: String. Default: The resource's title.
