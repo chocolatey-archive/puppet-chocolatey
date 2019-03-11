@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Added
+
+- Parameter `seven_zip_download_url` to make the source of the 7zip binary configurable, allowing the use of this module when the previously hardcoded URL cannot be reached ([MODULES-6652](https://tickets.puppetlabs.com/browse/MODULES-6652)). Thanks, [Daniel Helgenberger](https://github.com/helge000)!
+
 ## [3.2.0] - 2019-02-19
 
 ### Added

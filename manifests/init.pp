@@ -43,6 +43,10 @@
 # @param [Boolean] use_7zip Whether to use built-in shell or allow installer
 #   to download 7zip to extract `chocolatey.nupkg` during installation.
 #   Defaults to `false`.
+# @param [String] seven_zip_download_url Specifies the source file for 7za.exe.
+#   Supports all sources supported by Puppet's file resource. You should use
+#   a 32bit binary for compatibility.
+#   Defaults to 'https://chocolatey.org/7za.exe'.
 # @param [Integer] choco_install_timeout_seconds How long in seconds should
 #   be allowed for the install of Chocolatey (including .NET Framework 4 if
 #   necessary). Defaults to `1500` (25 minutes).
@@ -65,6 +69,7 @@
 class chocolatey (
   $choco_install_location         = $::chocolatey::params::install_location,
   $use_7zip                       = $::chocolatey::params::use_7zip,
+  $seven_zip_download_url         = $::chocolatey::params::seven_zip_download_url,
   $choco_install_timeout_seconds  = $::chocolatey::params::install_timeout_seconds,
   $chocolatey_download_url        = $::chocolatey::params::download_url,
   $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,

@@ -50,3 +50,19 @@ describe 'Chocolatey Install Location' do
   end
 
 end
+
+describe 'Chocolatey Temp Directory' do
+  it "should return the TEMP path from registry if it exists" do
+    skip ('Not on Windows platform') unless Puppet::Util::Platform.windows?
+    expected_value = 'C:\somewhere'
+    Win32::Registry.any_instance.expects(:[]).with('TEMP').returns(expected_value)
+
+    PuppetX::Chocolatey::ChocolateyInstall.temp_dir.must == expected_value
+  end
+  it "should return nil path from registry if it does not exist" do
+    skip ('Not on Windows platform') unless Puppet::Util::Platform.windows?
+    Win32::Registry.any_instance.expects(:[]).with('TEMP').raises(Win32::Registry::Error.new(2), 'file not found yo').twice
+
+    PuppetX::Chocolatey::ChocolateyInstall.temp_dir.must be_nil
+  end
+end

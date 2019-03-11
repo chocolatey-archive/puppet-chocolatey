@@ -24,6 +24,7 @@ $ErrorActionPreference = 'Stop'
 $url = '<%= @download_url %>'
 $unzipMethod = '<%= @unzip_type %>'
 $install_proxy = <%= @_install_proxy %>
+$7zaExe = '<%= @seven_zip_exe %>'
 if ($env:TEMP -eq $null) {
   $env:TEMP = Join-Path $env:SystemDrive 'temp'
 }
@@ -96,15 +97,10 @@ param (
 Download-File $url $file
 
 if ($unzipMethod -eq '7zip') {
-  # download 7zip
-  Write-Output "Download 7Zip commandline tool"
-  $7zaExe = Join-Path $tempDir '7za.exe'
-
-  Download-File 'https://chocolatey.org/7za.exe' "$7zaExe"
-
   # unzip the package
   Write-Output "Extracting $file to $tempDir..."
   Start-Process "$7zaExe" -ArgumentList "x -o`"$tempDir`" -y `"$file`"" -Wait -NoNewWindow
+  Remove-Item -Path "$7zaExe" -Force
 } else {
   if ($PSVersionTable.PSVersion.Major -lt 5) {
     $shellApplication = new-object -com shell.application
@@ -126,7 +122,7 @@ if ($PSVersionTable.PSVersion.Major -gt 2) {
 } else {
   $output = Invoke-Expression $chocInstallPS1
   $output
-  Write-Output "Any errors that occured during install or upgrade are logged here: $chocoErrorLog"
+  Write-Output "Any errors that occurred during install or upgrade are logged here: $chocoErrorLog"
   $error | out-file $chocErrorLog
 }
 
