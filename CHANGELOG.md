@@ -5,9 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [3.3.0] - 2019-03-19
+
 ### Added
 
+- Warning note to package parameter documentation for `install_options` to clarify best practices for secrets management with this parameter ([MODULES-8491](https://tickets.puppetlabs.com/browse/MODULES-8491)).
 - Parameter `seven_zip_download_url` to make the source of the 7zip binary configurable, allowing the use of this module when the previously hardcoded URL cannot be reached ([MODULES-6652](https://tickets.puppetlabs.com/browse/MODULES-6652)). Thanks, [Daniel Helgenberger](https://github.com/helge000)!
+
+### Fixed
+
+- Ensure that `puppet resource chocolateyconfig` runs without erroring ([MODULES-8047].(https://tickets.puppetlabs.com/browse/MODULES-8047)).
 
 ## [3.2.0] - 2019-02-19
 
@@ -274,7 +281,8 @@ The puppetlabs-chocolatey module replaces the community chocolatey-chocolatey mo
 
 ## [0.2]
 
-[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.2.0...master
+[Unreleased]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.3.0...master
+[3.3.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.1...3.2.0
 [3.1.1]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.0.0...3.1.0
