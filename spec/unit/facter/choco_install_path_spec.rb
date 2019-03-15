@@ -6,11 +6,12 @@ describe 'choco_install_path fact' do
   subject(:fact) { Facter.fact(:choco_install_path) }
 
   before :each do
+    skip ('Not on Windows platform') unless Puppet::Util::Platform.windows?
     Facter.clear
     Facter.clear_messages
   end
 
-  context "on Windows", :if => Puppet::Util::Platform.windows? do
+  context "on Windows" do   
     it "should return the output of PuppetX::Chocolatey::ChocolateyInstall.install_path" do
       expected_value = 'C:\somewhere'
       PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(expected_value)

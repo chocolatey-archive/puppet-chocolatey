@@ -6,11 +6,13 @@ describe 'chocolateyversion fact' do
   subject(:fact) { Facter.fact(:chocolateyversion) }
 
   before :each do
+    skip ('Not on Windows platform') unless Puppet::Util::Platform.windows?
     Facter.clear
     Facter.clear_messages
   end
 
-  context "on Windows", :if => Puppet::Util::Platform.windows? do
+  context "on Windows" do
+
     it "should return the output of PuppetX::Chocolatey::ChocolateyVersion.version" do
       expected_value = '1.2.3'
       PuppetX::Chocolatey::ChocolateyVersion.expects(:version).returns(expected_value)
