@@ -596,14 +596,17 @@ backslashes in single-quoted strings *may* be double-escaped.
 
 **WARNING** Secrets in `install_options`:
 
-Secrets in `install_options` may not show up in debug runs of either `puppet agent` or `puppet apply` calls.
+Secrets in `install_options` may show up in debug runs of either `puppet agent` or `puppet apply` calls.
 This is another reason why you should _not_ set your production runs to debug mode. 
 Note that this information is not written to PuppetDB or any other Puppet logs.
 
 It **is** written to the Chocolatey log on each machine — unless you have C4B and use the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameters — which will redact specified values from the Chocolatey log.
 For more information on these Chocolatey parameters, see the Chocolatey reference documentation on the [install command](https://chocolatey.org/docs/commands-install#options-and-switches) and the [upgrade command](https://chocolatey.org/docs/commands-upgrade#options-and-switches).
 
-If you need to include a secret in your `install_options`, do not run in debug mode in production and use C4B and the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameter.
+If you need to include a secret in your `install_options`:
+
+* Do not run in debug mode in production 
+* Do use C4B with the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameter
 
 ##### `name`
 
