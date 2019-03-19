@@ -3,7 +3,11 @@ require 'puppet_x/chocolatey/chocolatey_install'
 
 describe 'Chocolatey Install Location' do
 
-  context 'on Windows', :if => Puppet::Util::Platform.windows? do
+  context 'on Windows' do
+
+    before :each do
+      skip ('Not on Windows platform') unless Puppet::Util::Platform.windows? 
+    end
 
     it "should return install path from registry if it exists" do
       expected_value = 'C:\somewhere'
@@ -29,7 +33,11 @@ describe 'Chocolatey Install Location' do
     end
   end
 
-  context 'on Linux', :if => Puppet.features.posix? do
+  context 'on Linux' do
+    before :each do
+      skip ('Not on Linux platform') unless Puppet.features.posix? 
+    end
+    
     it "should return the environment variable ChocolateyInstall if it exists" do
       # this is a placeholder, it is already set in spec_helper
       ENV['ChocolateyInstall'] = 'c:\blah'
@@ -52,15 +60,17 @@ describe 'Chocolatey Install Location' do
 end
 
 describe 'Chocolatey Temp Directory' do
-  it "should return the TEMP path from registry if it exists" do
+  before :each do
     skip ('Not on Windows platform') unless Puppet::Util::Platform.windows?
+  end
+
+  it "should return the TEMP path from registry if it exists" do
     expected_value = 'C:\somewhere'
     Win32::Registry.any_instance.expects(:[]).with('TEMP').returns(expected_value)
 
     PuppetX::Chocolatey::ChocolateyInstall.temp_dir.must == expected_value
   end
   it "should return nil path from registry if it does not exist" do
-    skip ('Not on Windows platform') unless Puppet::Util::Platform.windows?
     Win32::Registry.any_instance.expects(:[]).with('TEMP').raises(Win32::Registry::Error.new(2), 'file not found yo').twice
 
     PuppetX::Chocolatey::ChocolateyInstall.temp_dir.must be_nil

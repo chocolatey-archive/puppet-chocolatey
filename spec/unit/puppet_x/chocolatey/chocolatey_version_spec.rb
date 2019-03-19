@@ -3,7 +3,10 @@ require 'puppet_x/chocolatey/chocolatey_version'
 
 describe 'Chocolatey Version' do
 
-  context 'on Windows', :if => Puppet::Util::Platform.windows? do
+  context 'on Windows' do
+    before :each do
+      skip ('Not on Windows platform') unless Puppet::Util::Platform.windows? 
+    end
 
     context "when Chocolatey is installed" do
       before :each do
@@ -73,8 +76,9 @@ Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
 
   end
 
-  context 'on Linux', :if => Puppet.features.posix? do
+  context 'on Linux' do
     it "should return nil on a non-windows system" do
+      skip ('Not on Linux platform') unless Puppet.features.posix?  
       PuppetX::Chocolatey::ChocolateyVersion.version.must be_nil
     end
   end
