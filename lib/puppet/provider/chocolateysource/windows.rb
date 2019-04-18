@@ -11,6 +11,9 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
   MINIMUM_SUPPORTED_CHOCO_VERSION = '0.9.9.0'
   MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY = '0.9.9.9'
+  MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY = '0.10.4'
+  MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE = '0.10.4'
+  MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY   = '0.10.8'
 
   commands :chocolatey => PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command
 
@@ -62,6 +65,15 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     source[:priority] = 0
     source[:priority] = element.attributes['priority'].downcase if element.attributes['priority']
+
+    source[:bypass_proxy] = false
+    source[:bypass_proxy] = element.attributes['bypassProxy'].downcase if element.attributes['bypassProxy']
+
+    source[:admin_only] = false
+    source[:admin_only] = element.attributes['adminOnly'].downcase if element.attributes['adminOnly']
+
+    source[:allow_self_service] = false
+    source[:allow_self_service] = element.attributes['selfService'].downcase if element.attributes['selfService']
 
     source[:user] = ''
     source[:user] = element.attributes['user'].downcase if element.attributes['user']
@@ -121,6 +133,18 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       Puppet.warning("Chocolatey is unable to manage priority for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY}. The value you set will be ignored.")
     end
 
+    if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY) && resource[:bypass_proxy] && resource[:bypass_proxy] != :false
+      Puppet.warning("Chocolatey is unable to specify bypassing system proxy for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY}. The value you set will be ignored.")
+    end
+
+    if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE) && resource[:allow_self_service] && resource[:allow_self_service] != :false
+      Puppet.warning("Chocolatey is unable to specify self-service for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE}. The value you set will be ignored.")
+    end
+
+    if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY) && resource[:admin_only] && resource[:admin_only] != :false
+      Puppet.warning("Chocolatey is unable to specify administrator only visibility for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY}. The value you set will be ignored.")
+    end
+
     # location is always filled in with puppet resource, but
     # resource[:location] is always empty (because it has a different
     # code path where validation occurs before all properties/params
@@ -169,6 +193,18 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       end
 
       choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
+      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY)
+        args << '--bypass-proxy' if resource[:bypass_proxy].to_s == 'true'
+      end
+
+      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE)
+        args << '--allow-self-service' if resource[:allow_self_service] == :true
+      end
+
+      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY)
+        args << '--admin-only' if resource[:admin_only].to_s == 'true'
+      end
+
       if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
         args << '--priority' << resource[:priority]
       end

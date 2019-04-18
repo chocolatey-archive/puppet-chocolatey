@@ -26,7 +26,7 @@ def install_chocolatey
       :acceptable_exit_codes => [0, 2]
     }
 
-    curl_on(agent, "#{get_latest_chocholatey_download_url} > C:/chocolatey.nupkg")
+    curl_on(agent, "--cacert 'C:/Program Files/Puppet Labs/Puppet/puppet/ssl/cert.pem' #{get_latest_chocholatey_download_url} > C:/chocolatey.nupkg")
 
     execute_manifest_on(agent, chocolatey_pp, opts) do |result|
       assert_no_match(/Error:/, result.stderr, 'Unexpected error was detected!')

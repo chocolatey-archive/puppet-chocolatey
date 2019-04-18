@@ -77,27 +77,4 @@ describe Puppet::Type.type(:chocolateyconfig) do
     reqs[0].target.must == resource
   end
 
-  context ".validate" do
-    it "should pass when ensure => absent with no value" do
-      resource[:ensure] = :absent
-
-      resource.validate
-    end
-
-    it "should pass when ensure => present with a value" do
-      resource[:ensure] = :present
-      resource[:value] = 'yo'
-
-      resource.validate
-    end
-
-    it "should fail when ensure => present with no value" do
-      resource[:ensure] = :present
-
-      expect {
-        resource.validate
-      }.to raise_error(ArgumentError, /Unless ensure => absent, value is required/)
-    end
-  end
-
 end

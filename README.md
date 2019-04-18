@@ -44,7 +44,14 @@ compatible Puppet and Puppet Enterprise versions.
 ## Module Description
 
 This is the official module for working with the [Chocolatey](https://chocolatey.org/about)
-package manager.
+package manager. There are two versions available:
+
+* [puppetlabs/chocolatey](https://forge.puppet.com/puppetlabs/chocolatey)
+   * This is the stable version and is commercially supported by Puppet.
+   * It is slower moving, but offers greater stability and fewer changes.
+* [chocolatey/chocolatey](https://forge.puppet.com/chocolatey/chocolatey)
+   * This is the bleeding edge version and is *not commercially supported* by Puppet.
+   * It keeps up with all the new features, but is not as fully tested.
 
 This module supports all editions of Chocolatey, including FOSS, [Professional](https://chocolatey.org/compare) and [Chocolatey for Business](https://chocolatey.org/compare).
 
@@ -183,6 +190,12 @@ class {'chocolatey':
 }
 ~~~
 
+#### Install chocolatey using a proxy server
+
+~~~puppet
+class {'chocolatey':
+  install_proxy => 'http://proxy.megacorp.com:3128',
+}
 
 ### Configuration
 
@@ -255,6 +268,9 @@ this enabled, Chocolatey uses package exit codes for exit when
 non-zero (this value can come from a dependency package). Chocolatey
 defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature
 disabled, Chocolatey exits with a 0 or a 1 (matching previous behavior).
+
+Note that this behavior _may_ cause Puppet to think that the run has failed.
+We advise that you leave this at the default setting or disable it. Do _not_ enable it.
 
 ~~~puppet
 chocolateyfeature {'usepackageexitcodes':
@@ -540,7 +556,7 @@ might want to do this in a default:
 
 ### Facts
 
-* `chocolateyversion` - The version of the installed Chocolatey client (could also be provided by class parameter `chocolatey_version`).
+* `chocolateyversion` - The version of the installed Chocolatey client (could also be informationally provided by class parameter `chocolatey_version`).
 * `choco_install_path` - The location of the installed Chocolatey client (could also be provided by class parameter `choco_install_location`).
 
 ### Types/Providers
@@ -597,6 +613,20 @@ sufficient.
 This is the **only** place in Puppet where backslash separators should be used.
 Note that backslashes in double-quoted strings *must* be double-escaped and
 backslashes in single-quoted strings *may* be double-escaped.
+
+**WARNING** Secrets in `install_options`:
+
+Secrets in `install_options` may show up in debug runs of either `puppet agent` or `puppet apply` calls.
+This is another reason why you should _not_ set your production runs to debug mode. 
+Note that this information is not written to PuppetDB or any other Puppet logs.
+
+It **is** written to the Chocolatey log on each machine — unless you have C4B and use the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameters — which will redact specified values from the Chocolatey log.
+For more information on these Chocolatey parameters, see the Chocolatey reference documentation on the [install command](https://chocolatey.org/docs/commands-install#options-and-switches) and the [upgrade command](https://chocolatey.org/docs/commands-upgrade#options-and-switches).
+
+If you need to include a secret in your `install_options`:
+
+* Do not run in debug mode in production 
+* Do use C4B with the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameter
 
 ##### `name`
 
@@ -684,6 +714,33 @@ Specifies an optional user password for authenticated feeds. Not ensurable. Valu
 
 Specifies an optional priority for explicit feed order when searching for packages across multiple feeds. The lower the number, the higher the priority. Sources with a 0 priority are considered no priority and are added after other sources with a priority number. Requires at least Chocolatey v0.9.9.9. Default: `0`.
 
+#### `bypass_proxy`
+
+(**Property**: This parameter represents a concrete state on the target system.)
+
+Specifies an option for whether this source should explicitly bypass system configured proxies.
+Requires at least Chocolatey v0.10.4.
+Defaults to `false`.
+
+#### `admin_only`
+
+(**Property**: This parameter represents a concrete state on the target system.)
+
+Specifies an option for whether this source is visible to Windows user accounts in the Administrators group only.
+
+Requires Chocolatey for Business (C4B) v1.12.2+ and at least Chocolatey v0.10.8 for the setting to be respected.
+Defaults to false.
+
+#### `allow_self_service`
+
+(**Property**: This parameter represents a concrete state on the target system.)
+
+Specifies whether this source should be allowed to be used with Chocolatey Self Service.
+
+Requires Chocolatey for Business (C4B) v1.10.0+ with the feature `useBackgroundServiceWithSelfServiceSourcesOnly` turned on in order to be respected. Requires at least Chocolatey v0.10.4 for the setting to be enabled.
+
+Defaults to `false`.
+
 ### ChocolateyFeature
 
 Allows managing features for Chocolatey. Features are configurations that
@@ -759,9 +816,17 @@ If you override the default installation directory you need to set appropriate p
 
 Specifies whether to use the built-in shell or allow the installer to download 7zip to extract `chocolatey.nupkg` during installation. Valid options: `true`, `false`. Default: `false`.
 
+##### `seven_zip_download_url`
+
+Specifies the source file for `7za.exe`. Supports all sources supported by Puppet's `file {}` resource. You should use a 32bit binary for compatibility.  Defaults to `https://chocolatey.org/7za.exe`
+
 ##### `choco_install_timeout_seconds`
 
 Specifies how long in seconds should be allowed for the install of Chocolatey (including .NET Framework 4 if necessary). Valid options: Number. Default: `1500` (25 minutes).
+
+##### `chocolatey_install_version`
+
+This is an **informational** parameter to tell Chocolatey what version to expect and to pre-load features with — falls back to the value of the `chocolateyversion` fact.
 
 ##### `chocolatey_download_url`
 

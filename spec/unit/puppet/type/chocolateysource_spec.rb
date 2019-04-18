@@ -34,6 +34,20 @@ describe Puppet::Type.type(:chocolateysource) do
     end
   end
 
+  #boolean values
+  ['bypass_proxy','admin_only','allow_self_service'].each do |param|
+    context "parameter :#{param}" do
+      let (:param_symbol) { param.to_sym }
+
+      it "should accept any valid boolean value" do
+        resource[param_symbol] = true
+        resource[param_symbol] = 'true'
+        resource[param_symbol] = false
+        resource[param_symbol] = 'false'
+      end
+    end
+  end
+
   #numeric values
   ['priority'].each do |param|
     context "parameter :#{param}" do

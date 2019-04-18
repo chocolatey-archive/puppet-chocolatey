@@ -1,56 +1,51 @@
 ---
-.gitignore:
-  paths:
-    - "*.orig"
-    - "*.bak"
-    - "*.old"
-    - "*.gem"
-    - "*.rbc"
-    - ".rspec_system"
-    - ".vagrant"
-    - ".yardoc"
-    - "InstalledFiles"
-    - "_yardoc"
-    - "coverage"
-    - "doc/"
-    - "lib/bundler/man"
-    - "pkg"
-    - "vendor/"
-    - "rdoc"
-    - "spec/reports"
-    - "test/version_tmp"
-    - "tmp"
-    - "/.idea/"
-    - "/.vscode/"
-    - ".config"
-
 .gitattributes:
   # As this is for Windows, ERB files can be either LF or CRLF
   exclude:
   - "*.erb"
 
 Gemfile:
-  optional:
+  required:
     ':system_tests':
+      - gem: 'puppet-module-posix-system-r#{minor_version}'
+        platforms: ruby
+      - gem: 'puppet-module-win-system-r#{minor_version}'
+        platforms:
+          - mswin
+          - mingw
+          - x64_mingw
+      - gem: beaker-testmode_switcher
+        version: '~> 0.4'
+      - gem: master_manipulator
+      - gem: puppet-blacksmith
+        version: '~> 3.4'
       - gem: beaker-windows
         version: '~> 0.6'
+  optional:
     ':development':
       - gem: rototiller
         version: '~> 1.0'
+
+# For the moment don't do any rubocop checks.
+.rubocop.yml:
+  include_todos: true
+  selected_profile: off
+
+appveyor.yml:
+  matrix_extras:
+    - PUPPET_GEM_VERSION: ~> 6.0
+      RUBY_VERSION: 25
+      CHECK: parallel_spec
+    - PUPPET_GEM_VERSION: ~> 6.0
+      RUBY_VERSION: 25-x64
+      CHECK: parallel_spec
+
+spec/default_facts.yml:
+  unmanaged: true
+
+.gitlab-ci.yml:
+  delete: true
+
+# Rake file is heavily modified for Rototiller
 Rakefile:
   unmanaged: true
-spec/spec_helper.rb:
-  unmanaged: true
-MAINTAINERS.md:
-  maintainers:
-    - "Puppet Windows Team `windows |at| puppet |dot| com`"
-NOTICE:
-  copyright_holders:
-    - name: 'Rich Siegel, Paul Morgan'
-      begin: 2012
-      end: 2014
-    - name: 'RealDimensions Software, LLC & original authors/contributors from https://github.com/chocolatey/puppet-chocolatey'
-      begin: 2014
-      end: 2016
-    - name: 'Puppet, Inc.'
-      begin: 2016

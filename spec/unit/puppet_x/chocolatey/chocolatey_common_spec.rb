@@ -13,14 +13,19 @@ describe 'Chocolatey Common' do
   end
 
   context ".chocolatey_command" do
-    it "should find chocolatey install location based on PuppetX::Chocolatey::ChocolateyInstall", :if => Puppet.features.microsoft_windows? do
+
+    before :each do
+      skip ('Not on Windows platform') unless Puppet.features.microsoft_windows?
+    end
+
+    it "should find chocolatey install location based on PuppetX::Chocolatey::ChocolateyInstall" do
       PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\choco.exe').returns(true)
 
       PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == 'c:\dude\choco.exe'
     end
 
-    it "should find chocolatey install location based on default location", :if => Puppet.features.microsoft_windows? do
+    it "should find chocolatey install location based on default location" do
       PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\choco.exe').returns(false)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('C:\ProgramData\chocolatey\choco.exe').returns(false)

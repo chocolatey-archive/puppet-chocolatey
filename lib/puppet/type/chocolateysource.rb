@@ -107,6 +107,57 @@ Puppet::Type.newtype(:chocolateysource) do
     defaultto(0)
   end
 
+  newproperty(:bypass_proxy, :boolean => true) do
+    desc "Option to specify whether this source should
+      explicitly bypass any explicitly or system
+      configured proxies.
+      Requires at least Chocolatey v0.10.4.
+      Defaults to false."
+    
+    newvalues(:true, :false)
+    defaultto(:false)
+
+    munge do |value|
+      resource.munge_boolean(value)
+    end
+  end
+
+  newproperty(:admin_only, :boolean => true) do
+    desc "Option to specify whether this source should
+      visible to Windows user accounts in the Administrators
+      group only.
+
+      Requires Chocolatey for Business (C4B) v1.12.2+ and at
+      least Chocolatey v0.10.8 for the setting to be respected.
+      Defaults to false."
+    
+    newvalues(:true, :false)
+    defaultto(:false)
+
+    munge do |value|
+      resource.munge_boolean(value)
+    end
+  end
+
+  newproperty(:allow_self_service, :boolean => true) do
+    desc "Option to specify whether this source should be
+      allowed to be used with Chocolatey Self Service.
+
+      Requires Chocolatey for Business (C4B) v1.10.0+ with the
+      feature useBackgroundServiceWithSelfServiceSourcesOnly
+      turned on in order to be respected.
+      Also requires at least Chocolatey v0.10.4 for the setting
+      to be enabled.
+      Defaults to false."
+    
+    newvalues(:true, :false)
+    defaultto(:false)
+
+    munge do |value|
+      resource.munge_boolean(value)
+    end
+  end
+
   validate do
     if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
       raise ArgumentError, "If specifying user/password, you must specify both values."
