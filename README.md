@@ -387,6 +387,7 @@ package { 'notepadplusplus':
   install_options   => ['-pre','-params','"','param1','param2','"'],
   uninstall_options => ['-r'],
   source            => 'https://myfeed.example.com/api/v2',
+  package_settings  => { 'verbose' => true, 'log_output' => true, },
 }
 ~~~
 
@@ -397,6 +398,7 @@ package { 'notepadplusplus':
 * Supports `install_options` for pre-release, and other command-line options.
 * Supports `uninstall_options` for pre-release, and other command-line options.
 * Supports `holdable`, requires Chocolatey v0.9.9.0+.
+* Uses package_settings to pass flags to the chocolatey provider.
 
 #### Simple install
 
@@ -520,6 +522,24 @@ package {'mysql':
 
 **Note:** The above is for Chocolatey v0.9.9+. You may need to look for an
 alternative method to pass args if you have 0.9.8.x and below.
+
+#### Passing Flags With Package Settings
+
+You can pass flags to the chocolatey provider using package_settings.  You
+might want to do this in a default:
+
+~~~puppet
+    Package {
+      package_settings => { 'verbose' => true, 'log_output' => true, },
+    }
+~~~
+
+* "verbose" causes calls to chocolatey to output information about what they're
+  *about* to do; this is because some things, in particular "ensure => latest",
+  are pretty slow, which can lead to long periods where Puppet appears to be
+  doing nothing.
+* "log_output" causes the output of chocolatey upgrades and installs to be
+  shown.
 
 ## Reference
 
