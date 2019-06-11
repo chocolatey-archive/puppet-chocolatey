@@ -7,13 +7,15 @@ require 'rexml/document'
 provider = Puppet::Type.type(:package).provider(:chocolatey)
 
 describe provider do
-  let (:resource) { Puppet::Type.type(:package).new(:provider => :chocolatey, :name => "chocolatey") }
+  let (:resource) { Puppet::Type.type(:package).new(:provider => :chocolatey, :name => "chocolatey", :package_settings => {}) }
   let (:first_compiled_choco_version) {'0.9.9.0'}
   let (:newer_choco_version) {'0.9.10.0'}
   let (:last_posh_choco_version) {'0.9.8.33'}
   let (:minimum_supported_choco_uninstall_source) {'0.9.10.0'}
   let (:minimum_supported_choco_exit_codes) {'0.9.10.0'}
+  let (:minimum_supported_choco_no_progress) {'0.10.4.0'}
   let (:choco_zero_ten_zero) {'0.10.0'}
+  let (:choco_zero_eleven_zero) {'0.11.0'}
   let (:choco_config) { 'c:\choco.config' }
   let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
   let (:choco_config_contents) { <<-'EOT'
@@ -259,6 +261,43 @@ describe provider do
         @provider.install
       end
 
+      it "should call no progress when = 0.10.4 and not using verbose package options" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
+        File.expects(:read).with(choco_config).returns choco_config_contents
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+
+        @provider.install
+      end
+
+      it "should call no progress when > 0.10.4 and not using verbose package options" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
+        File.expects(:read).with(choco_config).returns choco_config_contents
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_eleven_zero).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+
+        @provider.install
+      end
+
+      it "should call no progress when = 0.10.4 and verbose package option specified" do
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
+        File.expects(:read).with(choco_config).returns choco_config_contents
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
+        resource[:ensure] = :present
+        resource[:package_settings] = {'verbose' => true}
+        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+
+        @provider.install
+      end
+
       it "should use upgrade command with versioned package" do
         resource[:ensure] = '1.2.3'
         @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '--version', '1.2.3', '-y', nil)
@@ -463,6 +502,46 @@ describe provider do
         })]
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+
+        @provider.update
+      end
+
+      it "should call with no-progress when = 0.10.4 and package_settings: verbose is not true" do
+        provider.stubs(:instances).returns [provider.new({
+             :ensure   => "1.2.3",
+             :name     => "chocolatey",
+             :provider => :chocolatey,
+         })]
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+
+        @provider.update
+      end
+
+      it "should call with no-progress when > 0.10.4 and package_settings: verbose is not true" do
+        provider.stubs(:instances).returns [provider.new({
+            :ensure   => "1.2.3",
+            :name     => "chocolatey",
+            :provider => :chocolatey,
+        })]
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_eleven_zero).at_least_once
+        resource[:ensure] = :present
+        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+
+        @provider.update
+      end
+
+      it "should not call with no-progress when = 0.10.4 and package_settings: verbose is true" do
+        provider.stubs(:instances).returns [provider.new({
+            :ensure   => "1.2.3",
+            :name     => "chocolatey",
+            :provider => :chocolatey,
+        })]
+        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
+        resource[:package_settings] = { 'verbose' => true }
+        resource[:ensure]           = :present
         @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
 
         @provider.update

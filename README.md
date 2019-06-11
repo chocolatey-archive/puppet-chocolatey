@@ -538,6 +538,7 @@ might want to do this in a default:
   *about* to do; this is because some things, in particular "ensure => latest",
   are pretty slow, which can lead to long periods where Puppet appears to be
   doing nothing.
+  * When Chocolatey is version `0.10.4` or later and "Verbose" is not specified as `true` Chocolatey will be run with the `--no-progress` parameter, limiting the erroneous output of download information to the logs.
 * "log_output" causes the output of chocolatey upgrades and installs to be
   shown.
 

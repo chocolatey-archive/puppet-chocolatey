@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Added
+
+- When Chocolatey is version `0.10.4` or later and the `package_setting` option `Verbose` is not specified Chocolatey will be run with the `--no-progress` parameter, limiting the erroneous output of download information to the logs ([MODULES-9224](https://tickets.puppetlabs.com/browse/MODULES-9224)).
+
 ## [3.3.0] - 2019-03-19
 
 ### Added
