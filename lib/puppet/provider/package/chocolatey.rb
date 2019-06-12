@@ -143,6 +143,8 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     @resource[:package_settings] ||= {}
     if @resource[:package_settings]['verbose']
       Puppet.info "Calling chocolatey with arguments: " + args.join(' ')
+    elsif Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_NO_PROGRESS)
+      args << '--no-progress'
     end
     output = chocolatey(*args)
     if @resource[:package_settings]['log_output']
@@ -212,9 +214,11 @@ Puppet::Type.type(:package).provide(:chocolatey, :parent => Puppet::Provider::Pa
     end
 
     if self.query
-    @resource[:package_settings] ||= {}
+      @resource[:package_settings] ||= {}
       if @resource[:package_settings]['verbose']
         Puppet.info "Calling chocolatey with arguments: " + args.join(' ')
+      elsif Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version) >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_VERSION_NO_PROGRESS)
+        args << '--no-progress'
       end
       output = chocolatey(*args)
       if @resource[:package_settings]['log_output']
