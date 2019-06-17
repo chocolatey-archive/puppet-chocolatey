@@ -4,6 +4,10 @@
   exclude:
   - "*.erb"
 
+.gitignore:
+  required:
+    - ---.project
+
 Gemfile:
   required:
     ':system_tests':
@@ -29,7 +33,6 @@ Gemfile:
 # For the moment don't do any rubocop checks.
 .rubocop.yml:
   include_todos: true
-  selected_profile: off
 
 appveyor.yml:
   matrix_extras:

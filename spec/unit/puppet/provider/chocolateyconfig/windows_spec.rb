@@ -6,11 +6,12 @@ require 'rexml/document'
 
 provider = Puppet::Type.type(:chocolateyconfig).provider(:windows)
 describe provider do
-  let (:name) { 'configItem' }
-  let (:resource) { Puppet::Type.type(:chocolateyconfig).new(:provider => :windows, :name => name, :value => "yes") }
-  let (:choco_config) { 'c:\choco.config' }
-  let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
-  let (:choco_config_contents) { <<-'EOT'
+  let(:name) { 'configItem' }
+  let(:resource) { Puppet::Type.type(:chocolateyconfig).new(provider: :windows, name: name, value: 'yes') }
+  let(:choco_config) { 'c:\choco.config' }
+  let(:choco_install_path) { 'c:\dude\bin\choco.exe' }
+  let(:choco_config_contents) do
+    <<-EOT
 <?xml version="1.0" encoding="utf-8"?>
 <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <config>
@@ -52,92 +53,93 @@ describe provider do
  </apiKeys>
 </chocolatey>
   EOT
-  }
+  end
 
-
-  let (:minimum_supported_version) {'0.9.10.0'}
-  let (:last_unsupported_version) {'0.9.9.12'}
+  let(:minimum_supported_version) { '0.9.10.0' }
+  let(:last_unsupported_version) { '0.9.9.12' }
+  let(:provider_class) { subject.class }
+  let(:provider) { subject.class.new(resource) }
 
   before :each do
     PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
     PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
 
-    @provider = provider.new(resource)
-    resource.provider = @provider
+    provider = provider_class.new(resource)
+    resource.provider = provider
 
     # Stub all file and config tests
-    provider.stubs(:healthcheck)
+    provider_class.stubs(:healthcheck)
   end
 
-  context "verify provider" do
-    it "should be an instance of Puppet::Type::Chocolateyconfig::ProviderWindows" do
-      @provider.must be_an_instance_of Puppet::Type::Chocolateyconfig::ProviderWindows
+  context 'verify provider' do
+    it 'is an instance of Puppet::Type::Chocolateyconfig::ProviderWindows' do
+      provider.must be_an_instance_of Puppet::Type::Chocolateyconfig::ProviderWindows
     end
 
-    it "should have a create method" do
-      @provider.should respond_to(:create)
+    it 'has a create method' do
+      provider.should respond_to(:create)
     end
 
-    it "should have an exists? method" do
-      @provider.should respond_to(:exists?)
+    it 'has an exists? method' do
+      provider.should respond_to(:exists?)
     end
 
-    it "should have a destroy method" do
-      @provider.should respond_to(:destroy)
+    it 'has a destroy method' do
+      provider.should respond_to(:destroy)
     end
 
-    it "should have a properties method" do
-      @provider.should respond_to(:properties)
+    it 'has a properties method' do
+      provider.should respond_to(:properties)
     end
 
-    it "should have a query method" do
-      @provider.should respond_to(:query)
+    it 'has a query method' do
+      provider.should respond_to(:query)
     end
   end
 
-  context "properties" do
-    context ":value" do
-      #it "should default to nil" do
+  context 'properties' do
+    context ':value' do
+      # it "should default to nil" do
       #  resource[:value].should be_nil
-      #end
+      # end
 
-      it "should accept c:\\cache" do
+      it 'accepts c:\\cache' do
         resource[:value] = 'c:\cache'
       end
 
-      it "should accept 2700" do
+      it 'accepts 2700' do
         resource[:value] = '2700'
       end
 
-      it "should accept 'value with spaces'" do
+      it "accepts 'value with spaces'" do
         resource[:value] = 'value with spaces'
       end
     end
   end
 
-  context "self.get_configs" do
+  context 'self.read_configs' do
     before :each do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
     end
 
-    it "should error when the config file location is null" do
+    it 'errors when the config file location is null' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(nil)
 
       expect {
-        provider.get_configs
-      }.to raise_error(Puppet::ResourceError, /Config file not found for Chocolatey/)
+        provider_class.read_configs
+      }.to raise_error(Puppet::ResourceError, %r{Config file not found for Chocolatey})
     end
 
-    it "should error when the config file is not found" do
+    it 'errors when the config file is not found' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(false)
 
       expect {
-        provider.get_configs
-      }.to raise_error(Puppet::ResourceError, /was unable to locate config file at/)
+        provider_class.read_configs
+      }.to raise_error(Puppet::ResourceError, %r{was unable to locate config file at})
     end
 
-    context "when getting configs from the config file" do
+    context 'when getting configs from the config file' do
       configs = []
 
       before :each do
@@ -145,39 +147,38 @@ describe provider do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
 
-        configs = provider.get_configs
+        configs = provider_class.read_configs
       end
 
-      it "should match the count of configs in the config" do
+      it 'matches the count of configs in the config' do
         configs.count.must eq 11
-
       end
 
-      it "should contain xml elements" do
+      it 'contains xml elements' do
         configs[0].must be_an_instance_of REXML::Element
       end
     end
   end
 
-  context "self.get_config" do
-    let (:element) {  REXML::Element.new('add') }
-    element_key = "cacheLocation"
-    element_value= "c:\\cache"
-    element_description = "Cache location if not TEMP folder."
+  context 'self.get_config' do
+    let(:element) { REXML::Element.new('add') }
+
+    element_key = 'cacheLocation'
+    element_value = 'c:\\cache'
+    element_description = 'Cache location if not TEMP folder.'
 
     before :each do
-      element.add_attributes( { "key"        => element_key,
-                                "value"     => element_value,
-                                "description"  => element_description,
-                              } )
+      element.add_attributes('key' => element_key,
+                             'value' => element_value,
+                             'description' => element_description)
     end
 
-    it "should return nil config when element is nil" do
-      provider.get_config(nil).must be == {}
+    it 'returns nil config when element is nil' do
+      provider_class.get_config(nil).must be == {}
     end
 
-    it "should convert an element to a config" do
-      config = provider.get_config(element)
+    it 'converts an element to a config' do
+      config = provider_class.get_config(element)
 
       config[:name].must eq element_key
       config[:value].must eq element_value
@@ -186,8 +187,8 @@ describe provider do
     end
   end
 
-  context ".validation" do
-    it "should not error when Chocolatey is not installed" do
+  context '.validation' do
+    it 'does not error when Chocolatey is not installed' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(false).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_install_path).returns(false).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns('')
@@ -195,7 +196,7 @@ describe provider do
       resource.provider.validate
     end
 
-    it "should not error when the minimum version is met" do
+    it 'does not error when the minimum version is met' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(false).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_install_path).returns(true).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
@@ -203,43 +204,43 @@ describe provider do
       resource.provider.validate
     end
 
-    it "should error when the minimum version is not met" do
+    it 'errors when the minimum version is not met' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(true).at_least(0)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version)
 
       expect {
         resource.provider.validate
-      }.to raise_error(Puppet::ResourceError, /Chocolatey version must be '0.9.10.0' to manage configuration values. Detected '#{last_unsupported_version}'/)
+      }.to raise_error(Puppet::ResourceError, %r{Chocolatey version must be '0.9.10.0' to manage configuration values. Detected '#{last_unsupported_version}'})
     end
 
-    it "should error when the property_hash is empty, :ensure is :present, and no :value is supplied" do
+    it 'errors when the property_hash is empty, :ensure is :present, and no :value is supplied' do
       resource.delete(:value)
 
       expect {
         resource.provider.validate
-      }.to raise_error(ArgumentError, "Unless ensure => absent, value is required.")
+      }.to raise_error(ArgumentError, 'Unless ensure => absent, value is required.')
     end
 
-    it "should not error when the property_hash is defined, even if :ensure is :present and no :value is supplied" do
+    it 'does not error when the property_hash is defined, even if :ensure is :present and no :value is supplied' do
       resource.delete(:value)
-      resource.provider.instance_variable_set("@property_hash", {:value => "something"})
+      resource.provider.instance_variable_set('@property_hash', value: 'something')
       resource.provider.validate
     end
 
-    it "should not error when the property_hash is empty, :ensure is :present and a :value is supplied" do
+    it 'does not error when the property_hash is empty, :ensure is :present and a :value is supplied' do
       resource.provider.validate
     end
 
-    it "should not error when the property_hash is empty, :ensure is :absent and no :value is supplied" do
+    it 'does not error when the property_hash is empty, :ensure is :absent and no :value is supplied' do
       resource[:ensure] = :absent
       resource.delete(:value)
       resource.provider.validate
     end
   end
 
-  context ".flush" do
-    resource_name = "yup"
-    resource_value = "this"
+  context '.flush' do
+    resource_name = 'yup'
+    resource_value = 'this'
     resource_ensure = :present
 
     before :each do
@@ -253,40 +254,35 @@ describe provider do
       resource[:ensure] = resource_ensure
     end
 
-    it "should ensure a config setting is set" do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
-      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+    it 'ensures a config setting is set' do
+      # PuppetX::Chocolatey::ChocolateyCommon.allow(:choco_version).returns(minimum_supported_version)
+      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
                                                       'config', 'set',
                                                       '--name', resource_name,
-                                                      '--value', resource_value
-                                                     ])
+                                                      '--value', resource_value])
 
       resource.flush
     end
 
-    it "should ensure a config setting is removed" do
+    it 'ensures a config setting is removed' do
       resource.provider.destroy
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
-      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+      # PuppetX::Chocolatey::ChocolateyCommon.allow(:choco_version).returns(minimum_supported_version)
+      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
                                                       'config', 'unset',
-                                                      '--name', resource_name
-                                                     ])
+                                                      '--name', resource_name])
 
       resource.flush
     end
 
-    it "should provide an error message when choco execution fails" do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
-      Puppet::Util::Execution.expects(:execute).with([provider.command(:chocolatey),
+    it 'provides an error message when choco execution fails' do
+      # PuppetX::Chocolatey::ChocolateyCommon.allow(:choco_version).returns(minimum_supported_version)
+      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
                                                       'config', 'set',
                                                       '--name', resource_name,
-                                                      '--value', resource_value
-                                                     ]).raises(Puppet::ExecutionFailure, "Nooooo")
+                                                      '--value', resource_value]).raises(Puppet::ExecutionFailure, 'Nooooo')
 
-      expect { resource.flush }.to raise_error(Puppet::Error, /Unable to set Chocolateyconfig/)
+      expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolateyconfig})
     end
-
-
   end
 end
