@@ -1,160 +1,196 @@
 require 'spec_helper_acceptance'
 
-describe 'Chocolatey Config' do
-  context 'MODULES-3035 - Add New Config Item' do
-    before(:all) do
-      backup_config
+describe 'chocolateyconfig' do
+  context 'create chocolateyconfig resource' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'hello123':
+          ensure => present,
+          value  => 'this guy',
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='hello123']/@value", result.stdout).to_s).to match(%r{this guy})
+      end
     end
-
-    chocolatey_src = <<-PP
-      chocolateyconfig {'hello123':
-        ensure => present,
-        value  => 'this guy',
-      }
-    PP
-
-    it_behaves_like 'a successful config change', chocolatey_src, 'hello123', %r{this guy}
   end
 
-  context 'MODULES-3035 - Add a Value to an Existing Config Setting' do
-    before(:all) do
-      backup_config
+  context 'add value to existing chocolateyconfig' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'proxy':
+          ensure => present,
+          value  => 'https://somewhere',
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='proxy']/@value", result.stdout).to_s).to match(%r{https\:\/\/somewhere})
+      end
     end
-
-    chocolatey_src = <<-PP
-      chocolateyconfig {'proxy':
-        ensure => present,
-        value  => 'https://somewhere',
-      }
-    PP
-
-    it_behaves_like 'a successful config change', chocolatey_src, 'proxy', %r{https\:\/\/somewhere}
   end
 
-  context 'MODULES-3035 - Config Settings Change Config Value' do
-    before(:all) do
-      backup_config
+  context 'change config value on existing chocolateyconfig' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'proxyUser':
+          value => 'bob',
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateysource_changed) do
+      <<-MANIFEST
+        chocolateyconfig {'proxyuser':
+          value => 'tim',
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyconfig {'proxyUser':
-        value => 'bob',
-      }
-    PP
+    it 'applies manifest, sets up initial state' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='proxyUser']/@value", result.stdout).to_s).to match(%r{bob})
+      end
+    end
 
-    chocolatey_src_change = <<-PP
-      chocolateyconfig {'proxyuser':
-        value => 'tim',
-      }
-    PP
-
-    # Add the config item
-    it_behaves_like 'a successful config change', chocolatey_src, 'proxyUser', %r{bob}
-
-    # Now that it exists, change its value
-    it_behaves_like 'a successful config change', chocolatey_src_change, 'proxyUser', %r{tim}
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource_changed)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='proxyUser']/@value", result.stdout).to_s).to match(%r{tim})
+      end
+    end
   end
 
-  context 'MODULES-3035 Ensure Config Value with Password In Name' do
-    before(:all) do
-      backup_config
+  context "create chocolateyconfig containing 'password' in name" do
+    include_context 'backup and reset config'
+
+    let(:config_value) do
+      pp_chocolateysource_changed = <<-MANIFEST
+        chocolateyconfig {'proxyPassword':
+          value => 'secrect',
+        }
+      MANIFEST
+
+      idempotent_apply(pp_chocolateysource_changed)
+      result = run_shell(config_content_command)
+      get_xml_value("//config/add[@key='proxyPassword']/@value", result.stdout).to_s
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'proxyPassword':
+          value => 'secrect2',
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyconfig {'proxyPassword':
-        value => 'secrect',
-      }
-    PP
-
-    chocolatey_src_change = <<-PP
-      chocolateyconfig {'proxyPassword':
-        value => 'secrect2',
-      }
-    PP
-
-    # The password should set one time and then not change.
-    it_behaves_like 'a password that doesn\'t change', chocolatey_src, chocolatey_src_change, 'proxyPassword'
+    it "applies manifest, doesn't change password field" do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='proxyPassword']/@value", result.stdout).to_s).to eq(config_value)
+      end
+    end
   end
 
-  context 'MODULES-3035 - Fail to Set Present With No Value' do
-    before(:all) do
-      backup_config
+  context 'create chocolateyconfig with no value set' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'bob':
+          ensure => present,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    it 'raises error' do
+      apply_manifest(pp_chocolateysource, expect_failures: true) do |result|
+        expect(result.exit_code).to eq(1)
+        expect(result.stderr).to match(%r{Unless ensure => absent, value is required})
+      end
     end
-
-    chocolatey_src = <<-PP
-      chocolateyconfig {'bob':
-        ensure => present,
-      }
-    PP
-
-    expected_error = %r{Unless ensure => absent, value is required.}
-
-    # A manifest with present set, but no values to enforce should not run.
-    it_behaves_like 'a failing manifest', chocolatey_src, expected_error
   end
 
-  context 'MODULES-3035 - Config Settings Remove Value with Password in the Name' do
-    before(:all) do
-      backup_config
+  context "remove value fom chocolateyconfig containing 'password' in name" do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'proxyPassword':
+          value => 'secret',
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateysource_changed) do
+      <<-MANIFEST
+        chocolateyconfig {'proxyPassword':
+          ensure => absent,
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyconfig {'proxyPassword':
-        value => 'secret',
-      }
-    PP
+    it 'applies manifest, sets initial state' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='proxyPassword']/@value", result.stdout).to_s).to match(%r{.+})
+      end
+    end
 
-    chocolatey_src_change = <<-PP
-      chocolateyconfig {'proxyPassword':
-        ensure => absent,
-      }
-    PP
-
-    # The password will end up a hash, so we specify a regex that just verifies a hash exists.
-    it_behaves_like 'a successful config change', chocolatey_src, 'proxyPassword', %r{(.+)}
-
-    it_behaves_like 'a manifest that removes a config value', chocolatey_src_change, 'proxyPassword'
+    it 'applies manifest, removes key from config' do
+      idempotent_apply(pp_chocolateysource_changed)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='proxyPassword']/@value", result.stdout).to_s).not_to match(%r{.+})
+      end
+    end
   end
 
-  context 'MODULES-3035 - Remove Value from Config Setting' do
-    before(:all) do
-      backup_config
+  context 'remove value from chocolateyconfig' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateyconfig {'amadeupvalue':
+          ensure => present,
+          value => '10',
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateysource_changed) do
+      <<-MANIFEST
+        chocolateyconfig {'amadeupvalue':
+          ensure => absent,
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyconfig {'commandExecutionTimeoutSeconds':
-        ensure => absent,
-      }
-    PP
+    it 'applies manifest, sets initial state' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='amadeupvalue']/@value", result.stdout).to_s).to match(%r{10})
+      end
+    end
 
-    it_behaves_like 'a manifest that removes a config value', chocolatey_src, 'commandExecutionTimeoutSeconds'
+    it 'applies manifest, removes key from config' do
+      idempotent_apply(pp_chocolateysource_changed)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//config/add[@key='amadeupvalue']/@value", result.stdout).to_s).not_to match(%r{.+})
+      end
+    end
   end
 end

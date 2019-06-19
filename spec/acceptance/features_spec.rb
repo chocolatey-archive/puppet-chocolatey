@@ -1,212 +1,147 @@
 require 'spec_helper_acceptance'
 
-describe 'Chocolatey features' do
-  context 'MODULES-3034 Disable an Already Disabled Feature' do
-    before(:all) do
-      backup_config
+describe 'chocolateyfeature resource' do
+  context 'disable a disabled chocolateyfeature' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateyfeature) do
+      <<-MANIFEST
+        chocolateyfeature {'failOnAutoUninstaller':
+          ensure => disabled,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    chocolatey_src = <<-PP
-      chocolateyfeature {'failOnAutoUninstaller':
-        ensure => disabled,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'verifies the features is disabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.output).to_s,
-                       'Was not disabled by default, please adjust test to find another value.')
-        end
-      end
-
-      it 'applies the manifest to disable the feature' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the feature is still disabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.output).to_s, 'Was not found disabled')
-        end
+    it 'applies manifest, chocolateyfeature remains disabled' do
+      idempotent_apply(pp_chocolateyfeature)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.stdout).to_s).to match(%r{false})
       end
     end
   end
 
-  context 'MODULES-3034 Disable an Enabled Feature' do
-    before(:all) do
-      backup_config
+  context 'disable an enabled chocolateyfeature' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateyfeature) do
+      <<-MANIFEST
+        chocolateyfeature { 'checksumFiles':
+          ensure => enabled,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateyfeature_disabled) do
+      <<-MANIFEST
+        chocolateyfeature { 'checksumFiles':
+          ensure => disabled,
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyfeature {'checksumFiles':
-        ensure => disabled,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'validates the feature is enabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//features/feature[@name='checksumFiles']/@enabled", result.output).to_s, 'Was not enabled by default, please adjust test to find another value.')
-        end
-      end
-
-      it 'applies the manifest to disable the feature' do
-        execute_manifest_on(agent, chocolatey_src)
-      end
-
-      it 'validates the feature is now disabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//features/feature[@name='checksumFiles']/@enabled", result.output).to_s, 'Was not found disabled')
-        end
+    it 'applies manifest, enables chocolateyfeature' do
+      idempotent_apply(pp_chocolateyfeature)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//features/feature[@name='checksumFiles']/@enabled", result.stdout).to_s).to match(%r{true})
       end
     end
-  end
 
-  context 'MODULES-3034 Enable a Disabled Feature' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    chocolatey_src = <<-PP
-      chocolateyfeature {'failOnAutoUninstaller':
-        ensure => enabled,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'verifies the feature is disabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.output).to_s,
-                       'Was not disabled by default, please adjust test to find another value.')
-        end
-      end
-
-      it 'applies the manifest to enable the feature' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the feature is now enabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.output).to_s, 'Was not found enabled')
-        end
+    it 'applies manifest, disables chocolateyfeature' do
+      idempotent_apply(pp_chocolateyfeature_disabled)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//features/feature[@name='checksumFiles']/@enabled", result.stdout).to_s).to match(%r{false})
       end
     end
   end
 
-  context 'MODULES-3034 - Enable Already Enabled Feature' do
-    before(:all) do
-      backup_config
+  context 'enable a disabled chocolateyfeature' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateyfeature) do
+      <<-MANIFEST
+        chocolateyfeature {'failOnAutoUninstaller':
+          ensure => disabled,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateyfeature_enabled) do
+      <<-MANIFEST
+        chocolateyfeature {'failOnAutoUninstaller':
+          ensure => enabled,
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyfeature {'usePackageExitCodes':
-        ensure => enabled,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'verifies the feature is already enabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//features/feature[@name='usePackageExitCodes']/@enabled", result.output).to_s, 'Was not enabled by default, please adjust test to find another value.')
-        end
-      end
-
-      it 'applies the manifest to enable the feature' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the feature is still enabled' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//features/feature[@name='usePackageExitCodes']/@enabled", result.output).to_s, 'Was not found enabled')
-        end
+    it 'applies manifest, disables chocolateyfeature' do
+      idempotent_apply(pp_chocolateyfeature)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.stdout).to_s).to match(%r{false})
       end
     end
-  end
 
-  context 'MODULES-3034 - Enable a non-existent feature' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    chocolatey_src = <<-PP
-      chocolateyfeature {'idontexistfeature123123':
-        ensure => enabled,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'fails to apply the manifest' do
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{returned 1: Feature 'idontexistfeature123123' not found}, result.stderr, 'stderr did not match expected')
-        end
+    it 'applies manifest, enables chocolateyfeature' do
+      idempotent_apply(pp_chocolateyfeature_enabled)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//features/feature[@name='failOnAutoUninstaller']/@enabled", result.stdout).to_s).to match(%r{true})
       end
     end
   end
 
-  context 'MODULES-3034 - Enable non-existent feature' do
-    before(:all) do
-      backup_config
+  context 'enable enabled chocolateyfeature' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateyfeature) do
+      <<-MANIFEST
+        chocolateyfeature {'usePackageExitCodes':
+          ensure => enabled,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    chocolatey_src = <<-PP
-      chocolateyfeature {'idontexistfeature123123':
-        ensure => enabled,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'fails to apply the manifest' do
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{returned 1: Feature 'idontexistfeature123123' not found}, result.stderr, 'stderr did not match expected')
-        end
+    it 'applies manifest, chocolateyfeature remains enabled' do
+      idempotent_apply(pp_chocolateyfeature)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//features/feature[@name='usePackageExitCodes']/@enabled", result.stdout).to_s).to match(%r{true})
       end
     end
   end
 
-  context 'MODULES-3034 - Attempt to remove feature' do
-    before(:all) do
-      backup_config
+  context 'enable non-existent chocolateyfeature' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateyfeature) do
+      <<-MANIFEST
+        chocolateyfeature {'idontexistfeature123123':
+          ensure => enabled,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    it 'raises error' do
+      apply_manifest(pp_chocolateyfeature, expect_failures: true) do |result|
+        # exit code of 0 is returned as resource is created...
+        # expect(result.exit_code).to eq(1)
+        expect(result.stderr).to match(%r{Feature 'idontexistfeature123123' not found})
+      end
+    end
+  end
+
+  context 'remove chocolateyfeature' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateyfeature) do
+      <<-MANIFEST
+        chocolateyfeature {'checksumFiles':
+          ensure => absent,
+        }
+      MANIFEST
     end
 
-    chocolatey_src = <<-PP
-      chocolateyfeature {'checksumFiles':
-        ensure => absent,
-      }
-    PP
-
-    windows_agents.each do |agent|
-      it 'fails to apply the manifest' do
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{Error: Parameter ensure failed on Chocolateyfeature\[checksumFiles\]: Invalid value \"absent\"}, result.stderr, 'stderr did not match expected')
-        end
+    it 'raises error' do
+      apply_manifest(pp_chocolateyfeature, expect_failures: true) do |result|
+        expect(result.exit_code).to eq(1)
+        expect(result.stderr).to match(%r{Error: Parameter ensure failed on Chocolateyfeature\[checksumFiles\]: Invalid value \"absent\"})
       end
     end
   end
