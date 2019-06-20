@@ -1,9 +1,7 @@
 require 'spec_helper_acceptance'
 
 describe 'Chocolatey Config' do
-
   context 'MODULES-3035 - Add New Config Item' do
-
     before(:all) do
       backup_config
     end
@@ -19,11 +17,10 @@ describe 'Chocolatey Config' do
       }
     PP
 
-    it_behaves_like 'a successful config change', chocolatey_src, 'hello123', /this guy/
+    it_behaves_like 'a successful config change', chocolatey_src, 'hello123', %r{this guy}
   end
 
   context 'MODULES-3035 - Add a Value to an Existing Config Setting' do
-
     before(:all) do
       backup_config
     end
@@ -38,12 +35,11 @@ describe 'Chocolatey Config' do
         value  => 'https://somewhere',
       }
     PP
-    
-    it_behaves_like 'a successful config change', chocolatey_src, 'proxy', /https\:\/\/somewhere/
+
+    it_behaves_like 'a successful config change', chocolatey_src, 'proxy', %r{https\:\/\/somewhere}
   end
 
   context 'MODULES-3035 - Config Settings Change Config Value' do
-
     before(:all) do
       backup_config
     end
@@ -65,14 +61,13 @@ describe 'Chocolatey Config' do
     PP
 
     # Add the config item
-    it_behaves_like 'a successful config change', chocolatey_src, 'proxyUser', /bob/
+    it_behaves_like 'a successful config change', chocolatey_src, 'proxyUser', %r{bob}
 
     # Now that it exists, change its value
-    it_behaves_like 'a successful config change', chocolatey_src_change, 'proxyUser', /tim/
+    it_behaves_like 'a successful config change', chocolatey_src_change, 'proxyUser', %r{tim}
   end
 
   context 'MODULES-3035 Ensure Config Value with Password In Name' do
-
     before(:all) do
       backup_config
     end
@@ -98,7 +93,6 @@ describe 'Chocolatey Config' do
   end
 
   context 'MODULES-3035 - Fail to Set Present With No Value' do
-
     before(:all) do
       backup_config
     end
@@ -113,14 +107,13 @@ describe 'Chocolatey Config' do
       }
     PP
 
-    expected_error = /Unless ensure => absent, value is required./
+    expected_error = %r{Unless ensure => absent, value is required.}
 
     # A manifest with present set, but no values to enforce should not run.
     it_behaves_like 'a failing manifest', chocolatey_src, expected_error
   end
 
   context 'MODULES-3035 - Config Settings Remove Value with Password in the Name' do
-
     before(:all) do
       backup_config
     end
@@ -142,13 +135,12 @@ describe 'Chocolatey Config' do
     PP
 
     # The password will end up a hash, so we specify a regex that just verifies a hash exists.
-    it_behaves_like 'a successful config change', chocolatey_src, 'proxyPassword', /(.+)/
+    it_behaves_like 'a successful config change', chocolatey_src, 'proxyPassword', %r{(.+)}
 
     it_behaves_like 'a manifest that removes a config value', chocolatey_src_change, 'proxyPassword'
   end
 
   context 'MODULES-3035 - Remove Value from Config Setting' do
-
     before(:all) do
       backup_config
     end
@@ -166,4 +158,3 @@ describe 'Chocolatey Config' do
     it_behaves_like 'a manifest that removes a config value', chocolatey_src, 'commandExecutionTimeoutSeconds'
   end
 end
-

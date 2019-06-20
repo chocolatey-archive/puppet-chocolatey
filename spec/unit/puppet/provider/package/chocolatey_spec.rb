@@ -4,21 +4,20 @@ require 'puppet/type/package'
 require 'puppet/provider/package/chocolatey'
 require 'rexml/document'
 
-provider = Puppet::Type.type(:package).provider(:chocolatey)
-
-describe provider do
-  let (:resource) { Puppet::Type.type(:package).new(:provider => :chocolatey, :name => "chocolatey", :package_settings => {}) }
-  let (:first_compiled_choco_version) {'0.9.9.0'}
-  let (:newer_choco_version) {'0.9.10.0'}
-  let (:last_posh_choco_version) {'0.9.8.33'}
-  let (:minimum_supported_choco_uninstall_source) {'0.9.10.0'}
-  let (:minimum_supported_choco_exit_codes) {'0.9.10.0'}
-  let (:minimum_supported_choco_no_progress) {'0.10.4.0'}
-  let (:choco_zero_ten_zero) {'0.10.0'}
-  let (:choco_zero_eleven_zero) {'0.11.0'}
-  let (:choco_config) { 'c:\choco.config' }
-  let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
-  let (:choco_config_contents) { <<-'EOT'
+describe Puppet::Type.type(:package).provider(:chocolatey) do
+  let(:resource) { Puppet::Type.type(:package).new(provider: :chocolatey, name: 'chocolatey', package_settings: {}) }
+  let(:first_compiled_choco_version) { '0.9.9.0' }
+  let(:newer_choco_version) { '0.9.10.0' }
+  let(:last_posh_choco_version) { '0.9.8.33' }
+  let(:minimum_supported_choco_uninstall_source) { '0.9.10.0' }
+  let(:minimum_supported_choco_exit_codes) { '0.9.10.0' }
+  let(:minimum_supported_choco_no_progress) { '0.10.4.0' }
+  let(:choco_zero_ten_zero) { '0.10.0' }
+  let(:choco_zero_eleven_zero) { '0.11.0' }
+  let(:choco_config) { 'c:\choco.config' }
+  let(:choco_install_path) { 'c:\dude\bin\choco.exe' }
+  let(:choco_config_contents) do
+    <<-'EOT'
 <?xml version="1.0" encoding="utf-8"?>
 <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <config>
@@ -60,8 +59,9 @@ describe provider do
  </apiKeys>
 </chocolatey>
   EOT
-  }
-  let (:choco_config_contents_upec) { <<-'EOT'
+  end
+  let(:choco_config_contents_upec) do
+    <<-'EOT'
     <?xml version="1.0" encoding="utf-8"?>
     <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <features>
@@ -69,78 +69,82 @@ describe provider do
       </features>
     </chocolatey>
   EOT
-  }
+  end
+  let(:provider_class) { subject.class }
+  let(:provider) { subject.class.new(resource) }
 
   before :each do
-    @provider = provider.new(resource)
-    resource.provider = @provider
+    resource.provider = provider
 
     # Stub all file and config tests
-    provider.stubs(:healthcheck)
+    provider_class.stubs(:healthcheck)
     Puppet::Util::Execution.stubs(:execute)
   end
 
-  it "should be an instance of Puppet::Type::Package::ProviderChocolatey" do
-    @provider.must be_an_instance_of Puppet::Type::Package::ProviderChocolatey
+  it 'is an instance of Puppet::Type::Package::ProviderChocolatey' do
+    expect(provider).to be_an_instance_of Puppet::Type::Package::ProviderChocolatey
   end
 
-  it "should have an install method" do
-    @provider.should respond_to(:install)
+  it 'has an install method' do
+    expect(provider).to respond_to(:install)
   end
 
-  it "should have a latest method" do
-    @provider.should respond_to(:uninstall)
+  it 'has an uninstall method' do
+    expect(provider).to respond_to(:uninstall)
   end
 
-  it "should have an update method" do
-    @provider.should respond_to(:update)
+  it 'has an update method' do
+    expect(provider).to respond_to(:update)
   end
 
-  it "should have a latest method" do
-    @provider.should respond_to(:latest)
+  it 'has a latest method' do
+    expect(provider).to respond_to(:latest)
   end
 
-  context "parameter :source" do
-    it "should default to nil" do
-      resource[:source].should be_nil
+  context 'parameter :source' do
+    it 'defaults to nil' do
+      expect(resource[:source]).to be_nil
     end
 
-    it "should accept c:\\packages" do
+    it 'accepts c:\\packages' do
       resource[:source] = 'c:\packages'
+      expect(resource[:source]).to eq('c:\packages')
     end
 
-    it "should accept http://somelocation/packages" do
+    it 'accepts http://somelocation/packages' do
       resource[:source] = 'http://somelocation/packages'
+      expect(resource[:source]).to eq('http://somelocation/packages')
     end
 
-    it "should accept \\\\unc\\share\\packages" do
+    it 'accepts \\\\unc\\share\\packages' do
       resource[:source] = '\\unc\share\packages'
+      expect(resource[:source]).to eq('\\unc\share\packages')
     end
   end
 
-  context "self.get_choco_features" do
+  context 'self.read_choco_features' do
     before :each do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
     end
 
-    it "should error when the config file location is null" do
+    it 'errors when the config file location is null' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(nil)
 
       expect {
-        @provider.get_choco_features
-      }.to raise_error(Puppet::ResourceError, /Config file not found for Chocolatey/)
+        provider.read_choco_features
+      }.to raise_error(Puppet::ResourceError, %r{Config file not found for Chocolatey})
     end
 
-    it "should error when the config file is not found" do
+    it 'errors when the config file is not found' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(false)
 
       expect {
-        @provider.get_choco_features
-      }.to raise_error(Puppet::ResourceError, /was unable to locate config file at/)
+        provider.read_choco_features
+      }.to raise_error(Puppet::ResourceError, %r{was unable to locate config file at})
     end
 
-    context "when getting sources from the config file" do
+    context 'when getting sources from the config file' do
       choco_features = []
 
       before :each do
@@ -148,214 +152,212 @@ describe provider do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
 
-        choco_features = @provider.get_choco_features
+        choco_features = provider.read_choco_features
       end
 
-      it "should match the count of sources in the config" do
-        choco_features.count.must eq 14
+      it 'matches the count of sources in the config' do
+        expect(choco_features.count).to eq 14
       end
 
-      it "should contain xml elements" do
-        choco_features[0].must be_an_instance_of REXML::Element
+      it 'contains xml elements' do
+        expect(choco_features[0]).to be_an_instance_of REXML::Element
       end
     end
   end
 
-  context "self.get_choco_feature" do
-    let (:element) {  REXML::Element.new('source') }
-    element_name           = "default"
-    element_enabled        = "true"
-    element_set_explicitly = "false"
-    element_description    = "10"
+  context 'self.get_choco_feature' do
+    let(:element) { REXML::Element.new('source') }
+
+    element_name           = 'default'
+    element_enabled        = 'true'
+    element_set_explicitly = 'false'
+    element_description    = '10'
 
     before :each do
-      element.add_attributes( { "name"          => element_name,
-                                "enabled"       => element_enabled,
-                                "setExplicitly" => element_set_explicitly,
-                                "description"   => element_description,
-                              } )
+      element.add_attributes('name' => element_name,
+                             'enabled'       => element_enabled,
+                             'setExplicitly' => element_set_explicitly,
+                             'description'   => element_description)
     end
 
-    it "should return nil source when element is nil" do
-      @provider.get_choco_feature(nil).must be == {}
+    it 'returns nil source when element is nil' do
+      provider.get_choco_feature(nil).must be == {}
     end
 
-    it "should convert an element to a source" do
-      choco_feature = @provider.get_choco_feature(element)
+    it 'converts an element to a source' do
+      choco_feature = provider.get_choco_feature(element)
 
-      choco_feature[:name].must eq element_name
-      choco_feature[:enabled].must eq element_enabled
-      choco_feature[:set_explicitly].must eq element_set_explicitly
-      choco_feature[:description].must eq element_description
+      expect(choco_feature[:name]).to eq element_name
+      expect(choco_feature[:enabled]).to eq element_enabled
+      expect(choco_feature[:set_explicitly]).to eq element_set_explicitly
+      expect(choco_feature[:description]).to eq element_description
     end
   end
 
-  context "self.choco_features" do
+  context 'self.choco_features' do
     before :each do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
       File.expects(:read).with(choco_config).returns choco_config_contents
-      herp = @provider.choco_features
     end
 
-    it "should return an array of hashes" do
-      @provider.choco_features.count.must eq 14
-      @provider.choco_features[0].kind_of?(Hash)
+    it 'returns an array of hashes' do
+      expect(provider.choco_features.count).to eq 14
+      provider.choco_features[0].is_a?(Hash)
     end
   end
 
-  context "when installing" do
-    context "with compiled choco client" do
+  context 'when installing' do
+    context 'with compiled choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(true)
+        provider.class.stubs(:compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.stubs(:file_exists?).with('c:\dude\config\chocolatey.config').returns(true)
         PuppetX::Chocolatey::ChocolateyCommon.stubs(:file_exists?).with('c:\dude\bin\choco.exe').returns(true)
-        'c:\dude\config\chocolatey.config'
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
         Puppet::Util::Execution.stubs(:execute)
       end
 
-      it "should use install command without versioned package" do
+      it 'uses install command without versioned package' do
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil)
 
-        @provider.install
+        provider.install
       end
 
-      it "should call with ignore package exit codes when = 0.9.10 and not explicitly configured to use them" do
+      it 'calls with ignore package exit codes when = 0.9.10 and not explicitly configured to use them' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_exit_codes).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil, '--ignore-package-exit-codes')
 
-        @provider.install
+        provider.install
       end
 
-      it "should call with ignore package exit codes when > 0.9.10 and not explicitly configured to use them" do
+      it 'calls with ignore package exit codes when > 0.9.10 and not explicitly configured to use them' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil, '--ignore-package-exit-codes')
 
-        @provider.install
+        provider.install
       end
 
-      it "should not ignore package exit codes when = 0.9.10 and explicitly configured to use them" do
+      it 'does not ignore package exit codes when = 0.9.10 and explicitly configured to use them' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents_upec
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil)
 
-        @provider.install
+        provider.install
       end
 
-      it "should call no progress when = 0.10.4 and not using verbose package options" do
+      it 'calls no progress when = 0.10.4 and not using verbose package options' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil, '--ignore-package-exit-codes', '--no-progress')
 
-        @provider.install
+        provider.install
       end
 
-      it "should call no progress when > 0.10.4 and not using verbose package options" do
+      it 'calls no progress when > 0.10.4 and not using verbose package options' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_eleven_zero).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil, '--ignore-package-exit-codes', '--no-progress')
 
-        @provider.install
+        provider.install
       end
 
-      it "should call no progress when = 0.10.4 and verbose package option specified" do
+      it 'calls no progress when = 0.10.4 and verbose package option specified' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
         resource[:ensure] = :present
-        resource[:package_settings] = {'verbose' => true}
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+        resource[:package_settings] = { 'verbose' => true }
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil, '--ignore-package-exit-codes')
 
-        @provider.install
+        provider.install
       end
 
-      it "should use upgrade command with versioned package" do
+      it 'uses upgrade command with versioned package' do
         resource[:ensure] = '1.2.3'
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '--version', '1.2.3', '-y', nil)
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '--version', '1.2.3', '-y', nil)
 
-        @provider.install
+        provider.install
       end
 
-      it "should call install instead of upgrade if package name ends with .config" do
-        resource[:name] = "packages.config"
+      it 'calls install instead of upgrade if package name ends with .config' do
+        resource[:name] = 'packages.config'
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'packages.config','-y', nil)
+        provider.expects(:chocolatey).with('install', 'packages.config', '-y', nil)
 
-        @provider.install
+        provider.install
       end
 
-      it "should use source if it is specified" do
+      it 'uses source if it is specified' do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey','-y', '--source', 'c:\packages', nil)
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', '--source', 'c:\packages', nil)
 
-        @provider.install
+        provider.install
       end
     end
 
-    context "with posh choco client" do
+    context 'with posh choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(false)
         PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
         PuppetX::Chocolatey::ChocolateyCommon.stubs(:file_exists?).with('c:\dude\bin\choco.exe').returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(last_posh_choco_version)
       end
 
-      it "should use install command without versioned package" do
+      it 'uses install command without versioned package' do
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
+        provider.expects(:chocolatey).with('install', 'chocolatey', nil)
 
-        @provider.install
+        provider.install
       end
 
-      it "should use update command with versioned package" do
+      it 'uses update command with versioned package' do
         resource[:ensure] = '1.2.3'
-        @provider.expects(:chocolatey).with('update', 'chocolatey', '--version', '1.2.3', nil)
+        provider.expects(:chocolatey).with('update', 'chocolatey', '--version', '1.2.3', nil)
 
-        @provider.install
+        provider.install
       end
 
-      it "should use source if it is specified" do
+      it 'uses source if it is specified' do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('install','chocolatey', '--source', 'c:\packages', nil)
+        provider.expects(:chocolatey).with('install', 'chocolatey', '--source', 'c:\packages', nil)
 
-        @provider.install
+        provider.install
       end
     end
   end
 
-  context "when holding" do
-    context "with compiled choco client" do
+  context 'when holding' do
+    context 'with compiled choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(true)
+        provider.class.stubs(:compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
         PuppetX::Chocolatey::ChocolateyCommon.stubs(:file_exists?).with('c:\dude\bin\choco.exe').returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
@@ -363,394 +365,364 @@ describe provider do
         Puppet::Util::Execution.stubs(:execute)
       end
 
-      it "should use install command with held package" do
+      it 'uses install command with held package' do
         resource[:ensure] = :held
-        @provider.expects(:chocolatey).with('install', 'chocolatey','-y', nil)
-        @provider.expects(:chocolatey).with('pin', 'add', '-n', 'chocolatey')
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil)
+        provider.expects(:chocolatey).with('pin', 'add', '-n', 'chocolatey')
 
-        @provider.hold
+        provider.hold
       end
     end
 
-    context "with posh choco client" do
+    context 'with posh choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(false)
       end
 
-      it "should throw an argument error with held package" do
+      it 'throws an argument error with held package' do
         resource[:ensure] = :held
 
-        expect { @provider.hold }.to raise_error(ArgumentError, "Only choco v0.9.9+ can use ensure => held")
+        expect { provider.hold }.to raise_error(ArgumentError, 'Only choco v0.9.9+ can use ensure => held')
       end
     end
   end
 
-  context "when uninstalling" do
-    context "with compiled choco client" do
+  context 'when uninstalling' do
+    context 'with compiled choco client' do
       before :each do
-        @provider.stubs(:is_use_package_exit_codes_feature_enabled?).returns(false)
-        @provider.class.stubs(:is_compiled_choco?).returns(true)
+        provider.stubs(:use_package_exit_codes_feature_enabled?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
         Puppet::Util::Execution.stubs(:execute)
       end
 
-      it "should call the remove operation" do
-        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-fy', nil)
+      it 'calls the remove operation' do
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '-fy', nil)
 
-        @provider.uninstall
+        provider.uninstall
       end
 
-      it "should call with ignore package exit codes when = 0.9.10" do
+      it 'calls with ignore package exit codes when = 0.9.10' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_exit_codes).at_least_once
-        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-fy', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '-fy', nil, '--ignore-package-exit-codes')
 
-        @provider.uninstall
+        provider.uninstall
       end
 
-      it "should call with ignore package exit codes when > 0.9.10" do
+      it 'calls with ignore package exit codes when > 0.9.10' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
-        @provider.expects(:chocolatey).with('uninstall', 'chocolatey','-fy', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '-fy', nil, '--ignore-package-exit-codes')
 
-        @provider.uninstall
+        provider.uninstall
       end
 
-      it "should use ignore source if it is specified and the version is less than 0.9.10" do
+      it 'uses ignore source if it is specified and the version is less than 0.9.10' do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey','-fy', nil)
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '-fy', nil)
 
-        @provider.uninstall
+        provider.uninstall
       end
 
-      it "should use source if it is specified and the version is at least 0.9.10" do
+      it 'uses source if it is specified and the version is at least 0.9.10' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_uninstall_source).at_least_once
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '--source', 'c:\packages', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '-fy', '--source', 'c:\packages', nil, '--ignore-package-exit-codes')
 
-        @provider.uninstall
+        provider.uninstall
       end
 
-      it "should use source if it is specified and the version is greater than 0.9.10" do
+      it 'uses source if it is specified and the version is greater than 0.9.10' do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '-fy', '--source', 'c:\packages', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '-fy', '--source', 'c:\packages', nil, '--ignore-package-exit-codes')
 
-        @provider.uninstall
+        provider.uninstall
       end
     end
 
-    context "with posh choco client" do
+    context 'with posh choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(false)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(last_posh_choco_version)
       end
 
-      it "should call the remove operation" do
-        @provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
+      it 'calls the remove operation' do
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', nil)
 
-        @provider.uninstall
+        provider.uninstall
       end
 
-      it "should use source if it is specified" do
+      it 'uses source if it is specified' do
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('uninstall','chocolatey', '--source', 'c:\packages', nil)
+        provider.expects(:chocolatey).with('uninstall', 'chocolatey', '--source', 'c:\packages', nil)
 
-        @provider.uninstall
+        provider.uninstall
       end
     end
   end
 
-  context "when updating" do
-    context "with compiled choco client" do
+  context 'when updating' do
+    context 'with compiled choco client' do
       before :each do
-        @provider.stubs(:is_use_package_exit_codes_feature_enabled?).returns(false)
-        @provider.class.stubs(:is_compiled_choco?).returns(true)
+        provider.stubs(:use_package_exit_codes_feature_enabled?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
         Puppet::Util::Execution.stubs(:execute)
       end
 
-      it "should use `chocolatey upgrade` when ensure latest and package present" do
-        provider.stubs(:instances).returns [provider.new({
-          :ensure   => "1.2.3",
-          :name     => "chocolatey",
-          :provider => :chocolatey,
-        })]
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil)
+      it 'uses `chocolatey upgrade` when ensure latest and package present' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil)
 
-        @provider.update
+        provider.update
       end
 
-      it "should call with ignore package exit codes when = 0.9.10" do
-        provider.stubs(:instances).returns [provider.new({
-             :ensure   => "1.2.3",
-             :name     => "chocolatey",
-             :provider => :chocolatey,
-         })]
+      it 'calls with ignore package exit codes when = 0.9.10' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_exit_codes).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil, '--ignore-package-exit-codes')
 
-        @provider.update
+        provider.update
       end
 
-      it "should call with ignore package exit codes when > 0.9.10" do
-        provider.stubs(:instances).returns [provider.new({
-            :ensure   => "1.2.3",
-            :name     => "chocolatey",
-            :provider => :chocolatey,
-        })]
+      it 'calls with ignore package exit codes when > 0.9.10' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_ten_zero).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil, '--ignore-package-exit-codes')
 
-        @provider.update
+        provider.update
       end
 
-      it "should call with no-progress when = 0.10.4 and package_settings: verbose is not true" do
-        provider.stubs(:instances).returns [provider.new({
-             :ensure   => "1.2.3",
-             :name     => "chocolatey",
-             :provider => :chocolatey,
-         })]
+      it 'calls with no-progress when = 0.10.4 and package_settings: verbose is not true' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil, '--ignore-package-exit-codes', '--no-progress')
 
-        @provider.update
+        provider.update
       end
 
-      it "should call with no-progress when > 0.10.4 and package_settings: verbose is not true" do
-        provider.stubs(:instances).returns [provider.new({
-            :ensure   => "1.2.3",
-            :name     => "chocolatey",
-            :provider => :chocolatey,
-        })]
+      it 'calls with no-progress when > 0.10.4 and package_settings: verbose is not true' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(choco_zero_eleven_zero).at_least_once
         resource[:ensure] = :present
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes', '--no-progress')
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil, '--ignore-package-exit-codes', '--no-progress')
 
-        @provider.update
+        provider.update
       end
 
-      it "should not call with no-progress when = 0.10.4 and package_settings: verbose is true" do
-        provider.stubs(:instances).returns [provider.new({
-            :ensure   => "1.2.3",
-            :name     => "chocolatey",
-            :provider => :chocolatey,
-        })]
+      it 'does not call with no-progress when = 0.10.4 and package_settings: verbose is true' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
         PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_choco_no_progress).at_least_once
         resource[:package_settings] = { 'verbose' => true }
         resource[:ensure]           = :present
-        @provider.expects(:chocolatey).with('upgrade', 'chocolatey','-y', nil, '--ignore-package-exit-codes')
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', nil, '--ignore-package-exit-codes')
 
-        @provider.update
+        provider.update
       end
 
-      it "should use `chocolatey install` when ensure latest and package absent" do
-        provider.stubs(:instances).returns []
-        @provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil)
+      it 'uses `chocolatey install` when ensure latest and package absent' do
+        provider_class.stubs(:instances).returns []
+        provider.expects(:chocolatey).with('install', 'chocolatey', '-y', nil)
 
-        @provider.update
+        provider.update
       end
 
-      it "should use source if it is specified" do
-        provider.expects(:instances).returns [provider.new({
-          :ensure   => "latest",
-          :name     => "chocolatey",
-          :provider => :chocolatey,
-        })]
+      it 'uses source if it is specified' do
+        provider_class.expects(:instances).returns [provider_class.new(ensure: 'latest',
+                                                                       name: 'chocolatey',
+                                                                       provider: :chocolatey)]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('upgrade','chocolatey', '-y', '--source', 'c:\packages', nil)
+        provider.expects(:chocolatey).with('upgrade', 'chocolatey', '-y', '--source', 'c:\packages', nil)
 
-        @provider.update
+        provider.update
       end
     end
 
-    context "with posh choco client" do
+    context 'with posh choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(false)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(last_posh_choco_version)
       end
 
-      it "should use `chocolatey update` when ensure latest and package present" do
-        provider.stubs(:instances).returns [provider.new({
-          :ensure   => "1.2.3",
-          :name     => "chocolatey",
-          :provider => :chocolatey,
-        })]
-        @provider.expects(:chocolatey).with('update', 'chocolatey', nil)
+      it 'uses `chocolatey update` when ensure latest and package present' do
+        provider_class.stubs(:instances).returns [provider_class.new(ensure: '1.2.3',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
+        provider.expects(:chocolatey).with('update', 'chocolatey', nil)
 
-        @provider.update
+        provider.update
       end
 
-      it "should use `chocolatey install` when ensure latest and package absent" do
-        provider.stubs(:instances).returns []
-        @provider.expects(:chocolatey).with('install', 'chocolatey', nil)
+      it 'uses `chocolatey install` when ensure latest and package absent' do
+        provider_class.stubs(:instances).returns []
+        provider.expects(:chocolatey).with('install', 'chocolatey', nil)
 
-        @provider.update
+        provider.update
       end
 
-      it "should use source if it is specified" do
-        provider.expects(:instances).returns [provider.new({
-          :ensure   => "latest",
-          :name     => "chocolatey",
-          :provider => :chocolatey,
-        })]
+      it 'uses source if it is specified' do
+        provider_class.expects(:instances).returns [provider_class.new(ensure: 'latest',
+                                                                       name: 'chocolatey',
+                                                                       provider: :chocolatey)]
         resource[:source] = 'c:\packages'
-        @provider.expects(:chocolatey).with('update','chocolatey', '--source', 'c:\packages', nil)
+        provider.expects(:chocolatey).with('update', 'chocolatey', '--source', 'c:\packages', nil)
 
-        @provider.update
+        provider.update
       end
     end
   end
 
-  context "when getting latest" do
-    context "with compiled choco client" do
+  context 'when getting latest' do
+    context 'with compiled choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(true)
+        provider.class.stubs(:compiled_choco?).returns(true)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
       end
 
-      it "should use choco.exe arguments" do
+      it 'uses choco.exe arguments' do
         # we don't care where choco is, we are concerned with the arguments that are passed to choco.
         #
-        @provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey','-r']
+        provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey', '-r']
       end
 
-      it "should use source if it is specified" do
+      it 'uses source if it is specified' do
         resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey','-r', '--source', 'c:\packages']
-        #@provider.expects(:chocolatey).with('upgrade', '--noop', 'chocolatey','-r', '--source', 'c:\packages')
+        provider.send(:latestcmd).drop(1).should == ['upgrade', '--noop', 'chocolatey', '-r', '--source', 'c:\packages']
+        # provider.expects(:chocolatey).with('upgrade', '--noop', 'chocolatey','-r', '--source', 'c:\packages')
 
-        #@provider.latest
+        # provider.latest
       end
     end
 
-    context "with posh choco client" do
+    context 'with posh choco client' do
       before :each do
-        @provider.class.stubs(:is_compiled_choco?).returns(false)
+        provider.class.stubs(:compiled_choco?).returns(false)
         PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(last_posh_choco_version)
       end
 
-      it "should use posh arguments" do
-        @provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
+      it 'uses posh arguments' do
+        provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '| findstr /R "latest" | findstr /V "latestCompare"']
       end
 
-      it "should use source if it is specified" do
+      it 'uses source if it is specified' do
         resource[:source] = 'c:\packages'
-        @provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
-        #@provider.expects(:chocolatey).with('version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"')
+        provider.send(:latestcmd).drop(1).should == ['version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"']
+        # provider.expects(:chocolatey).with('version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"')
 
-        #@provider.latest
+        # provider.latest
       end
     end
   end
 
-  context "query" do
-    it "should return a hash when chocolatey and the package are present" do
-      provider.expects(:instances).returns [provider.new({
-        :ensure   => "1.2.5",
-        :name     => "chocolatey",
-        :provider => :chocolatey,
-      })]
+  context 'query' do
+    it 'returns a hash when chocolatey and the package are present' do
+      provider_class.expects(:instances).returns [provider_class.new(ensure: '1.2.5',
+                                                                     name: 'chocolatey',
+                                                                     provider: :chocolatey)]
 
-      @provider.query.should == {
-        :ensure   => "1.2.5",
-        :name     => "chocolatey",
-        :provider => :chocolatey,
-      }
+      expect(provider.query).to eq(ensure: '1.2.5',
+                                   name: 'chocolatey',
+                                   provider: :chocolatey)
     end
 
-    it "should return nil when the package is missing" do
-      provider.expects(:instances).returns []
+    it 'returns nil when the package is missing' do
+      provider_class.expects(:instances).returns []
 
-      @provider.query.should == nil
+      expect(provider.query).to be_nil
     end
   end
 
-  context "when fetching a package list" do
-    it "should invoke provider listcmd" do
-      provider.expects(:listcmd)
+  context 'when fetching a package list' do
+    it 'invokes provider listcmd' do
+      provider_class.expects(:listcmd)
 
-      provider.instances
+      provider_class.instances
     end
 
-    it "should query chocolatey" do
-      provider.expects(:execpipe).with() do |args|
-        args[1] =~ /list/
-        args[2] =~ /-lo/
+    it 'queries chocolatey' do
+      provider_class.expects(:execpipe).with do |args|
+        args[1] =~ %r{list}
+        args[2] =~ %r{-lo}
       end
 
-      provider.instances
+      provider_class.instances
     end
 
-    context "self.instances" do
-      it "should return nil on error" do
-        provider.expects(:execpipe).raises(Puppet::ExecutionFailure.new("ERROR!"))
+    context 'self.instances' do
+      it 'returns nil on error' do
+        provider_class.expects(:execpipe).raises(Puppet::ExecutionFailure.new('ERROR!'))
 
-        provider.instances.should be_nil
+        expect(provider_class.instances).to be_nil
       end
 
-      context "with compiled choco client" do
+      context 'with compiled choco client' do
         before :each do
-          @provider.class.stubs(:is_compiled_choco?).returns(true)
+          provider.class.stubs(:compiled_choco?).returns(true)
           PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(first_compiled_choco_version)
         end
 
-        it "should return installed packages with their versions" do
-          provider.expects(:execpipe).yields(StringIO.new(%Q(package1|1.23\n\package2|2.00\n)))
+        it 'returns installed packages with their versions' do
+          provider_class.expects(:execpipe).yields(StringIO.new(%(package1|1.23\n\package2|2.00\n)))
 
-          packages = (provider.instances)
+          packages = provider_class.instances
 
-          packages.length.should == 2
+          expect(packages.length).to eq(2)
 
-          packages[0].properties.should == {
-              :provider => :chocolatey,
-              :ensure => "1.23",
-              :name => 'package1'
-          }
+          expect(packages[0].properties).to eq(provider: :chocolatey,
+                                               ensure: '1.23',
+                                               name: 'package1')
 
-          packages[1].properties.should == {
-              :provider => :chocolatey,
-              :ensure => "2.00",
-              :name => 'package2'
-          }
+          expect(packages[1].properties).to eq(provider: :chocolatey,
+                                               ensure: '2.00',
+                                               name: 'package2')
         end
 
-        it "should return nil on error" do
-          provider.expects(:execpipe).yields(StringIO.new(%Q(Unable to search for packages when there are no soures enabled for packages and none were passed as arguments.\n)))
+        it 'returns nil on error' do
+          provider_class.expects(:execpipe).yields(StringIO.new(%(Unable to search for packages when there are no soures enabled for packages and none were passed as arguments.\n)))
 
           expect {
-            provider.instances
-          }.to raise_error(Puppet::Error, /At least one source must be enabled./)
+            provider_class.instances
+          }.to raise_error(Puppet::Error, %r{At least one source must be enabled.})
         end
       end
 
-      context "with posh choco client" do
+      context 'with posh choco client' do
         before :each do
-          @provider.class.stubs(:is_compiled_choco?).returns(false)
+          provider.class.stubs(:compiled_choco?).returns(false)
           PuppetX::Chocolatey::ChocolateyVersion.stubs(:version).returns(last_posh_choco_version)
         end
 
-        it "should return installed packages with their versions" do
-          provider.expects(:execpipe).yields(StringIO.new(%Q(package1 1.23\n\package2 2.00\n)))
+        it 'returns installed packages with their versions' do
+          provider_class.expects(:execpipe).yields(StringIO.new(%(package1 1.23\n\package2 2.00\n)))
 
-          packages = (provider.instances)
+          packages = provider_class.instances
 
-          packages.length.should == 2
+          expect(packages.length).to eq(2)
 
-          packages[0].properties.should == {
-              :provider => :chocolatey,
-              :ensure => "1.23",
-              :name => 'package1'
-          }
+          expect(packages[0].properties).to eq(provider: :chocolatey,
+                                               ensure: '1.23',
+                                               name: 'package1')
 
-          packages[1].properties.should == {
-              :provider => :chocolatey,
-              :ensure => "2.00",
-              :name => 'package2'
-          }
+          expect(packages[1].properties).to eq(provider: :chocolatey,
+                                               ensure: '2.00',
+                                               name: 'package2')
         end
       end
     end

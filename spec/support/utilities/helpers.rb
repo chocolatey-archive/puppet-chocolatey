@@ -1,6 +1,6 @@
-CHOCOLATEY_LATEST_INFO_URL = "https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/choco-pipeline-tests/Packages()?$filter=((Id%20eq%20%27chocolatey%27)%20and%20(not%20IsPrerelease))%20and%20IsLatestVersion"
+CHOCOLATEY_LATEST_INFO_URL = 'https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/choco-pipeline-tests/Packages()?$filter=((Id%20eq%20%27chocolatey%27)%20and%20(not%20IsPrerelease))%20and%20IsLatestVersion'.freeze
 
-def get_latest_chocholatey_download_url
+def latest_chocholatey_download_url
   uri = URI.parse(CHOCOLATEY_LATEST_INFO_URL)
 
   response = Net::HTTP.get_response(uri)
@@ -8,7 +8,7 @@ def get_latest_chocholatey_download_url
 
   src_url = xml_str.css('//feed//content').attr('src')
 
-  return src_url
+  src_url
 end
 
 def install_chocolatey
@@ -19,25 +19,24 @@ def install_chocolatey
   }
   MANIFEST
 
-  chocoVersion = /[0-9]+[\d'.']*/
+  choco_version = %r{[0-9]+[\d'.']*}
 
   windows_agents.each do |agent|
     opts = {
-      :acceptable_exit_codes => [0, 2]
+      acceptable_exit_codes: [0, 2],
     }
 
-    curl_on(agent, "--cacert 'C:/Program Files/Puppet Labs/Puppet/puppet/ssl/cert.pem' #{get_latest_chocholatey_download_url} > C:/chocolatey.nupkg")
+    curl_on(agent, "--cacert 'C:/Program Files/Puppet Labs/Puppet/puppet/ssl/cert.pem' #{latest_chocholatey_download_url} > C:/chocolatey.nupkg")
 
     execute_manifest_on(agent, chocolatey_pp, opts) do |result|
-      assert_no_match(/Error:/, result.stderr, 'Unexpected error was detected!')
+      assert_no_match(%r{Error:}, result.stderr, 'Unexpected error was detected!')
     end
 
-    on(agent, 'C:/ProgramData/chocolatey/bin/choco.exe -v', :acceptable_exit_codes => 0) do |result|
-      assert_match(chocoVersion, result.stdout, 'Expected: ' + chocoVersion.to_s + ' but got ' + result.stdout)
+    on(agent, 'C:/ProgramData/chocolatey/bin/choco.exe -v', acceptable_exit_codes: 0) do |result|
+      assert_match(choco_version, result.stdout, 'Expected: ' + choco_version.to_s + ' but got ' + result.stdout)
     end
   end
 end
-
 
 def windows_agents
   agents.select { |agent| agent['platform'].include?('windows') }
@@ -55,7 +54,7 @@ def backup_config
     }
     COMMAND
 
-    execute_powershell_script_on(agent, backup_command, :catch_failures => true)
+    execute_powershell_script_on(agent, backup_command, catch_failures: true)
   end
 end
 
@@ -67,7 +66,7 @@ def reset_config
     }
     COMMAND
 
-    execute_powershell_script_on(agent, backup_command, :catch_failures => true)
+    execute_powershell_script_on(agent, backup_command, catch_failures: true)
   end
 end
 
@@ -80,4 +79,3 @@ end
 def config_content_command
   "cmd.exe /c \"type #{config_file_location}\""
 end
-

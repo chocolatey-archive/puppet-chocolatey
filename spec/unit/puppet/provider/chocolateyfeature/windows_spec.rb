@@ -6,11 +6,12 @@ require 'rexml/document'
 
 provider = Puppet::Type.type(:chocolateyfeature).provider(:windows)
 describe provider do
-  let (:name) { 'allowglobalconfirmation' }
-  let (:resource) { Puppet::Type.type(:chocolateyfeature).new(:provider => :windows, :name => name, :ensure => 'enabled' ) }
-  let (:choco_config) { 'c:\choco.config' }
-  let (:choco_install_path) { 'c:\dude\bin\choco.exe' }
-  let (:choco_config_contents) { <<-'EOT'
+  let(:name) { 'allowglobalconfirmation' }
+  let(:resource) { Puppet::Type.type(:chocolateyfeature).new(provider: :windows, name: name, ensure: 'enabled') }
+  let(:choco_config) { 'c:\choco.config' }
+  let(:choco_install_path) { 'c:\dude\bin\choco.exe' }
+  let(:choco_config_contents) do
+    <<-'EOT'
 <?xml version="1.0" encoding="utf-8"?>
 <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <config>
@@ -52,80 +53,80 @@ describe provider do
  </apiKeys>
 </chocolatey>
   EOT
-  }
+  end
 
-  let (:minimum_supported_version) {'0.9.9.0'}
+  let(:minimum_supported_version) { '0.9.9.0' }
+  let(:provider_class) { subject.class }
+  let(:provider) { subject.class.new(resource) }
 
   before :each do
     PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
     PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
 
-    @provider = provider.new(resource)
-    resource.provider = @provider
+    provider = provider_class.new(resource)
+    resource.provider = provider
 
     # Stub all file and config tests
-    provider.stubs(:healthcheck)
+    provider_class.stubs(:healthcheck)
   end
 
-  context "verify provider" do
-    it "should be an instance of Puppet::Type::Chocolateyfeature::ProviderWindows" do
-
-      @provider.must be_an_instance_of Puppet::Type::Chocolateyfeature::ProviderWindows
+  context 'verify provider' do
+    it 'is an instance of Puppet::Type::Chocolateyfeature::ProviderWindows' do
+      provider.must be_an_instance_of Puppet::Type::Chocolateyfeature::ProviderWindows
     end
 
-    it "should have a enable method" do
-      @provider.should respond_to(:enable)
+    it 'has a enable method' do
+      provider.should respond_to(:enable)
     end
 
-    it "should have an exists? method" do
-      @provider.should respond_to(:exists?)
+    it 'has an exists? method' do
+      provider.should respond_to(:exists?)
     end
 
-    it "should have a disable method" do
-      @provider.should respond_to(:disable)
+    it 'has a disable method' do
+      provider.should respond_to(:disable)
     end
 
-    it "should have a properties method" do
-      @provider.should respond_to(:properties)
+    it 'has a properties method' do
+      provider.should respond_to(:properties)
     end
 
-    it "should have a query method" do
-      @provider.should respond_to(:query)
+    it 'has a query method' do
+      provider.should respond_to(:query)
     end
 
-    it "should have the standard feautures method" do
-      @provider.should respond_to(:features)
+    it 'has the standard feautures method' do
+      provider.should respond_to(:features)
     end
 
-    it "should return nil feature when element is nil" do
+    it 'returns nil feature when element is nil' do
       provider.features.must be == []
     end
-
   end
 
-  context "self.get_choco_features" do
+  context 'self.read_choco_features' do
     before :each do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
     end
 
-    it "should error when the config file location is null" do
+    it 'errors when the config file location is null' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(nil)
 
       expect {
-        provider.get_choco_features
-      }.to raise_error(Puppet::ResourceError, /Config file not found for Chocolatey/)
+        provider_class.read_choco_features
+      }.to raise_error(Puppet::ResourceError, %r{Config file not found for Chocolatey})
     end
 
-    it "should error when the config file is not found" do
+    it 'errors when the config file is not found' do
       PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
       PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(false)
 
       expect {
-        provider.get_choco_features
-      }.to raise_error(Puppet::ResourceError, /was unable to locate config file at/)
+        provider_class.read_choco_features
+      }.to raise_error(Puppet::ResourceError, %r{was unable to locate config file at})
     end
 
-    context "when getting features from the config file" do
+    context 'when getting features from the config file' do
       features = []
 
       before :each do
@@ -133,47 +134,46 @@ describe provider do
         PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
         File.expects(:read).with(choco_config).returns choco_config_contents
 
-        features = provider.get_choco_features
+        features = provider_class.read_choco_features
       end
 
-      it "should match the count of features in the config" do
+      it 'matches the count of features in the config' do
         features.count.must eq 14
-
       end
 
-      it "should contain xml elements" do
+      it 'contains xml elements' do
         features[0].must be_an_instance_of REXML::Element
       end
     end
   end
 
-  context "self.get_choco_feature" do
-    let (:element) {  REXML::Element.new('feature') }
-    element_name = "default"
+  context 'self.get_choco_feature' do
+    let(:element) { REXML::Element.new('feature') }
+
+    element_name = 'default'
     element_enabled = 'true'
 
     before :each do
-      element.add_attributes( { "name" => element_name, "enabled" => element_enabled, } )
+      element.add_attributes('name' => element_name, 'enabled' => element_enabled)
     end
 
-    it "should return nil feature when element is nil" do
-      provider.get_choco_feature(nil).must be == {}
+    it 'returns nil feature when element is nil' do
+      provider_class.get_choco_feature(nil).must be == {}
     end
 
-    it "should convert an element to a feature" do
-      feature = provider.get_choco_feature(element)
+    it 'converts an element to a feature' do
+      feature = provider_class.get_choco_feature(element)
 
       feature[:name].must eq element_name
       feature[:ensure].must eq :enabled
     end
 
-    it "when feature is disabled" do
+    it 'when feature is disabled' do
       element.delete_attribute('enabled')
       element.add_attribute('enabled', 'false')
 
-      feature = provider.get_choco_feature(element)
+      feature = provider_class.get_choco_feature(element)
       feature[:ensure].must eq :disabled
     end
   end
-
 end
