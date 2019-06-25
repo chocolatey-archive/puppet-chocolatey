@@ -2,7 +2,6 @@ require 'puppet/type'
 require 'pathname'
 
 Puppet::Type.newtype(:chocolateysource) do
-
   @doc = <<-'EOT'
     Allows managing sources for Chocolatey. A source can be a
     folder, a CIFS share, a NuGet Http OData feed, or a full
@@ -20,15 +19,14 @@ Puppet::Type.newtype(:chocolateysource) do
     def retrieve
       provider.properties[:ensure]
     end
-
   end
 
   newparam(:name) do
-    desc "The name of the source. Used for uniqueness."
+    desc 'The name of the source. Used for uniqueness.'
 
     validate do |value|
-      if value.nil? or value.empty?
-        raise ArgumentError, "A non-empty name must be specified."
+      if value.nil? || value.empty?
+        raise ArgumentError, 'A non-empty name must be specified.'
       end
     end
 
@@ -39,7 +37,7 @@ Puppet::Type.newtype(:chocolateysource) do
     end
 
     def insync?(is)
-      is.downcase == should.downcase
+      is.casecmp(should.downcase).zero?
     end
   end
 
@@ -50,13 +48,13 @@ Puppet::Type.newtype(:chocolateysource) do
       `ensure`)."
 
     validate do |value|
-      if value.nil? or value.empty?
-        raise ArgumentError, "A non-empty location must be specified."
+      if value.nil? || value.empty?
+        raise ArgumentError, 'A non-empty location must be specified.'
       end
     end
 
     def insync?(is)
-      is.downcase == should.downcase
+      is.casecmp(should.downcase).zero?
     end
   end
 
@@ -68,7 +66,7 @@ Puppet::Type.newtype(:chocolateysource) do
       the property at all."
 
     def insync?(is)
-      is.downcase == should.downcase
+      is.casecmp(should.downcase).zero?
     end
 
     defaultto ''
@@ -99,21 +97,21 @@ Puppet::Type.newtype(:chocolateysource) do
 
     validate do |value|
       if value.nil?
-        raise ArgumentError, "A non-empty priority must be specified."
+        raise ArgumentError, 'A non-empty priority must be specified.'
       end
-      raise ArgumentError, "An integer is necessary for priority. Specify 0 or remove for no priority." unless resource.is_numeric?(value)
+      raise ArgumentError, 'An integer is necessary for priority. Specify 0 or remove for no priority.' unless resource.numeric?(value)
     end
 
     defaultto(0)
   end
 
-  newproperty(:bypass_proxy, :boolean => true) do
+  newproperty(:bypass_proxy, boolean: true) do
     desc "Option to specify whether this source should
       explicitly bypass any explicitly or system
       configured proxies.
       Requires at least Chocolatey v0.10.4.
       Defaults to false."
-    
+
     newvalues(:true, :false)
     defaultto(:false)
 
@@ -122,7 +120,7 @@ Puppet::Type.newtype(:chocolateysource) do
     end
   end
 
-  newproperty(:admin_only, :boolean => true) do
+  newproperty(:admin_only, boolean: true) do
     desc "Option to specify whether this source should
       visible to Windows user accounts in the Administrators
       group only.
@@ -130,7 +128,7 @@ Puppet::Type.newtype(:chocolateysource) do
       Requires Chocolatey for Business (C4B) v1.12.2+ and at
       least Chocolatey v0.10.8 for the setting to be respected.
       Defaults to false."
-    
+
     newvalues(:true, :false)
     defaultto(:false)
 
@@ -139,7 +137,7 @@ Puppet::Type.newtype(:chocolateysource) do
     end
   end
 
-  newproperty(:allow_self_service, :boolean => true) do
+  newproperty(:allow_self_service, boolean: true) do
     desc "Option to specify whether this source should be
       allowed to be used with Chocolatey Self Service.
 
@@ -149,7 +147,7 @@ Puppet::Type.newtype(:chocolateysource) do
       Also requires at least Chocolatey v0.10.4 for the setting
       to be enabled.
       Defaults to false."
-    
+
     newvalues(:true, :false)
     defaultto(:false)
 
@@ -159,8 +157,9 @@ Puppet::Type.newtype(:chocolateysource) do
   end
 
   validate do
-    if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) || ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
-      raise ArgumentError, "If specifying user/password, you must specify both values."
+    if (!self[:user].nil? && self[:user].strip != '' && (self[:password].nil? || self[:password] == '')) ||
+       ((self[:user].nil? || self[:user].strip == '') && !self[:password].nil? && self[:password] != '')
+      raise ArgumentError, 'If specifying user/password, you must specify both values.'
     end
 
     if provider.respond_to?(:validate)
@@ -174,19 +173,22 @@ Puppet::Type.newtype(:chocolateysource) do
 
   def munge_boolean(value)
     case value
-      when true, "true", :true
-        :true
-      when false, "false", :false
-        :false
-      else
-        fail("munge_boolean only takes booleans")
+    when true, 'true', :true
+      :true
+    when false, 'false', :false
+      :false
+    else
+      raise('munge_boolean only takes booleans')
     end
   end
 
-  def is_numeric?(value)
+  def numeric?(value)
     # this is what stdlib does. Not sure if we want to emulate or not.
-    #numeric = %r{^-?(?:(?:[1-9]\d*)|0)$}
-    #if value.is_a? Integer or (value.is_a? String and value.match numeric)
-    Float(value) != nil rescue false
+    # numeric = %r{^-?(?:(?:[1-9]\d*)|0)$}
+    # if value.is_a? Integer or (value.is_a? String and value.match numeric)
+
+    !Float(value).nil?
+  rescue
+    false
   end
 end

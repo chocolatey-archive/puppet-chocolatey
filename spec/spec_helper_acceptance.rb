@@ -7,7 +7,7 @@ require 'beaker/module_install_helper'
 require 'beaker/ca_cert_helper'
 require 'beaker/testmode_switcher/dsl'
 
-Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
 run_puppet_install_helper
 configure_type_defaults_on(hosts)
@@ -18,6 +18,6 @@ hosts.each do |host|
   install_module_on(host)
 end
 
-windows_agents.each do |agent|
+windows_agents.each do |_agent| # rubocop:disable RSpec/IteratedExpectation
   install_chocolatey
 end

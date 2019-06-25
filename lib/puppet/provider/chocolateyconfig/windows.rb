@@ -3,24 +3,24 @@ require 'pathname'
 require 'rexml/document'
 
 Puppet::Type.type(:chocolateyconfig).provide(:windows) do
-  confine :operatingsystem => :windows
-  defaultfor :operatingsystem => :windows
+  confine operatingsystem: :windows
+  defaultfor operatingsystem: :windows
 
   require Pathname.new(__FILE__).dirname + '../../../' + 'puppet_x/chocolatey/chocolatey_common'
   include PuppetX::Chocolatey::ChocolateyCommon
 
-  CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION = '0.9.10.0'
+  CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION = '0.9.10.0'.freeze
 
-  commands :chocolatey => PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command
+  commands chocolatey: PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
     @property_flush = {}
   end
 
   def properties
     if @property_hash.empty?
-      @property_hash = query || { :ensure => ( :absent )}
+      @property_hash = query || { ensure: :absent }
       @property_hash[:ensure] = :absent if @property_hash.empty?
     end
     @property_hash.dup
@@ -28,23 +28,23 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
 
   def query
     self.class.configs.each do |config|
-      return config.properties if @resource[:name][/\A\S*/].downcase == config.name.downcase
+      return config.properties if @resource[:name][%r{\A\S*}].casecmp(config.name.downcase).zero?
     end
 
-    return {}
+    {}
   end
 
-  def self.get_configs
+  def self.read_configs
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
 
     choco_config = PuppetX::Chocolatey::ChocolateyCommon.choco_config_file
-    raise Puppet::ResourceError, "Config file not found for Chocolatey. Please make sure you have Chocolatey installed." if choco_config.nil?
+    raise Puppet::ResourceError, 'Config file not found for Chocolatey. Please make sure you have Chocolatey installed.' if choco_config.nil?
     raise Puppet::ResourceError, "An install was detected, but was unable to locate config file at #{choco_config}." unless PuppetX::Chocolatey::ChocolateyCommon.file_exists?(choco_config)
 
     Puppet.debug("Gathering sources from '#{choco_config}'.")
     config = REXML::Document.new File.read(choco_config)
 
-    config.elements.to_a( '//add' )
+    config.elements.to_a('//add')
   end
 
   def self.get_config(element)
@@ -63,7 +63,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
   end
 
   def self.configs
-    @configs ||=  get_configs.collect do |item|
+    @configs ||= read_configs.map do |item|
       config = get_config(item)
       new(config)
     end
@@ -71,7 +71,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
 
   def self.refresh_configs
     @configs = nil
-    self.configs
+    configs
   end
 
   def self.instances
@@ -106,18 +106,21 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     # The hash is *not* empty when the validate block is called during a puppet resource run.
     # If the hash is empty, fail only if :ensure is true and :value is not specified or is an empty string.
     if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
-      raise ArgumentError, "Unless ensure => absent, value is required."
+      raise ArgumentError, 'Unless ensure => absent, value is required.'
     end
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
-    if PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) && choco_version < Gem::Version.new(CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION)
-      raise Puppet::ResourceError, "Chocolatey version must be '#{CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values. Detected '#{choco_version}' as your version. Please upgrade Chocolatey."
+    validate_check = PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) &&
+                     choco_version < Gem::Version.new(CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION)
+    if validate_check # rubocop:disable Style/GuardClause
+      raise Puppet::ResourceError, "Chocolatey version must be '#{CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values. Detected '#{choco_version}' as your version. "\
+        'Please upgrade Chocolatey.'
     end
   end
 
   mk_resource_methods
 
   def flush
-    choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
+    # choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
 
     args = []
     args << 'config'
@@ -141,7 +144,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     begin
       Puppet::Util::Execution.execute([command(:chocolatey), *args])
     rescue Puppet::ExecutionFailure => e
-      raise Puppet::Error, "An error occurred running choco. Unable to set Chocolateyconfig[#{self.name}]: #{e}"
+      raise Puppet::Error, "An error occurred running choco. Unable to set Chocolateyconfig[#{name}]: #{e}"
     end
 
     @property_hash.clear
