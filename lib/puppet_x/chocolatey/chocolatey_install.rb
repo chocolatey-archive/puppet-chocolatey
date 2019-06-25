@@ -6,6 +6,7 @@ module PuppetX
   module Chocolatey
     # Class for installation of Chocolatey
     class ChocolateyInstall
+      # Retrieves the path to the folder containing the Chocolatey instllation
       def self.install_path
         value = nil
 
@@ -34,6 +35,9 @@ module PuppetX
         value
       end
 
+      # Retrieves the path to the temporary folder on the system
+      #
+      # @return [String] Path to temp folder
       def self.temp_dir
         return unless Puppet::Util::Platform.windows?
         require 'win32/registry'

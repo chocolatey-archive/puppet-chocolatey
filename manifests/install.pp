@@ -1,4 +1,6 @@
-# chocolatey::install - Private class used for install of Chocolatey
+# @summary Handles installation of Chocolatey
+#
+# @api private
 class chocolatey::install {
   assert_private()
 

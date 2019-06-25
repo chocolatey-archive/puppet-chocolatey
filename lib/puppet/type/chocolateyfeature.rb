@@ -32,6 +32,8 @@ Puppet::Type.newtype(:chocolateyfeature) do
   end
 
   ensurable do
+    desc 'Specifies state of resource'
+
     newvalue(:enabled)  { provider.enable }
     newvalue(:disabled) { provider.disable }
 

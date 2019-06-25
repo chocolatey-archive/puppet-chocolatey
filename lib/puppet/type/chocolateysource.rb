@@ -11,6 +11,8 @@ Puppet::Type.newtype(:chocolateysource) do
   EOT
 
   ensurable do
+    desc 'Specifies state of resource'
+
     newvalue(:present)  { provider.create }
     newvalue(:disabled) { provider.disable }
     newvalue(:absent)   { provider.destroy }
