@@ -861,7 +861,7 @@ Puppet Inc modules on the Puppet Forge are open projects, and community contribu
 
 We want to keep it as easy as possible to contribute changes so that our modules work in your environment. There are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
 
-For more information, see our [module contribution guide.](https://docs.puppet.com/forge/contributing.html)
+For more information, see our [module contribution guide.](https://puppet.com/docs/puppet/latest/contributing.html)
 
 ## Attributions
 
