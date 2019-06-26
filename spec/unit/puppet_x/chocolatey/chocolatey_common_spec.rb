@@ -8,7 +8,7 @@ describe 'Chocolatey Common' do
   let(:last_posh_choco_version) { '0.9.8.33' }
 
   before :each do
-    PuppetX::Chocolatey::ChocolateyCommon.stubs(:set_env_chocolateyinstall)
+    allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
   end
 
   context '.chocolatey_command' do
@@ -17,17 +17,17 @@ describe 'Chocolatey Common' do
     end
 
     it 'finds chocolatey install location based on PuppetX::Chocolatey::ChocolateyInstall' do
-      PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\choco.exe').returns(true)
+      expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\choco.exe').and_return(true)
 
       PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == 'c:\dude\choco.exe'
     end
 
     it 'finds chocolatey install location based on default location' do
-      PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\choco.exe').returns(false)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('C:\ProgramData\chocolatey\choco.exe').returns(false)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('C:\Chocolatey\choco.exe').returns(false)
+      expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\choco.exe').and_return(false)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('C:\ProgramData\chocolatey\choco.exe').and_return(false)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('C:\Chocolatey\choco.exe').and_return(false)
 
       PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == "#{ENV['ALLUSERSPROFILE']}\\chocolatey\\choco.exe"
     end
@@ -36,10 +36,10 @@ describe 'Chocolatey Common' do
   context '.choco_version' do
     it 'returns PuppetX::Chocolatey::ChocolateyVersion.version' do
       expected = '0.9.9.0.1'
-      PuppetX::Chocolatey::ChocolateyVersion.expects(:version).returns(expected)
+      expect(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(expected)
       PuppetX::Chocolatey::ChocolateyCommon.clear_cached_values
 
-      PuppetX::Chocolatey::ChocolateyCommon.choco_version.must eq expected
+      expect(PuppetX::Chocolatey::ChocolateyCommon.choco_version).to eq expected
     end
   end
 
@@ -48,27 +48,27 @@ describe 'Chocolatey Common' do
 
     it 'returns the normal config file location when found' do
       expected = 'c:\dude\config\chocolatey.config'
-      PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(choco_install_loc)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(expected).returns(true)
+      expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return(choco_install_loc)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(expected).and_return(true)
 
-      PuppetX::Chocolatey::ChocolateyCommon.choco_config_file.must eq expected
+      expect(PuppetX::Chocolatey::ChocolateyCommon.choco_config_file).to eq expected
     end
 
     it 'returns the old config file location for older installs' do
       expected = 'c:\dude\chocolateyinstall\chocolatey.config'
-      PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(choco_install_loc)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\config\chocolatey.config').returns(false)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(expected).returns(true)
+      expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return(choco_install_loc)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\config\chocolatey.config').and_return(false)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(expected).and_return(true)
 
-      PuppetX::Chocolatey::ChocolateyCommon.choco_config_file.must eq expected
+      expect(PuppetX::Chocolatey::ChocolateyCommon.choco_config_file).to eq expected
     end
 
     it 'returns nil when the config cannot be found' do
-      PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(choco_install_loc)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\config\chocolatey.config').returns(false)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with('c:\dude\chocolateyinstall\chocolatey.config').returns(false)
+      expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return(choco_install_loc)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\config\chocolatey.config').and_return(false)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\chocolateyinstall\chocolatey.config').and_return(false)
 
-      PuppetX::Chocolatey::ChocolateyCommon.choco_config_file.must be_nil
+      expect(PuppetX::Chocolatey::ChocolateyCommon.choco_config_file).to be_nil
     end
   end
 end

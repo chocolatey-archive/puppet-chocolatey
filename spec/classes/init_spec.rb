@@ -53,13 +53,8 @@ describe 'chocolatey' do
       end
     end
 
-    if Puppet.version < '4.0.0'
-      invalid_url_values = ['\\\\ciflocation\\share', 'bob', '4', '', 3]
-      not_a_string_values = [false]
-    else
-      invalid_url_values = ['\\\\ciflocation\\share', 'bob', '4', '']
-      not_a_string_values = [false, 3]
-    end
+    invalid_url_values = ['\\\\ciflocation\\share', 'bob', '4', '']
+    not_a_string_values = [false, 3]
 
     invalid_url_values.each do |param_value|
       context "#{param_value} (invalid scenario)" do
@@ -109,70 +104,35 @@ describe 'chocolatey' do
       end
     end
 
-    if Puppet.version < '4.0.0'
-      [false].each do |param_value|
-        context "#{param_value} (invalid scenario)" do
-          let(:params) do
-            {
-              choco_install_location: param_value,
-            }
-          end
-
-          let(:error_message) { %r{is not a string} }
-
-          it {
-            expect { catalogue }.to raise_error(Puppet::Error, error_message)
+    [1, false].each do |param_value|
+      context "#{param_value} (invalid scenario)" do
+        let(:params) do
+          {
+            choco_install_location: param_value,
           }
         end
+
+        let(:error_message) { %r{is not a string} }
+
+        it {
+          expect { catalogue }.to raise_error(Puppet::Error, error_message)
+        }
       end
+    end
 
-      # 1 is actually a string before v4.
-      [1, 'https://somewhere', '\\\\overhere', ''].each do |param_value|
-        context "#{param_value} (invalid scenario)" do
-          let(:params) do
-            {
-              choco_install_location: param_value,
-            }
-          end
-
-          let(:error_message) { %r{Please use a full path for choco_install_location} }
-
-          it {
-            expect { catalogue }.to raise_error(Puppet::Error, error_message)
+    ['https://somewhere', '\\\\overhere', ''].each do |param_value|
+      context "#{param_value} (invalid scenario)" do
+        let(:params) do
+          {
+            choco_install_location: param_value,
           }
         end
-      end
-    else
-      [1, false].each do |param_value|
-        context "#{param_value} (invalid scenario)" do
-          let(:params) do
-            {
-              choco_install_location: param_value,
-            }
-          end
 
-          let(:error_message) { %r{is not a string} }
+        let(:error_message) { %r{Please use a full path for choco_install_location} }
 
-          it {
-            expect { catalogue }.to raise_error(Puppet::Error, error_message)
-          }
-        end
-      end
-
-      ['https://somewhere', '\\\\overhere', ''].each do |param_value|
-        context "#{param_value} (invalid scenario)" do
-          let(:params) do
-            {
-              choco_install_location: param_value,
-            }
-          end
-
-          let(:error_message) { %r{Please use a full path for choco_install_location} }
-
-          it {
-            expect { catalogue }.to raise_error(Puppet::Error, error_message)
-          }
-        end
+        it {
+          expect { catalogue }.to raise_error(Puppet::Error, error_message)
+        }
       end
     end
   end

@@ -52,3 +52,7 @@ spec/default_facts.yml:
 # Rake file is heavily modified for Rototiller
 Rakefile:
   unmanaged: true
+
+spec/spec_helper.rb:
+  mock_with: ':rspec'
+  coverage_report: true
