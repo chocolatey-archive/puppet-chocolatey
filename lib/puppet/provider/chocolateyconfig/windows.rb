@@ -3,6 +3,8 @@ require 'pathname'
 require 'rexml/document'
 
 Puppet::Type.type(:chocolateyconfig).provide(:windows) do
+  @doc = 'Windows based provider for chocolateyconfig type.'
+
   confine operatingsystem: :windows
   defaultfor operatingsystem: :windows
 

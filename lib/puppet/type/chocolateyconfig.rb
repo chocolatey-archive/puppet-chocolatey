@@ -2,16 +2,18 @@ require 'puppet/type'
 require 'pathname'
 
 Puppet::Type.newtype(:chocolateyconfig) do
-  @doc = <<-EOT
+  @doc = <<-DOC
     Allows managing config settings for Chocolatey.
     Configuration values provide settings for users
     to configure aspects of Chocolatey and the way it
     functions. Similar to features, except allow for user
     configured values. Requires 0.9.10+. Learn more about
     config at https://chocolatey.org/docs/commands-config
-  EOT
+  DOC
 
   ensurable do
+    desc 'Specifies state of resource'
+
     newvalue(:present)  { provider.create }
     newvalue(:absent)   { provider.destroy }
     defaultto :present

@@ -1,4 +1,6 @@
-# chocolatey::config - Private class used for configuration
+# @summary Handles configuration of Chocolatey
+#
+# @api private
 class chocolatey::config {
   assert_private()
 
