@@ -8,27 +8,30 @@
   required:
     - ---.project
 
+.gitlab-ci.yml:
+  unmanaged: true
+
+.travis.yml:
+  unmanaged: true
+
+.rubocop.yml:
+  default_configs:
+    inherit_from: .rubocop_todo.yml
+    require:
+    - rubocop-rspec
+
+appveyor.yml:
+  unmanaged: true
+
 Gemfile:
   required:
     ':system_tests':
-      - gem: 'puppet-module-posix-system-r#{minor_version}'
-        platforms: ruby
-      - gem: 'puppet-module-win-system-r#{minor_version}'
+      - gem: 'nokogiri'
         platforms:
+          - ruby
           - mswin
           - mingw
           - x64_mingw
-      - gem: beaker-testmode_switcher
-        version: '~> 0.4'
-      - gem: master_manipulator
-      - gem: puppet-blacksmith
-        version: '~> 3.4'
-      - gem: beaker-windows
-        version: '~> 0.6'
-  optional:
-    ':development':
-      - gem: rototiller
-        version: '~> 1.0'
 
 # For the moment don't do any rubocop checks.
 .rubocop.yml:

@@ -1,954 +1,258 @@
 require 'spec_helper_acceptance'
 
-describe 'Chocolatey Source' do
-  context 'MODULES-3037 - Add Priority to an Existing Source' do
-    before(:all) do
-      backup_config
+describe 'chocolateysource resource' do
+  context 'create resource' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure             => present,
+          location           => 'https://chocolatey.org/api/v2',
+          priority           => 2,
+          user               => 'bob',
+          password           => 'yes',
+          bypass_proxy       => true,
+          allow_self_service => true,
+          admin_only         => true,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies the Manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            priority => 1,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'nows have proper priority' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{1}, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-4418 - Add Bypass Proxy to an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies the Manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            bypass_proxy => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'nows bypass system proxies' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
-        end
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command, acceptable_exit_codes: [0]) do |result|
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@value", result.stdout).to_s).to match(%r{https:\/\/chocolatey.org\/api\/v2})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@priority", result.stdout).to_s).to match(%r{2})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@user", result.stdout).to_s).to match(%r{bob})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@password", result.stdout).to_s).to match(%r{.+})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.stdout).to_s).to match(%r{true})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.stdout).to_s).to match(%r{true})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.stdout).to_s).to match(%r{true})
       end
     end
   end
 
-  context 'MODULES-5897 - Add Self Service to an Existing Source' do
-    before(:all) do
-      backup_config
+  context 'change existing resource' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure             => present,
+          location           => 'https://chocolatey.org/api/v2',
+          priority           => 2,
+          user               => 'bob',
+          password           => 'yes',
+          bypass_proxy       => true,
+          allow_self_service => true,
+          admin_only         => true,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateysource_changed) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure             => present,
+          location           => 'c:\\packages',
+          priority           => 5,
+          user               => 'doot',
+          password           => 'password123',
+          bypass_proxy       => false,
+          allow_self_service => false,
+          admin_only         => false,
+        }
+      MANIFEST
     end
 
-    windows_agents.each do |agent|
-      it 'Applies the Manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure             => present,
-            location           => 'https://chocolatey.org/api/v2',
-            allow_self_service => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'nows mark the source as usable for self-service' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-5898 - Add Admin Only to an Existing Source' do
-    before(:all) do
-      backup_config
+    it 'applies manifests' do
+      idempotent_apply(pp_chocolateysource)
+      idempotent_apply(pp_chocolateysource_changed)
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies the Manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            admin_only => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'nows set the source as visible only to administrators' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.output).to_s, 'Admin Only did not match')
-        end
+    it 'sets changed config' do
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@value", result.stdout).to_s).to match(%r{c:\\packages})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@priority", result.stdout).to_s).to match(%r{5})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@user", result.stdout).to_s).to match(%r{doot})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@password", result.stdout).to_s).to match(%r{.+})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.stdout).to_s).to match(%r{false})
       end
     end
   end
 
-  context 'MODULES-3037 - Add Source With All Options' do
-    before(:all) do
-      backup_config
+  context 'remove values from an existing resource' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure             => present,
+          location           => 'https://chocolatey.org/api/v2',
+          priority           => 2,
+          user               => 'bob',
+          password           => 'yes',
+          bypass_proxy       => true,
+          allow_self_service => true,
+          admin_only         => true,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
+    let(:pp_chocolateysource_remove) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure   => present,
+          location => 'https://chocolatey.org/api/v2',
+        }
+      MANIFEST
     end
 
-    windows_agents.each do |agent|
-      it 'Applies the Manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'test':
-            ensure             => present,
-            location           => 'c:\\packages',
-            priority           => 2,
-            user               => 'bob',
-            password           => 'yes',
-            bypass_proxy       => true,
-            allow_self_service => true,
-            admin_only         => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@value", result.stdout).to_s).to match(%r{https:\/\/chocolatey.org\/api\/v2})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@priority", result.stdout).to_s).to match(%r{2})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@user", result.stdout).to_s).to match(%r{bob})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@password", result.stdout).to_s).to match(%r{.+})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.stdout).to_s).to match(%r{true})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.stdout).to_s).to match(%r{true})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.stdout).to_s).to match(%r{true})
       end
-
-      it 'has the correct properties' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{c:\\packages}, get_xml_value("//sources/source[@id='test']/@value", result.output).to_s, 'Location did not match')
-          assert_match(%r{2}, get_xml_value("//sources/source[@id='test']/@priority", result.output).to_s, 'Priority did not match')
-          assert_match(%r{bob}, get_xml_value("//sources/source[@id='test']/@user", result.output).to_s, 'User did not match')
-          assert_match(%r{.+}, get_xml_value("//sources/source[@id='test']/@password", result.output).to_s, 'Password was not saved')
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='test']/@disabled", result.output).to_s, 'Disabled did not match')
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='test']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='test']/@selfService", result.output).to_s, 'Self Service did not match')
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='test']/@adminOnly", result.output).to_s, 'Admin Only did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 - Add Source Minimal' do
-    before(:all) do
-      backup_config
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies the Manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'test':
-            location => 'c:\\packages',
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{c:\\packages}, get_xml_value("//sources/source[@id='test']/@value", result.output).to_s, 'Location did not match')
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='test']/@disabled", result.output).to_s, 'Disabled did not match')
-        end
+    it 'applies manifest, unsets config attributes' do
+      idempotent_apply(pp_chocolateysource_remove)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@value", result.stdout).to_s).to match(%r{https:\/\/chocolatey.org\/api\/v2})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@priority", result.stdout).to_s).to match(%r{0})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@user", result.stdout).to_s).to match(%r{})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@password", result.stdout).to_s).to match(%r{})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.stdout).to_s).to match(%r{})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.stdout).to_s).to match(%r{false})
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.stdout).to_s).to match(%r{false})
       end
     end
   end
 
-  context 'MODULES-3037 - Add Source Happy Path' do
-    before(:all) do
-      backup_config
+  context 'specify only location' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateysource {'test':
+          location => 'c:\\packages',
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies the manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'test':
-            ensure   => present,
-            location => 'c:\\packages',
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{c:\\packages}, get_xml_value("//sources/source[@id='test']/@value", result.output).to_s, 'Location did not match')
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='test']/@disabled", result.output).to_s, 'Disabled did not match')
-        end
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//sources/source[@id='test']/@value", result.stdout).to_s).to match(%r{c:\\packages})
+        expect(get_xml_value("//sources/source[@id='test']/@disabled", result.stdout).to_s).to match(%r{false})
       end
     end
   end
 
-  context 'MODULES-3037 - Add User/Password to an Existing Source' do
-    before(:all) do
-      backup_config
+  context 'disable resource' do
+    include_context 'backup and reset config'
+
+    let(:pp_chocolateysource) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure   => disabled,
+        }
+      MANIFEST
     end
 
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies the manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            user     => 'tim',
-            password => 'test',
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{tim}, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User did not match')
-          # we are not able to verify password other than if it has a value - it will be encrypted in a non-verifyable way
-          assert_match(%r{.+}, get_xml_value("//sources/source[@id='chocolatey']/@password", result.output).to_s, 'Password was not saved')
-        end
+    it 'applies manifest, sets config' do
+      idempotent_apply(pp_chocolateysource)
+      run_shell(config_content_command) do |result|
+        expect(get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.stdout).to_s).to match(%r{true})
       end
     end
   end
 
-  context 'MODULES-3037 - Change Existing Priority' do
-    before(:all) do
-      backup_config
-    end
+  context 'exceptions' do
+    include_context 'backup and reset config'
 
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest to set priority' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            priority => 1,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the setup was added' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{1}, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority setup did not match')
-        end
-      end
-
-      it 'applies a manifest to change the priority' do
-        chocolatey_src_change = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            priority => 5,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src_change, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{5}, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-4418 - Change Existing Bypass Proxy Setting' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest to set bypass_proxy' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            bypass_proxy => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the setup was added' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy setup did not match')
-        end
-      end
-
-      it 'applies a manifest to set bypass_proxy to false' do
-        chocolatey_src_change = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            bypass_proxy => false,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src_change, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-5897 - Change Existing Self Service Setting' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest to set allow_self_service' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure             => present,
-            location           => 'https://chocolatey.org/api/v2',
-            allow_self_service => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the setup was added' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service setup did not match')
-        end
-      end
-
-      it 'applies a manifest to set allow_self_service to false' do
-        chocolatey_src_change = <<-PP
-          chocolateysource {'chocolatey':
-            ensure             => present,
-            location           => 'https://chocolatey.org/api/v2',
-            allow_self_service => false,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src_change, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-5898 - Change Existing Admin Only Setting' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest to set admin_only' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            admin_only => true,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the setup was added' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.output).to_s, 'Admin Only setup did not match')
-        end
-      end
-
-      it 'applies a manifest to set admin_only to false' do
-        chocolatey_src_change = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            admin_only => false,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src_change, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.output).to_s, 'Admin Only change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 - Change Source Location for an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies a manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'c:\\packages',
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{c:\\packages}, get_xml_value("//sources/source[@id='chocolatey']/@value", result.output).to_s, 'Location did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 - Change User/Password in an existing source.' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest to create a username/pass' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            user     => 'tim',
-            password => 'test',
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{tim}, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User setup did not match')
-          # we are not able to verify password other than if it has a value - it will be encrypted in a non-verifyable way
-          assert_match(%r{.+}, get_xml_value("//sources/source[@id='chocolatey']/@password", result.output).to_s, 'Password was not saved')
-        end
-      end
-
-      it 'applies a manifest to change the values' do
-        chocolatey_src_change = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => present,
-            location => 'https://chocolatey.org/api/v2',
-            user     => 'bob',
-            password => 'newpass',
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src_change, catch_failures: true)
-      end
-
-      it 'validates the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{bob}, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User change did not match')
-          assert_match(%r{.+}, get_xml_value("//sources/source[@id='chocolatey']/@password", result.output).to_s, 'Password no longer exists')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 - Disable an Existing resource' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest to disable the resource' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => disabled,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-        execute_manifest_on(agent, chocolatey_src, catch_changes: true)
-      end
-
-      it 'verifies the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.output).to_s, 'Disabled did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 Disable an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'Applies a manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => disabled,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies the results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@disabled", result.output).to_s, 'Disabled did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 Add Source Sad Path: Fail to apply manifest without location' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'fails to apply a bad manifest with the correct error' do
-        chocolatey_src = <<-PP
+    context 'when without location set' do
+      let(:pp_chocolateysource) do
+        <<-MANIFEST
           chocolateysource {'chocolatey':
             ensure   => present,
           }
-        PP
+        MANIFEST
+      end
 
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{Error: Validation of Chocolateysource\[chocolatey\] failed: A non-empty location}, result.stderr, 'stderr did not match expected')
+      it 'raises an error' do
+        apply_manifest(pp_chocolateysource, expect_failures: true) do |result|
+          expect(result.exit_code).to eq(1)
+          expect(result.stderr).to match(%r{Error: Validation of Chocolateysource\[chocolatey\] failed: A non-empty location})
         end
       end
     end
-  end
 
-  context 'MODULES-3037 - Add Source Sad Path: Fail to apply bad manifest' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'fails to apply a manifest' do
-        chocolatey_src = <<-PP
+    context 'when invalid ensure' do
+      let(:pp_chocolateysource) do
+        <<-MANIFEST
           chocolateysource {'test':
             ensure   => sad,
             location => 'c:\\packages',
           }
-        PP
+        MANIFEST
+      end
 
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{Error: Parameter ensure failed on Chocolateysource\[test\]: Invalid value "sad"}, result.stderr, 'stderr did not match expected')
+      it 'raises an error' do
+        apply_manifest(pp_chocolateysource, expect_failures: true) do |result|
+          expect(result.exit_code).to eq(1)
+          expect(result.stderr).to match(%r{Error: Parameter ensure failed on Chocolateysource\[test\]: Invalid value "sad"})
         end
       end
     end
-  end
 
-  context 'MODULES-3037 - Add Source Sad Path: Set password with no user' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'fails to apply a manifest' do
-        chocolatey_src = <<-PP
+    context 'when password set and user not set' do
+      let(:pp_chocolateysource) do
+        <<-MANIFEST
           chocolateysource {'chocolatey':
             ensure   => present,
             location => 'https://chocolatey.org/api/v2',
             password => 'test',
           }
-        PP
+        MANIFEST
+      end
 
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{Error: Validation of Chocolateysource\[chocolatey\] failed: If specifying user\/password, you must specify both values}, result.stderr, 'stderr did not match expected')
+      it 'raises an error' do
+        apply_manifest(pp_chocolateysource, expect_failures: true) do |result|
+          expect(result.exit_code).to eq(1)
+          expect(result.stderr).to match(%r{Error: Validation of Chocolateysource\[chocolatey\] failed: If specifying user\/password, you must specify both values})
         end
       end
     end
-  end
 
-  context 'MODULES-3037 - Add Source Sad Path: Set user with no password' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'fails to apply a manifest' do
-        chocolatey_src = <<-PP
+    context 'when user set and password not set' do
+      let(:pp_chocolateysource) do
+        <<-MANIFEST
           chocolateysource {'chocolatey':
             ensure   => present,
             location => 'https://chocolatey.org/api/v2',
             user => 'tim',
           }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, expect_failures: true) do |result|
-          assert_match(%r{Error: Validation of Chocolateysource\[chocolatey\] failed: If specifying user\/password, you must specify both values}, result.stderr, 'stderr did not match expected')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 - Remove an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      it 'applies a manifest' do
-        chocolatey_src = <<-PP
-          chocolateysource {'chocolatey':
-            ensure   => absent,
-          }
-        PP
-
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
+        MANIFEST
       end
 
-      it 'verifies the result' do
-        on(agent, config_content_command) do |result|
-          assert_not_match(%r{chocolatey}, get_xml_value("//sources/source[@id='chocolatey']/@id", result.output).to_s, 'Source was not removed')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 Remove Priority from an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      chocolatey_src = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-          priority => 1,
-        }
-      PP
-
-      chocolatey_src_remove = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-        }
-      PP
-
-      it 'applies a manifest' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies setup' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{1}, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority did not match')
-        end
-      end
-
-      it 'applies remove manifest' do
-        execute_manifest_on(agent, chocolatey_src_remove, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{0}, get_xml_value("//sources/source[@id='chocolatey']/@priority", result.output).to_s, 'Priority change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-4418 Remove Bypass Proxy from an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      chocolatey_src = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-          bypass_proxy => true,
-        }
-      PP
-
-      chocolatey_src_remove = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-        }
-      PP
-
-      it 'applies a manifest' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies setup' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy did not match')
-        end
-      end
-
-      it 'applies remove manifest' do
-        execute_manifest_on(agent, chocolatey_src_remove, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='chocolatey']/@bypassProxy", result.output).to_s, 'Bypass Proxy change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-5897 Remove Self Service from an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      chocolatey_src = <<-PP
-        chocolateysource {'chocolatey':
-          ensure             => present,
-          location           => 'https://chocolatey.org/api/v2',
-          allow_self_service => true,
-        }
-      PP
-
-      chocolatey_src_remove = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-        }
-      PP
-
-      it 'applies a manifest' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies setup' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service did not match')
-        end
-      end
-
-      it 'applies remove manifest' do
-        execute_manifest_on(agent, chocolatey_src_remove, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='chocolatey']/@selfService", result.output).to_s, 'Self Service change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-5898 Remove Admin Only from an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      chocolatey_src = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-          admin_only => true,
-        }
-      PP
-
-      chocolatey_src_remove = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-        }
-      PP
-
-      it 'applies a manifest' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies setup' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{true}, get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.output).to_s, 'Admin Only did not match')
-        end
-      end
-
-      it 'applies remove manifest' do
-        execute_manifest_on(agent, chocolatey_src_remove, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{false}, get_xml_value("//sources/source[@id='chocolatey']/@adminOnly", result.output).to_s, 'Admin Only change did not match')
-        end
-      end
-    end
-  end
-
-  context 'MODULES-3037 - Remove User/Password From an Existing Source' do
-    before(:all) do
-      backup_config
-    end
-
-    after(:all) do
-      reset_config
-    end
-
-    windows_agents.each do |agent|
-      chocolatey_src = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-          user     => 'tim',
-          password => 'test',
-        }
-      PP
-
-      chocolatey_src_remove = <<-PP
-        chocolateysource {'chocolatey':
-          ensure   => present,
-          location => 'https://chocolatey.org/api/v2',
-        }
-      PP
-
-      it 'applies a manifest' do
-        execute_manifest_on(agent, chocolatey_src, catch_failures: true)
-      end
-
-      it 'verifies setup' do
-        on(agent, config_content_command) do |result|
-          assert_match(%r{tim}, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User setup did not match')
-          # we are not able to verify password other than if it has a value - it will be encrypted in a non-verifyable way
-          assert_match(%r{.+}, get_xml_value("//sources/source[@id='chocolatey']/@password", result.output).to_s, 'Password was not saved')
-        end
-      end
-
-      it 'applies remove manifest' do
-        execute_manifest_on(agent, chocolatey_src_remove, catch_failures: true)
-      end
-
-      it 'verifies results' do
-        on(agent, config_content_command) do |result|
-          assert_not_match(%r{.+}, get_xml_value("//sources/source[@id='chocolatey']/@user", result.output).to_s, 'User was not removed')
-          assert_not_match(%r{.+}, get_xml_value("//sources/source[@id='chocolatey']/@password", result.output).to_s, 'Password was not removed')
+      it 'raises an error' do
+        apply_manifest(pp_chocolateysource, expect_failures: true) do |result|
+          expect(result.exit_code).to eq(1)
+          expect(result.stderr).to match(%r{Error: Validation of Chocolateysource\[chocolatey\] failed: If specifying user\/password, you must specify both values})
         end
       end
     end

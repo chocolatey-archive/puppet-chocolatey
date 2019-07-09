@@ -1,0 +1,7 @@
+---
+default:
+  provisioner: vmpooler
+  images: ['win-2016-x86_64']
+release_checks:
+  provisioner: vmpooler
+  images: ['win-2008-x86_64', 'win-2008r2-x86_64', 'win-2012-x86_64', 'win-2012r2-x86_64', 'win-2016-core-x86_64', 'win-2019-core-x86_64', 'win-7-x86_64', 'win-81-x86_64', 'win-10-pro-x86_64']
