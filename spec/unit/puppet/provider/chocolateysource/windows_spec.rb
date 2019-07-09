@@ -71,43 +71,43 @@ describe provider do
   let(:provider) { subject.class.new(resource) }
 
   before :each do
-    PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
-    PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
+    allow(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+    allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
 
     provider = provider_class.new(resource)
     resource.provider = provider
 
     # Stub all file and config tests
-    provider_class.stubs(:healthcheck)
+    allow(provider_class).to receive(:healthcheck)
   end
 
   context 'verify provider' do
     it 'is an instance of Puppet::Type::Chocolateysource::ProviderWindows' do
-      provider.must be_an_instance_of Puppet::Type::Chocolateysource::ProviderWindows
+      expect(provider).to be_an_instance_of(Puppet::Type::Chocolateysource::ProviderWindows)
     end
 
     it 'has a create method' do
-      provider.should respond_to(:create)
+      expect(provider).to respond_to(:create)
     end
 
     it 'has an exists? method' do
-      provider.should respond_to(:exists?)
+      expect(provider).to respond_to(:exists?)
     end
 
     it 'has a disable method' do
-      provider.should respond_to(:disable)
+      expect(provider).to respond_to(:disable)
     end
 
     it 'has a destroy method' do
-      provider.should respond_to(:destroy)
+      expect(provider).to respond_to(:destroy)
     end
 
     it 'has a properties method' do
-      provider.should respond_to(:properties)
+      expect(provider).to respond_to(:properties)
     end
 
     it 'has a query method' do
-      provider.should respond_to(:query)
+      expect(provider).to respond_to(:query)
     end
   end
 
@@ -179,12 +179,9 @@ describe provider do
   end
 
   context 'self.read_sources' do
-    before :each do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
-    end
-
     it 'errors when the config file location is null' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(nil)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(nil)
 
       expect {
         provider_class.read_sources
@@ -192,8 +189,9 @@ describe provider do
     end
 
     it 'errors when the config file is not found' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(false)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(false)
 
       expect {
         provider_class.read_sources
@@ -204,19 +202,19 @@ describe provider do
       sources = []
 
       before :each do
-        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
-        PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
-        File.expects(:read).with(choco_config).returns choco_config_contents
+        allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config)
+        allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(true)
+        allow(File).to receive(:read).with(choco_config).and_return choco_config_contents
 
         sources = provider_class.read_sources
       end
 
       it 'matches the count of sources in the config' do
-        sources.count.must eq 3
+        expect(sources.count).to eq(3)
       end
 
       it 'contains xml elements' do
-        sources[0].must be_an_instance_of REXML::Element
+        expect(sources[0]).to be_an_instance_of(REXML::Element)
       end
     end
   end
@@ -247,20 +245,20 @@ describe provider do
     end
 
     it 'returns nil source when element it nil' do
-      provider_class.get_source(nil).must be == {}
+      expect(provider_class.get_source(nil)).to be == {}
     end
 
     it 'converts an element to a source' do
       source = provider_class.get_source(element)
 
-      source[:name].must eq element_id
-      source[:location].must eq element_value
-      source[:priority].must eq element_priority
-      source[:user].must eq element_user
-      source[:ensure].must eq :present
-      source[:bypass_proxy].must eq element_bypass_proxy
-      source[:allow_self_service].must eq element_allow_self_service
-      source[:admin_only].must eq element_admin_only
+      expect(source[:name]).to eq element_id
+      expect(source[:location]).to eq element_value
+      expect(source[:priority]).to eq element_priority
+      expect(source[:user]).to eq element_user
+      expect(source[:ensure]).to eq :present
+      expect(source[:bypass_proxy]).to eq element_bypass_proxy
+      expect(source[:allow_self_service]).to eq element_allow_self_service
+      expect(source[:admin_only]).to eq element_admin_only
     end
 
     it 'converts a bare bones element to a source' do
@@ -274,9 +272,9 @@ describe provider do
 
       source = provider_class.get_source(element)
 
-      source[:name].must eq element_id
-      source[:location].must eq element_value
-      source[:ensure].must eq :present
+      expect(source[:name]).to eq element_id
+      expect(source[:location]).to eq element_value
+      expect(source[:ensure]).to eq :present
     end
 
     it 'when source is disabled' do
@@ -284,26 +282,26 @@ describe provider do
       element.add_attribute('disabled', 'true')
 
       source = provider_class.get_source(element)
-      source[:ensure].must eq :disabled
+      expect(source[:ensure]).to eq :disabled
     end
   end
 
   context '.validation' do
     before :each do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).returns(true).at_least(0)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_install_path).returns(true).at_least(0)
+      allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).and_return(true)
+      allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_install_path).and_return(true)
     end
 
     it 'does not warn when both user/password are empty' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
-      Puppet.expects(:warning).never
-      Puppet.expects(:debug).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
+      expect(Puppet).to receive(:warning).never
+      expect(Puppet).to receive(:debug).never
 
       resource.provider.validate
     end
 
     it 'throws when choco version is less than the minimum supported version' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version)
 
       expect {
         resource.provider.validate
@@ -314,9 +312,9 @@ describe provider do
       resource[:user] = 'tim'
       resource[:password] = 'tim'
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
-      Puppet.expects(:debug).with('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. '\
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
+      expect(Puppet).to receive(:debug).with('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. '\
         "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{name}]")
 
       resource.provider.validate
@@ -326,8 +324,8 @@ describe provider do
       resource[:user] = 'tim'
       resource[:password] = 'tim'
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -336,8 +334,8 @@ describe provider do
       resource[:user] = 'tim'
       resource[:password] = 'tim'
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -345,8 +343,8 @@ describe provider do
     it 'does not warn on bypass_proxy when choco version is newer than the minimum supported version' do
       resource[:bypass_proxy] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -354,8 +352,8 @@ describe provider do
     it 'does not warn on bypass_proxy when choco version is the minimum supported version' do
       resource[:bypass_proxy] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_bypass_proxy)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_bypass_proxy)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -363,8 +361,8 @@ describe provider do
     it 'warns on bypass_proxy when choco version is less than the minimum supported version' do
       resource[:bypass_proxy] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_bypass_proxy)
-      Puppet.expects(:warning).with('Chocolatey is unable to specify bypassing system proxy for sources when version is less than 0.10.4. The value you set will be ignored.')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_bypass_proxy)
+      expect(Puppet).to receive(:warning).with('Chocolatey is unable to specify bypassing system proxy for sources when version is less than 0.10.4. The value you set will be ignored.')
 
       resource.provider.validate
     end
@@ -372,8 +370,8 @@ describe provider do
     it 'does not warn on allow_self_service when choco version is newer than the minimum supported version' do
       resource[:allow_self_service] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -381,8 +379,8 @@ describe provider do
     it 'does not warn on allow_self_service when choco version is the minimum supported version' do
       resource[:allow_self_service] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_allow_self_service)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_allow_self_service)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -390,8 +388,8 @@ describe provider do
     it 'warns on allow_self_service when choco version is less than the minimum supported version' do
       resource[:allow_self_service] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_allow_self_service)
-      Puppet.expects(:warning).with('Chocolatey is unable to specify self-service for sources when version is less than 0.10.4. The value you set will be ignored.')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_allow_self_service)
+      expect(Puppet).to receive(:warning).with('Chocolatey is unable to specify self-service for sources when version is less than 0.10.4. The value you set will be ignored.')
 
       resource.provider.validate
     end
@@ -399,8 +397,8 @@ describe provider do
     it 'does not warn on admin_only when choco version is newer than the minimum supported version' do
       resource[:admin_only] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -408,8 +406,8 @@ describe provider do
     it 'does not warn on admin_only when choco version is the minimum supported version' do
       resource[:admin_only] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_admin_only)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_admin_only)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -417,22 +415,22 @@ describe provider do
     it 'warns on admin_only when choco version is less than the minimum supported version' do
       resource[:admin_only] = true
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_admin_only)
-      Puppet.expects(:warning).with('Chocolatey is unable to specify administrator only visibility for sources when version is less than 0.10.8. The value you set will be ignored.')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_admin_only)
+      expect(Puppet).to receive(:warning).with('Chocolatey is unable to specify administrator only visibility for sources when version is less than 0.10.8. The value you set will be ignored.')
 
       resource.provider.validate
     end
 
     it 'does not warn if priority is not set' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
 
     it 'does not warn if priority is not set on older unsupported versions' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_priority)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -440,8 +438,8 @@ describe provider do
     it 'does not warn if priority is 0 on unsupported versions' do
       resource[:priority] = 0
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_priority)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -449,8 +447,8 @@ describe provider do
     it 'does not warn on priority when choco version is newer than the minimum supported version' do
       resource[:priority] = 10
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -458,8 +456,8 @@ describe provider do
     it 'does not warn on priority when choco version is the minimum supported version' do
       resource[:priority] = 10
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_priority)
-      Puppet.expects(:warning).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_priority)
+      expect(Puppet).to receive(:warning).never
 
       resource.provider.validate
     end
@@ -467,8 +465,8 @@ describe provider do
     it 'warns on priority when choco version is less than the minimum supported version' do
       resource[:priority] = 10
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_priority)
-      Puppet.expects(:warning).with('Chocolatey is unable to manage priority for sources when version is less than 0.9.9.9. The value you set will be ignored.')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
+      expect(Puppet).to receive(:warning).with('Chocolatey is unable to manage priority for sources when version is less than 0.9.9.9. The value you set will be ignored.')
 
       resource.provider.validate
     end
@@ -505,10 +503,10 @@ describe provider do
     resource_admin_only = :true
 
     before :each do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall).at_most_once
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config).at_most_once
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true).at_most_once
-      File.expects(:read).with(choco_config).returns(choco_config_contents).at_most_once
+      allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall).at_most(:once)
+      allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config).at_most(:once)
+      allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(true).at_most(:once)
+      allow(File).to receive(:read).with(choco_config).and_return(choco_config_contents).at_most(:once)
 
       resource[:name] = resource_name
       resource[:location] = resource_location
@@ -516,16 +514,16 @@ describe provider do
     end
 
     it 'ensures a source is present with minimal values set' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', 'yup'])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', 'yup'])
 
       resource.flush
     end
@@ -538,37 +536,37 @@ describe provider do
       resource[:allow_self_service] = resource_allow_self_service
       resource[:admin_only] = resource_admin_only
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--user', resource_user,
-                                                      '--password', resource_password,
-                                                      '--bypass-proxy',
-                                                      '--allow-self-service',
-                                                      '--admin-only',
-                                                      '--priority', resource_priority])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--user', resource_user,
+                                                                 '--password', resource_password,
+                                                                 '--bypass-proxy',
+                                                                 '--allow-self-service',
+                                                                 '--admin-only',
+                                                                 '--priority', resource_priority])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
 
     it 'sets priority when present' do
       resource[:priority] = resource_priority
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', resource_priority])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', resource_priority])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -576,17 +574,17 @@ describe provider do
     it 'sets bypass_proxy when present' do
       resource[:bypass_proxy] = resource_bypass_proxy
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--bypass-proxy',
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--bypass-proxy',
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -594,17 +592,17 @@ describe provider do
     it 'sets allow_self_service when present' do
       resource[:allow_self_service] = resource_allow_self_service
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--allow-self-service',
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--allow-self-service',
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -612,17 +610,17 @@ describe provider do
     it 'sets admin_only when present' do
       resource[:admin_only] = resource_admin_only
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--admin-only',
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--admin-only',
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -631,18 +629,18 @@ describe provider do
       resource[:user] = resource_user
       resource[:password] = resource_password
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--user', resource_user,
-                                                      '--password', resource_password,
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--user', resource_user,
+                                                                 '--password', resource_password,
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -651,17 +649,17 @@ describe provider do
       resource[:user] = resource_user
       resource[:password] = resource_password
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--user', resource_user,
-                                                      '--password', resource_password])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--user', resource_user,
+                                                                 '--password', resource_password])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -669,16 +667,16 @@ describe provider do
     it 'does not set bypass_proxy when choco version is less than the minimum supported version' do
       resource[:bypass_proxy] = resource_bypass_proxy
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_bypass_proxy)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_bypass_proxy)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -686,17 +684,17 @@ describe provider do
     it 'sets bypass_proxy when choco version is the minimum supported version' do
       resource[:bypass_proxy] = resource_bypass_proxy
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_bypass_proxy)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--bypass-proxy',
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_bypass_proxy)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--bypass-proxy',
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -704,16 +702,16 @@ describe provider do
     it 'does not set allow_self_service when choco version is less than the minimum supported version' do
       resource[:allow_self_service] = resource_allow_self_service
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_allow_self_service)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_allow_self_service)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -721,17 +719,17 @@ describe provider do
     it 'sets allow_self_service when choco version is the minimum supported version' do
       resource[:allow_self_service] = resource_allow_self_service
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_allow_self_service)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--allow-self-service',
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_allow_self_service)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--allow-self-service',
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -739,47 +737,47 @@ describe provider do
     it 'sets admin_only when choco version is the minimum supported version' do
       resource[:admin_only] = resource_admin_only
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_admin_only)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--admin-only',
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_admin_only)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--admin-only',
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
 
     it 'sets priority when choco version is newer than the minimum supported version' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
 
     it 'sets priority when choco version is the minimum supported version' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(minimum_supported_version_priority)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_priority)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', 0])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -787,15 +785,15 @@ describe provider do
     it 'does not set priority when choco version is less than the minimum supported version' do
       resource[:priority] = resource_priority
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(last_unsupported_version_priority)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', resource_name])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', resource_name])
 
       resource.flush
     end
@@ -805,9 +803,9 @@ describe provider do
       resource[:name] = 'chocolatey'
       resource.provider.disable
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'disable',
-                                                      '--name', 'chocolatey'])
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'disable',
+                                                                 '--name', 'chocolatey'])
 
       resource.flush
     end
@@ -816,25 +814,25 @@ describe provider do
       resource[:ensure] = :absent
       resource.provider.destroy
 
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).never
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'remove',
-                                                      '--name', resource_name])
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).never
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'remove',
+                                                                 '--name', resource_name])
 
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'enable',
-                                                      '--name', 'yup']).never
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'enable',
+                                                                 '--name', 'yup']).never
 
       resource.flush
     end
 
     it 'provides an error message when choco execution fails' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_version).returns(newer_choco_version)
-      Puppet::Util::Execution.expects(:execute).with([provider_class.command(:chocolatey),
-                                                      'source', 'add',
-                                                      '--name', resource_name,
-                                                      '--source', resource_location,
-                                                      '--priority', 0]).raises(Puppet::ExecutionFailure, 'Nooooo')
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
+      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                 'source', 'add',
+                                                                 '--name', resource_name,
+                                                                 '--source', resource_location,
+                                                                 '--priority', 0]).and_raise(Puppet::ExecutionFailure, 'Nooooo')
 
       expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolatey source})
     end

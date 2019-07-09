@@ -7,25 +7,24 @@ describe 'choco_temp_dir fact' do
 
   let(:fact_value) { subject.value }
 
-  before :each do
+  before(:each) do
     skip 'Not on Windows platform' unless Puppet::Util::Platform.windows?
     Facter.clear
     Facter.clear_messages
   end
 
   it 'returns the TEMP directory' do
-    expected_value = 'waffles'
-    PuppetX::Chocolatey::ChocolateyInstall.expects(:temp_dir).returns(expected_value)
+    expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:temp_dir).and_return('waffles')
 
-    fact_value.must == expected_value
+    expect(fact_value).to eq('waffles')
   end
   it 'returns the default path when PuppetX::Chocolatey::ChocolateyInstall.install_path is nil' do
-    PuppetX::Chocolatey::ChocolateyInstall.expects(:temp_dir).returns(nil)
+    expect(PuppetX::Chocolatey::ChocolateyInstall).to receieve(:temp_dir).and_return(nil)
 
-    fact_value.must == ENV['TEMP']
+    expect(fact_value).to eq(ENV['TEMP'])
   end
 
-  after :each do
+  after(:each) do
     Facter.clear
     Facter.clear_messages
   end

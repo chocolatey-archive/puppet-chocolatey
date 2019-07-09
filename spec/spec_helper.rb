@@ -1,3 +1,7 @@
+RSpec.configure do |c|
+  c.mock_with :rspec
+end
+
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
 
@@ -25,6 +29,11 @@ default_fact_files.each do |f|
   end
 end
 
+# read default_facts and merge them over what is provided by facterdb
+default_facts.each do |fact, value|
+  add_custom_fact fact, value
+end
+
 RSpec.configure do |c|
   c.default_facts = default_facts
   c.before :each do
@@ -34,6 +43,7 @@ RSpec.configure do |c|
   end
   c.filter_run_excluding(bolt: true) unless ENV['GEM_BOLT']
   c.after(:suite) do
+    RSpec::Puppet::Coverage.report!(0)
   end
 end
 

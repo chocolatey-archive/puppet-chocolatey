@@ -59,58 +59,58 @@ describe provider do
   let(:provider_class) { subject.class }
   let(:provider) { subject.class.new(resource) }
 
-  before :each do
-    PuppetX::Chocolatey::ChocolateyInstall.stubs(:install_path).returns('c:\dude')
-    PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
+  before(:each) do
+    allow(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+    allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
 
     provider = provider_class.new(resource)
     resource.provider = provider
 
     # Stub all file and config tests
-    provider_class.stubs(:healthcheck)
+    allow(provider_class).to receive(:healthcheck)
   end
 
   context 'verify provider' do
     it 'is an instance of Puppet::Type::Chocolateyfeature::ProviderWindows' do
-      provider.must be_an_instance_of Puppet::Type::Chocolateyfeature::ProviderWindows
+      expect(provider).to be_an_instance_of Puppet::Type::Chocolateyfeature::ProviderWindows
     end
 
     it 'has a enable method' do
-      provider.should respond_to(:enable)
+      expect(provider).to respond_to(:enable)
     end
 
     it 'has an exists? method' do
-      provider.should respond_to(:exists?)
+      expect(provider).to respond_to(:exists?)
     end
 
     it 'has a disable method' do
-      provider.should respond_to(:disable)
+      expect(provider).to respond_to(:disable)
     end
 
     it 'has a properties method' do
-      provider.should respond_to(:properties)
+      expect(provider).to respond_to(:properties)
     end
 
     it 'has a query method' do
-      provider.should respond_to(:query)
+      expect(provider).to respond_to(:query)
     end
 
     it 'has the standard feautures method' do
-      provider.should respond_to(:features)
+      expect(provider).to respond_to(:features)
     end
 
     it 'returns nil feature when element is nil' do
-      provider.features.must be == []
+      expect(provider.features).to eq([])
     end
   end
 
   context 'self.read_choco_features' do
-    before :each do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:set_env_chocolateyinstall)
+    before(:each) do
+      allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
     end
 
     it 'errors when the config file location is null' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(nil)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(nil)
 
       expect {
         provider_class.read_choco_features
@@ -118,8 +118,8 @@ describe provider do
     end
 
     it 'errors when the config file is not found' do
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
-      PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(false)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config)
+      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(false)
 
       expect {
         provider_class.read_choco_features
@@ -130,19 +130,19 @@ describe provider do
       features = []
 
       before :each do
-        PuppetX::Chocolatey::ChocolateyCommon.expects(:choco_config_file).returns(choco_config)
-        PuppetX::Chocolatey::ChocolateyCommon.expects(:file_exists?).with(choco_config).returns(true)
-        File.expects(:read).with(choco_config).returns choco_config_contents
+        allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config)
+        allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(true)
+        allow(File).to receive(:read).with(choco_config).and_return(choco_config_contents)
 
         features = provider_class.read_choco_features
       end
 
       it 'matches the count of features in the config' do
-        features.count.must eq 14
+        expect(features.count).to eq(14)
       end
 
       it 'contains xml elements' do
-        features[0].must be_an_instance_of REXML::Element
+        expect(features[0]).to be_an_instance_of(REXML::Element)
       end
     end
   end
@@ -158,14 +158,14 @@ describe provider do
     end
 
     it 'returns nil feature when element is nil' do
-      provider_class.get_choco_feature(nil).must be == {}
+      expect(provider_class.get_choco_feature(nil)).to eq({})
     end
 
     it 'converts an element to a feature' do
       feature = provider_class.get_choco_feature(element)
 
-      feature[:name].must eq element_name
-      feature[:ensure].must eq :enabled
+      expect(feature[:name]).to eq(element_name)
+      expect(feature[:ensure]).to eq(:enabled)
     end
 
     it 'when feature is disabled' do
@@ -173,7 +173,7 @@ describe provider do
       element.add_attribute('enabled', 'false')
 
       feature = provider_class.get_choco_feature(element)
-      feature[:ensure].must eq :disabled
+      expect(feature[:ensure]).to eq(:disabled)
     end
   end
 end

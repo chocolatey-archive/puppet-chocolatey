@@ -8,17 +8,17 @@ describe Puppet::Type.type(:chocolateysource) do
   let(:minimum_supported_version) { '0.9.9.0' }
 
   before :each do
-    PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
+    allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
 
     resource.provider = provider
   end
 
   it 'is an instance of Puppet::Type::Chocolateysource' do
-    resource.must be_an_instance_of Puppet::Type::Chocolateysource
+    expect(resource).to be_an_instance_of(Puppet::Type::Chocolateysource)
   end
 
   it 'parameter :name should be the name var' do
-    resource.parameters[:name].isnamevar?.should be_truthy
+    expect(resource.parameters[:name]).to be_isnamevar
   end
 
   # string values
@@ -107,7 +107,7 @@ describe Puppet::Type.type(:chocolateysource) do
     catalog.add_resource exec
 
     reqs = resource.autorequire
-    expect(reqs.count.must).to eq(1)
+    expect(reqs.count).to eq(1)
     expect(reqs[0].source).to eq(exec)
     expect(reqs[0].target).to eq(resource)
   end

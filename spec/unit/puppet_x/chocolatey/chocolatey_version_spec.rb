@@ -8,49 +8,45 @@ describe 'Chocolatey Version' do
     end
 
     context 'when Chocolatey is installed' do
+      let(:expected_value) { '1.2.3' }
+
       before :each do
-        PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns('c:\dude')
-        File.expects(:exist?).with('c:\dude\choco.exe').returns(true)
+        allow(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+        allow(File).to receive(:exist?).with('c:\dude\choco.exe').and_return(true)
       end
 
       it 'returns the value from running choco -v' do
-        expected_value = '1.2.3'
-        Puppet::Util::Execution.expects(:execute).returns(expected_value)
+        expect(Puppet::Util::Execution).to receive(:execute).and_return(expected_value)
 
-        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to eq expected_value
       end
 
       it 'handles cleaning up spaces' do
-        expected_value = '1.2.3'
-        Puppet::Util::Execution.expects(:execute).returns(' ' + expected_value + ' ')
+        expect(Puppet::Util::Execution).to receive(:execute).and_return(' ' + expected_value + ' ')
 
-        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to eq expected_value
       end
 
       it 'handles older versions of choco' do
-        expected_value = '1.2.3'
-        Puppet::Util::Execution.expects(:execute).returns('Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
+        expect(Puppet::Util::Execution).to receive(:execute).and_return('Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
 
-        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to eq expected_value
       end
 
       it 'handles other messages that return with version call' do
-        expected_value = '1.2.3'
-        Puppet::Util::Execution.expects(:execute).returns("Error setting some value.\nPlease set this value yourself\r\nsound good?\r" + expected_value)
+        expect(Puppet::Util::Execution).to receive(:execute).and_return("Error setting some value.\nPlease set this value yourself\r\nsound good?\r" + expected_value)
 
-        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to eq expected_value
       end
 
       it 'handles a trailing line break' do
-        expected_value = '1.2.3'
-        Puppet::Util::Execution.expects(:execute).returns(expected_value + "\r\n")
+        expect(Puppet::Util::Execution).to receive(:execute).and_return(expected_value + "\r\n")
 
-        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to eq expected_value
       end
 
       it 'handles 0.9.8.33 of choco' do
-        expected_value = '1.2.3'
-        Puppet::Util::Execution.expects(:execute).returns('!!ATTENTION!!
+        expect(Puppet::Util::Execution).to receive(:execute).and_return('!!ATTENTION!!
 The next version of Chocolatey (v0.9.9) will require -y to perform
   behaviors that change state without prompting for confirmation. Start
   using it now in your automated scripts.
@@ -58,18 +54,15 @@ The next version of Chocolatey (v0.9.9) will require -y to perform
   For details on the all new Chocolatey, visit http://bit.ly/new_choco
 Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
 
-        PuppetX::Chocolatey::ChocolateyVersion.version.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to eq expected_value
       end
     end
 
     context 'When Chocolatey is not installed' do
-      before :each do
-        PuppetX::Chocolatey::ChocolateyInstall.expects(:install_path).returns(nil)
-        File.expects(:exist?).with('\choco.exe').returns(false)
-      end
-
       it 'returns nil' do
-        PuppetX::Chocolatey::ChocolateyVersion.version.must be_nil
+        expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return(nil)
+        expect(File).to receive(:exist?).with('\choco.exe').and_return(false)
+        expect(PuppetX::Chocolatey::ChocolateyVersion.version).to be_nil
       end
     end
   end
@@ -77,7 +70,7 @@ Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
   context 'on Linux' do
     it 'returns nil on a non-windows system' do
       skip 'Not on Linux platform' unless Puppet.features.posix?
-      PuppetX::Chocolatey::ChocolateyVersion.version.must be_nil
+      expect(PuppetX::Chocolatey::ChocolateyVersion.version).to be_nil
     end
   end
 end

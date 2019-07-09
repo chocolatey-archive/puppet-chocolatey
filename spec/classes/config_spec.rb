@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'chocolatey' do
+describe 'chocolatey' do
   let(:facts) do
     {
       path: 'C:\something',

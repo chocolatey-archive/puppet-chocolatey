@@ -8,18 +8,18 @@ describe Puppet::Type.type(:chocolateyfeature) do
   let(:minimum_supported_version) { '0.9.9.0' }
 
   before :each do
-    PuppetX::Chocolatey::ChocolateyCommon.stubs(:choco_version).returns(minimum_supported_version)
+    allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
 
     resource.provider = provider
     resource[:ensure] = 'enabled'
   end
 
   it 'is an instance of Puppet::Type::Chocolateyfeature' do
-    resource.must be_an_instance_of Puppet::Type::Chocolateyfeature
+    expect(resource).to be_an_instance_of(Puppet::Type::Chocolateyfeature)
   end
 
   it 'parameter :name should be the name var' do
-    resource.parameters[:name].isnamevar?.should be_truthy
+    expect(resource.parameters[:name]).to be_isnamevar
   end
 
   context 'parameter :name' do

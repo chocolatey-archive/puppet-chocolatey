@@ -12,25 +12,25 @@ describe 'Chocolatey Install Location' do
 
       it 'returns install path from registry if it exists' do
         expected_value = 'C:\somewhere'
-        Win32::Registry.any_instance.expects(:[]).with('ChocolateyInstall').returns(expected_value)
+        allow_any_instance_of(Win32::Registry).to receive(:[]).with('ChocolateyInstall').and_return(expected_value)
 
-        PuppetX::Chocolatey::ChocolateyInstall.install_path.must == expected_value
+        expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to eq expected_value
       end
 
       it 'returns the environment variable ChocolateyInstall if it exists' do
-        Win32::Registry.any_instance.expects(:[]).with('ChocolateyInstall').raises(Win32::Registry::Error.new(2), 'file not found yo')
+        allow_any_instance_of(Win32::Registry).to receive(:[]).with('ChocolateyInstall').and_raise(Win32::Registry::Error.new(2), 'file not found yo')
 
         # this is a placeholder, it is already set in spec_helper
         ENV['ChocolateyInstall'] = 'c:\blah'
 
-        PuppetX::Chocolatey::ChocolateyInstall.install_path.must == 'c:\blah'
+        expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to eq 'c:\blah'
       end
 
       it 'returns nil if the environment variable does not exist' do
-        Win32::Registry.any_instance.expects(:[]).with('ChocolateyInstall').raises(Win32::Registry::Error.new(2), 'file not found yo')
+        allow_any_instance_of(Win32::Registry).to receive(:[]).with('ChocolateyInstall').and_raise(Win32::Registry::Error.new(2), 'file not found yo')
         ENV['ChocolateyInstall'] = nil
 
-        PuppetX::Chocolatey::ChocolateyInstall.install_path.must be_nil
+        expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to be_nil
       end
     end
 
@@ -43,13 +43,13 @@ describe 'Chocolatey Install Location' do
         # this is a placeholder, it is already set in spec_helper
         ENV['ChocolateyInstall'] = 'c:\blah'
 
-        PuppetX::Chocolatey::ChocolateyInstall.install_path.must == 'c:\blah'
+        expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to eq 'c:\blah'
       end
 
       it 'returns nil if the ChocolateyInstall variable does not exist' do
         ENV['ChocolateyInstall'] = nil
 
-        PuppetX::Chocolatey::ChocolateyInstall.install_path.must be_nil
+        expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to be_nil
       end
     end
 
@@ -66,14 +66,14 @@ describe 'Chocolatey Install Location' do
 
     it 'returns the TEMP path from registry if it exists' do
       expected_value = 'C:\somewhere'
-      Win32::Registry.any_instance.expects(:[]).with('TEMP').returns(expected_value)
+      allow_any_instance_of(Win32::Registry).to receive(:[]).with('TEMP').and_return(expected_value)
 
-      PuppetX::Chocolatey::ChocolateyInstall.temp_dir.must == expected_value
+      expect(PuppetX::Chocolatey::ChocolateyInstall.temp_dir).to eq expected_value
     end
     it 'returns nil path from registry if it does not exist' do
-      Win32::Registry.any_instance.expects(:[]).with('TEMP').raises(Win32::Registry::Error.new(2), 'file not found yo').twice
+      allow_any_instance_of(Win32::Registry).to receive(:[]).with('TEMP').and_raise(Win32::Registry::Error.new(2), 'file not found yo')
 
-      PuppetX::Chocolatey::ChocolateyInstall.temp_dir.must be_nil
+      expect(PuppetX::Chocolatey::ChocolateyInstall.temp_dir).to be_nil
     end
   end
 end
