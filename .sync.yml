@@ -33,26 +33,9 @@ Gemfile:
           - mingw
           - x64_mingw
 
-# For the moment don't do any rubocop checks.
-.rubocop.yml:
-  include_todos: true
-
-appveyor.yml:
-  matrix_extras:
-    - PUPPET_GEM_VERSION: ~> 6.0
-      RUBY_VERSION: 25
-      CHECK: parallel_spec
-    - PUPPET_GEM_VERSION: ~> 6.0
-      RUBY_VERSION: 25-x64
-      CHECK: parallel_spec
-
 spec/default_facts.yml:
   unmanaged: true
 
-.gitlab-ci.yml:
-  delete: true
-
-# Rake file is heavily modified for Rototiller
 Rakefile:
   unmanaged: true
 
