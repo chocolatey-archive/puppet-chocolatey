@@ -4,6 +4,14 @@ describe 'chocolateysource resource' do
   context 'create resource' do
     include_context 'backup and reset config'
 
+    let(:pp_remove) do
+      <<-MANIFEST
+        chocolateysource {'chocolatey':
+          ensure             => absent,
+        }
+      MANIFEST
+    end
+
     let(:pp_chocolateysource) do
       <<-MANIFEST
         chocolateysource {'chocolatey':
@@ -20,7 +28,10 @@ describe 'chocolateysource resource' do
     end
 
     it 'applies manifest, sets config' do
-      idempotent_apply(pp_chocolateysource)
+      apply_manifest(pp_remove)
+      apply_manifest(pp_chocolateysource, debug: true) do |result|
+        expect(result.stdout).to match(%r{Debug: Executing: '\[redacted\]'})
+      end
       run_shell(config_content_command, acceptable_exit_codes: [0]) do |result|
         expect(get_xml_value("//sources/source[@id='chocolatey']/@value", result.stdout).to_s).to match(%r{https:\/\/chocolatey.org\/api\/v2})
         expect(get_xml_value("//sources/source[@id='chocolatey']/@priority", result.stdout).to_s).to match(%r{2})

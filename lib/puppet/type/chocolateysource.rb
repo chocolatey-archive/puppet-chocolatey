@@ -104,7 +104,19 @@ Puppet::Type.newtype(:chocolateysource) do
       raise ArgumentError, 'An integer is necessary for priority. Specify 0 or remove for no priority.' unless resource.numeric?(value)
     end
 
-    defaultto(0)
+    # There is a slight bug in the way that Puppet::Util::Execution.execute
+    # handles parameters if you specify that the command to execute is sensitive.
+    # When sensitive is not specified all parameters are cast to strings. If
+    # Sensitive is specified then paramters retain their types. In this case it
+    # means that if :priority is allowed to remain an integer it will cause a
+    # failure later in the Puppet::Util::Execution.execute_windows method that
+    # assumes all parameters in the `command` array it recieives will be strings.
+    # This munge has no effect on the commandline that eventually gets generated.
+    munge do |value|
+      resource.munge_to_string(value)
+    end
+
+    defaultto('0')
   end
 
   newproperty(:bypass_proxy, boolean: true) do
@@ -184,6 +196,15 @@ Puppet::Type.newtype(:chocolateysource) do
     end
   end
 
+  def munge_to_string(value)
+    case value.class
+    when String
+      value
+    else
+      value.to_s
+    end
+  end
+
   def numeric?(value)
     # this is what stdlib does. Not sure if we want to emulate or not.
     # numeric = %r{^-?(?:(?:[1-9]\d*)|0)$}
@@ -192,5 +213,10 @@ Puppet::Type.newtype(:chocolateysource) do
     !Float(value).nil?
   rescue
     false
+  end
+
+  def set_sensitive_parameters(sensitive_parameters) # rubocop:disable Style/AccessorMethodName
+    parameter(:password).sensitive = true if parameter(:password)
+    super(sensitive_parameters)
   end
 end

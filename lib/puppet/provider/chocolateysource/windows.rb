@@ -65,7 +65,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     source[:ensure] = :present
     source[:ensure] = :disabled if disabled
 
-    source[:priority] = 0
+    source[:priority] = '0'
     source[:priority] = element.attributes['priority'].downcase if element.attributes['priority']
 
     source[:bypass_proxy] = false
@@ -132,7 +132,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
         "Detected '#{choco_version}' as your version. Please upgrade Chocolatey to use this resource."
     end
 
-    if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY) && resource[:priority] && resource[:priority] != 0
+    if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY) && resource[:priority] && resource[:priority] != '0'
       Puppet.warning("Chocolatey is unable to manage priority for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY}. The value you set will be ignored.")
     end
 
@@ -174,6 +174,8 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
   def flush
     args = []
+    opts = {}
+
     args << 'source'
 
     # look at the hash, then flush if present.
@@ -195,6 +197,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       if resource[:user] && resource[:user] != ''
         args << '--user' << resource[:user]
         args << '--password' << resource[:password]
+        opts = { sensitive: true, failonfail: true, combine: true }
       end
 
       choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
@@ -216,7 +219,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     end
 
     begin
-      Puppet::Util::Execution.execute([command(:chocolatey), *args])
+      Puppet::Util::Execution.execute([command(:chocolatey), *args], opts)
     rescue Puppet::ExecutionFailure
       raise Puppet::Error, "An error occurred running choco. Unable to set Chocolatey source configuration for #{inspect}"
     end
