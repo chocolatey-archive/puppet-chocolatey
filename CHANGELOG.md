@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v4.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.1.0) (2019-08-16)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v4.0.0...v4.1.0)
+
+### Added
+
+- \(MODULES-9690\) Redact Sensitive Commandline [\#168](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/168) ([RandomNoun7](https://github.com/RandomNoun7))
+
 ## [v4.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.0.0) (2019-07-30)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.3.0...v4.0.0)
