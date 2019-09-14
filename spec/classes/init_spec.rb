@@ -39,7 +39,7 @@ describe 'chocolatey' do
   end
 
   context 'chocolatey_download_url =>' do
-    ['https://chocolatey.org/api/v2/package/chocolatey/', 'http://location', 'file:///c:/somwhere/chocolatey.nupkg'].each do |param_value|
+    ['https://chocolatey.org/api/v2/package/chocolatey/', 'http://location', 'file:///c:/somwhere/chocolatey.nupkg', '\\\\ciflocation\\share'].each do |param_value|
       context param_value.to_s do
         let(:params) do
           {
@@ -53,7 +53,7 @@ describe 'chocolatey' do
       end
     end
 
-    invalid_url_values = ['\\\\ciflocation\\share', 'bob', '4', '']
+    invalid_url_values = ['bob', '4', '']
     not_a_string_values = [false, 3]
 
     invalid_url_values.each do |param_value|
@@ -64,7 +64,7 @@ describe 'chocolatey' do
           }
         end
 
-        let(:error_message) { %r{use a Http\/Https\/File Url that downloads} }
+        let(:error_message) { %r{Stdlib::Filesource} }
 
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
@@ -80,7 +80,7 @@ describe 'chocolatey' do
           }
         end
 
-        let(:error_message) { %r{is not a string} }
+        let(:error_message) { %r{Stdlib::Filesource} }
 
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
@@ -112,7 +112,7 @@ describe 'chocolatey' do
           }
         end
 
-        let(:error_message) { %r{is not a string} }
+        let(:error_message) { %r{Stdlib::Windowspath} }
 
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
@@ -128,7 +128,7 @@ describe 'chocolatey' do
           }
         end
 
-        let(:error_message) { %r{Please use a full path for choco_install_location} }
+        let(:error_message) { %r{Stdlib::Windowspath} }
 
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
@@ -138,7 +138,7 @@ describe 'chocolatey' do
   end
 
   context 'choco_install_timeout_seconds =>' do
-    [1500, 8000, '1', '30'].each do |param_value|
+    [1500, 8000].each do |param_value|
       context param_value.to_s do
         let(:params) do
           {
@@ -152,7 +152,7 @@ describe 'chocolatey' do
       end
     end
 
-    ['string', false, ''].each do |param_value|
+    ['string', false, '', '1', '30'].each do |param_value|
       context "#{param_value} (invalid scenario)" do
         let(:params) do
           {
@@ -160,7 +160,7 @@ describe 'chocolatey' do
           }
         end
 
-        let(:error_message) { %r{Expected first argument to be an Integer} }
+        let(:error_message) { %r{expects an Integer value} }
 
         it {
           expect { catalogue }.to raise_error(Puppet::Error, error_message)
@@ -193,7 +193,7 @@ describe 'chocolatey' do
             }
           end
 
-          let(:error_message) { %r{is not a boolean.} }
+          let(:error_message) { %r{expects a Boolean value} }
 
           it {
             expect { catalogue }.to raise_error(Puppet::Error, error_message)

@@ -74,47 +74,20 @@
 # @param install_proxy Proxy server to use to use for installation of chocolatey itself or
 #   `undef` to not use a proxy
 class chocolatey (
-  $choco_install_location         = $::chocolatey::params::install_location,
-  $use_7zip                       = $::chocolatey::params::use_7zip,
-  $seven_zip_download_url         = $::chocolatey::params::seven_zip_download_url,
-  $choco_install_timeout_seconds  = $::chocolatey::params::install_timeout_seconds,
-  $chocolatey_download_url        = $::chocolatey::params::download_url,
-  $enable_autouninstaller         = $::chocolatey::params::enable_autouninstaller,
-  $log_output                     = false,
-  $chocolatey_version             = $::chocolatey::params::chocolatey_version,
-  $install_proxy                  = undef,
+  Stdlib::Windowspath $choco_install_location = $::chocolatey::params::install_location,
+  Boolean $use_7zip                           = $::chocolatey::params::use_7zip,
+  String $seven_zip_download_url              = $::chocolatey::params::seven_zip_download_url,
+  Integer $choco_install_timeout_seconds      = $::chocolatey::params::install_timeout_seconds,
+  Stdlib::Filesource $chocolatey_download_url = $::chocolatey::params::download_url,
+  Boolean $enable_autouninstaller             = $::chocolatey::params::enable_autouninstaller,
+  $log_output                                 = false,
+  $chocolatey_version                         = $::chocolatey::params::chocolatey_version,
+  $install_proxy                              = undef,
 ) inherits ::chocolatey::params {
 
+  class { '::chocolatey::install': }
+  -> class { '::chocolatey::config': }
 
-validate_string($choco_install_location)
-# lint:ignore:140chars
-validate_re($choco_install_location, '^\w\:',
-"Please use a full path for choco_install_location starting with a local drive. Reference choco_install_location => '${choco_install_location}'."
-)
-# lint:endignore
-
-  validate_bool($use_7zip)
-  validate_integer($choco_install_timeout_seconds)
-
-  validate_string($chocolatey_download_url)
-# lint:ignore:140chars
-  validate_re($chocolatey_download_url,['^http\:\/\/','^https\:\/\/','file\:\/\/\/'],
-    "For chocolatey_download_url, if not using the default '${::chocolatey::params::download_url}', please use a Http/Https/File Url that downloads 'chocolatey.nupkg'."
-  )
-# lint:endignore
-
-  validate_bool($enable_autouninstaller)
-
-  if ((versioncmp($::clientversion, '3.4.0') >= 0) and (!defined('$::serverversion') or versioncmp($::serverversion, '3.4.0') >= 0)) {
-    class { '::chocolatey::install': }
-    -> class { '::chocolatey::config': }
-
-    contain '::chocolatey::install'
-    contain '::chocolatey::config'
-  } else {
-    anchor {'before_chocolatey':}
-    -> class { '::chocolatey::install': }
-    -> class { '::chocolatey::config': }
-    -> anchor {'after_chocolatey':}
-  }
+  contain '::chocolatey::install'
+  contain '::chocolatey::config'
 }
