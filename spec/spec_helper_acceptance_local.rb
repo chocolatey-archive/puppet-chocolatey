@@ -18,7 +18,7 @@ def install_chocolatey
     include chocolatey
   MANIFEST
 
-  apply_manifest(chocolatey_pp, expect_failures: true)
+  apply_manifest(chocolatey_pp, catch_failures: true)
 end
 
 def config_file_location
