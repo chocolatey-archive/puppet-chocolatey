@@ -9,9 +9,18 @@ class chocolatey::install {
     undef   => '$false',
     default => "'${install_proxy}'",
   }
-  $download_url            = $::chocolatey::chocolatey_download_url
+  $_download_url           = $::chocolatey::chocolatey_download_url
   $seven_zip_download_url  = $::chocolatey::seven_zip_download_url
   $seven_zip_exe           = "${facts['choco_temp_dir']}\\7za.exe"
+
+  # lint:ignore:only_variable_string
+  if "${_download_url}" =~ /^http(s)?:\/\/.*api\/v2\/package.*\/$/ and "${::chocolatey::chocolatey_version}" =~ /\d+\./ {
+    # Assume a nuget server source and we want to download a specific version instead the most current
+    $download_url = "${_download_url}${::chocolatey::chocolatey_version}"
+  } else {
+    $download_url = $_download_url
+  }
+  # lint:endignore
 
   if $::chocolatey::use_7zip {
     $unzip_type = '7zip'
