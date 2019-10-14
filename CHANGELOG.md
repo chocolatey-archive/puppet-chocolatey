@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v5.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.0) (2019-10-14)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v4.1.0...v5.0.0)
+
+### Changed
+
+- Use datatypes and facts hash. Remove logic for Puppet 3.x [\#175](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/175) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- \(MODULES-8521\) Fix $chocolatey\_version parameter [\#103](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/103) ([helge000](https://github.com/helge000))
+
 ## [v4.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.1.0) (2019-08-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v4.0.0...v4.1.0)
