@@ -85,7 +85,7 @@ The following parameters are available in the `chocolatey` class.
 
 ##### `choco_install_location`
 
-Data type: `String`
+Data type: `Stdlib::Windowspath`
 
 Where Chocolatey install should be
 located. This needs to be an absolute path starting with a drive letter
@@ -128,7 +128,7 @@ Default value: $::chocolatey::params::install_timeout_seconds
 
 ##### `chocolatey_download_url`
 
-Data type: `String`
+Data type: `Stdlib::Filesource`
 
 A url that will return
 `chocolatey.nupkg`. This must be a url, but not necessarily an OData feed.
