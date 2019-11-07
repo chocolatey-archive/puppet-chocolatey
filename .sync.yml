@@ -21,9 +21,20 @@
     - rubocop-rspec
 
 appveyor.yml:
-  unmanaged: true
+  use_litmus: true
+  matrix_extras:
+    -
+      RUBY_VERSION: 25-x64
+      ACCEPTANCE: 'yes'
+      TARGET_HOST: localhost
+    -
+      RUBY_VERSION: 25-x64
+      ACCEPTANCE: 'yes'
+      TARGET_HOST: localhost
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 Gemfile:
+  use_litmus: true
   required:
     ':system_tests':
       - gem: 'nokogiri'
