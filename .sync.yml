@@ -2,9 +2,6 @@
 ".gitattributes":
   exclude:
   - "*.erb"
-".gitignore":
-  required:
-  - "---.project"
 ".gitlab-ci.yml":
   delete: true
 ".rubocop.yml":
