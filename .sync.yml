@@ -1,58 +1,43 @@
 ---
-.gitattributes:
-  # As this is for Windows, ERB files can be either LF or CRLF
+".gitattributes":
   exclude:
   - "*.erb"
-
-.gitignore:
-  required:
-    - ---.project
-
-.gitlab-ci.yml:
-  unmanaged: true
-
-.travis.yml:
-  unmanaged: true
-
-.rubocop.yml:
+".gitlab-ci.yml":
+  delete: true
+".rubocop.yml":
   default_configs:
-    inherit_from: .rubocop_todo.yml
+    inherit_from: ".rubocop_todo.yml"
     require:
     - rubocop-rspec
-
+".travis.yml":
+  simplecov: true
 appveyor.yml:
   use_litmus: true
   matrix_extras:
-    -
-      RUBY_VERSION: 25-x64
-      ACCEPTANCE: 'yes'
-      TARGET_HOST: localhost
-    -
-      RUBY_VERSION: 25-x64
-      ACCEPTANCE: 'yes'
-      TARGET_HOST: localhost
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-
+  - RUBY_VERSION: 25-x64
+    ACCEPTANCE: 'yes'
+    TARGET_HOST: localhost
+  - RUBY_VERSION: 25-x64
+    ACCEPTANCE: 'yes'
+    TARGET_HOST: localhost
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  simplecov: true
 Gemfile:
   use_litmus: true
   required:
-    ':system_tests':
-      - gem: 'nokogiri'
-        platforms:
-          - ruby
-          - mswin
-          - mingw
-          - x64_mingw
+    ":system_tests":
+    - gem: nokogiri
+      platforms:
+      - ruby
+      - mswin
+      - mingw
+      - x64_mingw
   optional:
-    ':development':
-      - gem: 'github_changelog_generator'
-        git: 'https://github.com/skywinder/github-changelog-generator'
-        ref: '20ee04ba1234e9e83eb2ffb5056e23d641c7a018'
-        condition: "Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.2.2')"
-
-spec/default_facts.yml:
-  unmanaged: true
-
+    ":development":
+    - gem: github_changelog_generator
+      git: https://github.com/skywinder/github-changelog-generator
+      ref: 20ee04ba1234e9e83eb2ffb5056e23d641c7a018
+      condition: Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.2.2')
 spec/spec_helper.rb:
-  mock_with: ':rspec'
+  mock_with: ":rspec"
   coverage_report: true
