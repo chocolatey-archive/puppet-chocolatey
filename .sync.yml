@@ -10,6 +10,8 @@
     require:
     - rubocop-rspec
 ".travis.yml":
+  deploy_to_forge:
+    enabled: false
   simplecov: true
 appveyor.yml:
   use_litmus: true
