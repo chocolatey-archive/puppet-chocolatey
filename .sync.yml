@@ -13,6 +13,10 @@
   deploy_to_forge:
     enabled: false
   simplecov: true
+  notifications:
+    slack:
+      secure: >-
+        h7gePV9i9gHb3JDY3CpwS9XOY5fzrGs2PuXqWMBO9r3nbsOwTUBLOP4Z7O6/GPpsW9Wmn0kn7INfPEvArZ/i3KHx/0/uotKA4qa8SwSPRgC9CAwj54GDo9j2NyLX/A6QBm/xn6kRF5Q7Q7GynF+b0NBmQvxjbILXqU2uY5gkRK6Pq5AoVt87aEXRj4XXAfbjDIKRxgdo4i8DC9F0n1yaKqO9iaiP8IvhFqOK6UCD+wCTdAav/es/Y5bE30X19me5PCSHEM2HkYopNFpBderR6HkSKOXhgMWaQi+ojb6IvmbpzQzQHtscvLOjkyrQEUZTu43aaaQoMura82x095t+4AiA1tuYBVvke1KsnvIdFljPT7rsJVl7IdH/m04BN0UQT7myssxEeBPVCX8ijT1yp0sdtSBboyIdbsPd8WQIQ4YWwauPt1Vi1gsMxZGZjmWUCe21bVlF5LMTZMonUYXjym/lKWMRPorW7AYVEdDJ2abE1OoeF3v8iig5wvSC11r1K00V6YcDNXR1lZ2azlMisnCtKbJBbG2MNRj339umi+faTsCMICLlwr6LkTTyYMzhhunQoSyGKHzNaqoAJcRkTtuLKS2kzAeZRY5qqP2LOhBMM5VYOcftHogyh9ym9qmwhslSQQEoxakig8jm4Yl7l7apM8vHyzq9J7WrhmO5zBo=
 appveyor.yml:
   use_litmus: true
   matrix_extras:
