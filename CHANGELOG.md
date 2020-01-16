@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v5.0.2](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.2) (2020-01-16)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.1...v5.0.2)
+
+### Fixed
+
+- MODULES-10387 - update dependencies [\#198](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/198) ([lionce](https://github.com/lionce))
+
+## [v5.0.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.1) (2019-12-09)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.0...v5.0.1)
+
 ## [v5.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.0) (2019-10-14)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v4.1.0...v5.0.0)
