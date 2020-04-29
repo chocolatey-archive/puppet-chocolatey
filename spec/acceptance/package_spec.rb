@@ -1,8 +1,8 @@
 require 'spec_helper_acceptance'
 
-package_exe_path = %(C:\\'Program Files\\VideoLAN\\VLC\\vlc.exe')
-software_uninstall_command = %(cmd.exe /C "C:\\Program Files\\VideoLAN\\VLC\\uninstall.exe" /S)
-package_name = 'vlc'
+package_exe_path = %(C:\\'Program Files\\7-Zip\\7z.exe')
+software_uninstall_command = %(cmd.exe /C "C:\\Program Files\\7-Zip\\uninstall.exe" /S)
+package_name = '7zip.install'
 
 describe 'package resource' do
   let(:pp_chocolatey_package) do
@@ -10,7 +10,6 @@ describe 'package resource' do
       package { "#{package_name}":
         ensure   => present,
         provider => chocolatey,
-        source   => 'https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/choco-pipeline-tests/'
       }
     MANIFEST
   end
