@@ -1,10 +1,10 @@
 ---
 default:
-  provisioner: vmpooler
+  provisioner: abs
   images: ['win-2016-x86_64']
 vagrant:
   provisioner: vagrant
   images: ['gusztavvargadr/windows-server']
 release_checks:
-  provisioner: vmpooler
+  provisioner: abs
   images: ['win-2012-x86_64', 'win-2012r2-x86_64', 'win-2016-core-x86_64', 'win-2019-core-x86_64', 'win-81-x86_64', 'win-10-pro-x86_64']

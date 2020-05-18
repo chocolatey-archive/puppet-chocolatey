@@ -1,5 +1,11 @@
 require 'net/http'
 require 'nokogiri'
+require 'singleton'
+
+class LitmusHelper
+  include Singleton
+  include PuppetLitmus
+end
 
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
@@ -18,7 +24,7 @@ def install_chocolatey
     include chocolatey
   MANIFEST
 
-  apply_manifest(chocolatey_pp, catch_failures: true)
+  LitmusHelper.instance.apply_manifest(chocolatey_pp, catch_failures: true)
 end
 
 def config_file_location
