@@ -185,6 +185,7 @@ class {'chocolatey':
 class {'chocolatey':
   install_proxy => 'http://proxy.megacorp.com:3128',
 }
+~~~
 
 ### Configuration
 
