@@ -1,6 +1,6 @@
 # chocolatey
 
-[![Build Status](https://api.travis-ci.org/puppetlabs/puppetlabs-chocolatey.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-chocolatey) [![Build status](https://ci.appveyor.com/api/projects/status/uosorvcyhnayv70m/branch/master?svg=true)](https://ci.appveyor.com/project/puppetlabs/puppetlabs-chocolatey/branch/master)
+[![Build Status](https://api.travis-ci.org/puppetlabs/puppetlabs-chocolatey.png?branch=)](https://travis-ci.org/puppetlabs/puppetlabs-chocolatey) [![Build status](https://ci.appveyor.com/api/projects/status/uosorvcyhnayv70m/branch/main?svg=true)](https://ci.appveyor.com/project/puppetlabs/puppetlabs-chocolatey/branch/main)
 
 ### Chocolatey for Business Now Available!
 
@@ -534,7 +534,7 @@ might want to do this in a default:
 
 ## Reference
 
-For information on classes and types, see [REFERENCE.md](https://github.com/puppetlabs/puppetlabs-chocolatey/blob/master/REFERENCE.md). For information on facts, see below.
+For information on classes and types, see [REFERENCE.md](https://github.com/puppetlabs/puppetlabs-chocolatey/blob/main/REFERENCE.md). For information on facts, see below.
 
 ### Facts
 
@@ -543,7 +543,7 @@ For information on classes and types, see [REFERENCE.md](https://github.com/pupp
 
 ## Limitations
 
-* **The module is only suppported on Windows.** For an extensive list of supported operating systems, see [metadata.json](https://github.com/puppetlabs/puppetlabs-chocolatey/blob/master/metadata.json)
+* **The module is only suppported on Windows.** For an extensive list of supported operating systems, see [metadata.json](https://github.com/puppetlabs/puppetlabs-chocolatey/blob/main/metadata.json)
 * If you override an existing install location of Chocolatey using `choco_install_location =>` in the Chocolatey class, it does not bring any of the existing packages with it. You will need to handle that through some other means.
 * Overriding the install location will also not allow Chocolatey to be configured or install packages on the same run that it is installed on. See [`choco_install_location`](#choco_install_location) for details.
 
