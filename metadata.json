@@ -57,6 +57,6 @@
     "chocolatey professional"
   ],
   "pdk-version": "1.18.1",
-  "template-url": "https://github.com/puppetlabs/pdk-templates#master",
-  "template-ref": "heads/master-0-gd610ead"
+  "template-url": "https://github.com/puppetlabs/pdk-templates#main",
+  "template-ref": "remotes/origin/main-0-g8f10887"
 }

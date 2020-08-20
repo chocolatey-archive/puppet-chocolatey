@@ -17,7 +17,7 @@ fetch = +refs/heads/*:refs/remotes/jumanjiman/*
 [alias]
 # maintainer should use these when reviewing PRs
 authors  = shortlog -sn
-behind   = !git log ..upstream/master --oneline
-ahead    = !git log upstream/master.. --oneline
-unmerged = !git cherry upstream/master
-files    = !git diff --name-only upstream/master..
+behind   = !git log ..upstream/main --oneline
+ahead    = !git log upstream/main.. --oneline
+unmerged = !git cherry upstream/main
+files    = !git diff --name-only upstream/main..
