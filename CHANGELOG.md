@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v5.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.1.0) (2020-08-26)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.2...v5.1.0)
+
+### Added
+
+- \(IAC-980\) - Removal of inappropriate terminology [\#224](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/224) ([david22swan](https://github.com/david22swan))
+- pdksync - \(IAC-973\) - Update travis/appveyor to run on new default branch `main` [\#219](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/219) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- \[MODULES-10759\] - set a default value if custom facts fails [\#223](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/223) ([adrianiurca](https://github.com/adrianiurca))
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- \(maint\) pin bolt version to 2.23.0 [\#225](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/225) ([adrianiurca](https://github.com/adrianiurca))
+- Fix weekly workflow [\#212](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/212) ([carabasdaniel](https://github.com/carabasdaniel))
+
 ## [v5.0.2](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.2) (2020-01-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.1...v5.0.2)
@@ -25,6 +43,10 @@ All notable changes to this project will be documented in this file. The format 
 ### Fixed
 
 - \(MODULES-8521\) Fix $chocolatey\_version parameter [\#103](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/103) ([helge000](https://github.com/helge000))
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- \[IAC-697\] Fix package spec and remove older OSes from release checks [\#211](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/211) ([carabasdaniel](https://github.com/carabasdaniel))
 
 ## [v4.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.1.0) (2019-08-16)
 
