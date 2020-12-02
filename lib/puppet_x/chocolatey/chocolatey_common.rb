@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require Pathname.new(__FILE__).dirname + 'chocolatey_version'
 require Pathname.new(__FILE__).dirname + 'chocolatey_install'
@@ -5,13 +7,13 @@ require Pathname.new(__FILE__).dirname + 'chocolatey_install'
 # Module used for general Chocolatey commands and constants
 module PuppetX::Chocolatey::ChocolateyCommon
   # First C# version of Chocolatey
-  FIRST_COMPILED_CHOCO_VERSION = '0.9.9.0'.freeze unless defined? FIRST_COMPILED_CHOCO_VERSION
+  FIRST_COMPILED_CHOCO_VERSION = '0.9.9.0' unless defined? FIRST_COMPILED_CHOCO_VERSION
   # Specifes the minimum version that allows the `ignore-package-exit-codes` flag
-  MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES = '0.9.10.0'.freeze unless defined? MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES
+  MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES = '0.9.10.0' unless defined? MINIMUM_SUPPORTED_CHOCO_VERSION_EXIT_CODES
   # Specifies the minimum version that allows uninstalling with a source argument
-  MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE = '0.9.10.0'.freeze unless defined? MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE
+  MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE = '0.9.10.0' unless defined? MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE
   # Specifies the minimum version that allows the '--no-progress' flag
-  MINIMUM_SUPPORTED_CHOCO_VERSION_NO_PROGRESS = '0.10.4.0'.freeze unless defined? MINIMUM_SUPPORTED_CHOCO_VERSION_NO_PROGRESS
+  MINIMUM_SUPPORTED_CHOCO_VERSION_NO_PROGRESS = '0.10.4.0' unless defined? MINIMUM_SUPPORTED_CHOCO_VERSION_NO_PROGRESS
 
   def file_exists?(path)
     File.exist?(path)

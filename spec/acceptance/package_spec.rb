@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 package_exe_path = %(C:\\'Program Files\\7-Zip\\7z.exe')
@@ -25,12 +27,12 @@ describe 'package resource' do
 
   before(:all) do
     result = run_shell("powershell.exe -EncodedCommand #{encode_command("Test-Path #{package_exe_path}")}")
-    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout =~ %r{True}
+    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout.match?(%r{True})
   end
 
   after(:all) do
     result = run_shell("powershell.exe -EncodedCommand #{encode_command("Test-Path #{package_exe_path}")}")
-    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout =~ %r{True}
+    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout.match?(%r{True})
   end
 
   context 'install package' do

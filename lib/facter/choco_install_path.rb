@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require Pathname.new(__FILE__).dirname + '../' + 'puppet_x/chocolatey/chocolatey_install'
 

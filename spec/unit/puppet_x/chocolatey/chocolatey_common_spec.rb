@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'puppet_x/chocolatey/chocolatey_install'
 require 'puppet_x/chocolatey/chocolatey_common'

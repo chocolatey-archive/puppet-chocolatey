@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet/provider/package'
 require 'pathname'
 require 'rexml/document'
@@ -267,7 +269,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
         process.each_line do |line|
           line.chomp!
           next if line.empty? || line.match(%r{Reading environment variables.*})
-          raise Puppet::Error, 'At least one source must be enabled.' if line =~ %r{Unable to search for packages.*}
+          raise Puppet::Error, 'At least one source must be enabled.' if line.match?(%r{Unable to search for packages.*})
           values = if choco_exe
                      line.split('|')
                    else
