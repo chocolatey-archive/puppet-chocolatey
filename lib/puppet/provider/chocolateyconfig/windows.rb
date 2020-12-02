@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet/type'
 require 'pathname'
 require 'rexml/document'
@@ -11,7 +13,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
   require Pathname.new(__FILE__).dirname + '../../../' + 'puppet_x/chocolatey/chocolatey_common'
   include PuppetX::Chocolatey::ChocolateyCommon
 
-  CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION = '0.9.10.0'.freeze
+  CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION = '0.9.10.0'
 
   commands chocolatey: PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command
 

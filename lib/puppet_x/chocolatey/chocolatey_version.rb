@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require Pathname.new(__FILE__).dirname + 'chocolatey_install'
 
 # Module responsible for retrieving the version of the currently installed Chocolatey executable
 module PuppetX::Chocolatey::ChocolateyVersion
   # Used to remove additional message on older versions which do not print a single value
-  OLD_CHOCO_MESSAGE = 'Please run chocolatey /? or chocolatey help - chocolatey v'.freeze unless defined? OLD_CHOCO_MESSAGE
+  OLD_CHOCO_MESSAGE = 'Please run chocolatey /? or chocolatey help - chocolatey v' unless defined? OLD_CHOCO_MESSAGE
 
   # Retrieves the version of the currently installed Chocolatey package
   #

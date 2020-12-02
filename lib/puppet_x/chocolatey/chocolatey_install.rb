@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/ClassAndModuleChildren
 
 # Puppet Extensions Module

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet/type'
 require 'pathname'
 
@@ -59,7 +61,7 @@ Puppet::Type.newtype(:chocolateyconfig) do
     end
 
     def insync?(is)
-      if resource[:name] =~ %r{password}i
+      if resource[:name].match?(%r{password}i)
         # If name contains password, it is
         # always in sync if there is a value
         (is.nil? || is.empty?) == (should.nil? || should.empty?)
