@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v5.2.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.2.0) (2020-12-09)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.1.1...v5.2.0)
+
+### Added
+
+- pdksync - \(feat\) - Add support for Puppet 7 [\#236](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/236) ([daianamezdrea](https://github.com/daianamezdrea))
+
 ## [v5.1.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.1.1) (2020-08-28)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.1.0...v5.1.1)
@@ -75,10 +83,6 @@ All notable changes to this project will be documented in this file. The format 
 - \(FM-8194\) Convert tests to litmus [\#156](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/156) ([eimlav](https://github.com/eimlav))
 - \(MODULES-9224\) Add no progress flag [\#154](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/154) ([michaeltlombardi](https://github.com/michaeltlombardi))
 
-### Fixed
-
-- \(MODULES-8491\) Warn about `install\_options` secrets [\#147](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/147) ([michaeltlombardi](https://github.com/michaeltlombardi))
-
 ## 3.3.0
 
 ### Added
@@ -89,6 +93,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Fixed
 
 - Ensure that `puppet resource chocolateyconfig` runs without erroring ([MODULES-8047].(https://tickets.puppetlabs.com/browse/MODULES-8047)).
+- \(MODULES-8491\) Warn about `install\_options` secrets [\#147](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/147) ([michaeltlombardi](https://github.com/michaeltlombardi))
 
 ## [3.2.0] - 2019-02-19
 
