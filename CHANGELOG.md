@@ -93,6 +93,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Fixed
 
 - Ensure that `puppet resource chocolateyconfig` runs without erroring ([MODULES-8047].(https://tickets.puppetlabs.com/browse/MODULES-8047)).
+- \(MODULES-8491\) Warn about `install\_options` secrets [\#147](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/147) ([michaeltlombardi](https://github.com/michaeltlombardi))
 
 ## [3.2.0] - 2019-02-19
 
