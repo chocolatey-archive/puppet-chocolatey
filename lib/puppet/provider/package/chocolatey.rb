@@ -261,9 +261,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       pin_output = nil unless choco_exe
       # don't add -r yet, as there is an issue in 0.9.9.9/0.9.9.10 that returns full list plus pins
       pin_output = Puppet::Util::Execution.execute([command(:chocolatey), 'pin', 'list']) if choco_exe
-      unless pin_output.nil?
-        pin_output.split("\n").each { |pin| pins << pin.split('|')[0] }
-      end
+      pin_output&.split("\n")&.each { |pin| pins << pin.split('|')[0] }
 
       execpipe(listcmd) do |process|
         process.each_line do |line|
