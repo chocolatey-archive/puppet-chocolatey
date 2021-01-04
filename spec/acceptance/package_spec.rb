@@ -27,12 +27,12 @@ describe 'package resource' do
 
   before(:all) do
     result = run_shell("powershell.exe -EncodedCommand #{encode_command("Test-Path #{package_exe_path}")}")
-    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout.match?(%r{True})
+    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout.include?('True')
   end
 
   after(:all) do
     result = run_shell("powershell.exe -EncodedCommand #{encode_command("Test-Path #{package_exe_path}")}")
-    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout.match?(%r{True})
+    run_shell("powershell.exe -EncodedCommand #{encode_command(software_uninstall_command.to_s)}") if result.stdout.include?('True')
   end
 
   context 'install package' do

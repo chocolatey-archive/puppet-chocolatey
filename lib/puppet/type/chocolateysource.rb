@@ -217,7 +217,7 @@ Puppet::Type.newtype(:chocolateysource) do
     false
   end
 
-  def set_sensitive_parameters(sensitive_parameters) # rubocop:disable Style/AccessorMethodName
+  def set_sensitive_parameters(sensitive_parameters)
     parameter(:password)&.sensitive = true
     super(sensitive_parameters)
   end
