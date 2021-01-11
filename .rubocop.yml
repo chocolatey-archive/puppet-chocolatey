@@ -288,6 +288,8 @@ Lint/UriEscapeUnescape:
   Enabled: false
 Lint/UriRegexp:
   Enabled: false
+Lint/UselessAssignment:
+  Enabled: false
 Lint/UselessMethodDefinition:
   Enabled: false
 Lint/UselessTimes:
