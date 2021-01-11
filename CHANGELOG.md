@@ -39,12 +39,6 @@ All notable changes to this project will be documented in this file. The format 
 
 - \[MODULES-10759\] - set a default value if custom facts fails [\#223](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/223) ([adrianiurca](https://github.com/adrianiurca))
 
-### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
-
-- \(maint\) pin bolt version to 2.23.0 [\#225](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/225) ([adrianiurca](https://github.com/adrianiurca))
-- Fix weekly workflow [\#212](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/212) ([carabasdaniel](https://github.com/carabasdaniel))
-- \[IAC-697\] Fix package spec and remove older OSes from release checks [\#211](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/211) ([carabasdaniel](https://github.com/carabasdaniel))
-
 ## [v5.0.2](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.2) (2020-01-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.1...v5.0.2)
