@@ -84,7 +84,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
 
     # choco may be installed, but a config file doesn't exist until the
     # first run of choco - trigger that by checking the version
-    choco_run_ensure_config = choco_version
+    _choco_run_ensure_config = choco_version
 
     return choco_config if file_exists?(choco_config)
 
