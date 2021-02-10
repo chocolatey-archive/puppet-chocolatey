@@ -24,8 +24,8 @@ module PuppetX::Chocolatey::ChocolateyVersion
         #   installing the licensed extension once the license is installed
         #   may show up when running this comamnd. Remove those as well
         version = version.split(%r{\r\n|\n|\r}).last.strip unless version.nil?
-      rescue StandardError
-        version = '0'
+      rescue StandardError => e
+        raise StandardError, "Unable to find Choco version: #{e}"
       end
     end
 
