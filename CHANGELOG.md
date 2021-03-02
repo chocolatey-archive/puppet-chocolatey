@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v6.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.0.0) (2021-03-02)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.2.1...v6.0.0)
+
+### Changed
+
+- pdksync - Remove Puppet 5 from testing and bump minimal version to 6.0.0 [\#248](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/248) ([carabasdaniel](https://github.com/carabasdaniel))
+
+### Fixed
+
+- \(MODULES-10704\) - Have the code error out rather than return nil values when finding version [\#247](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/247) ([david22swan](https://github.com/david22swan))
+
 ## [v5.2.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.2.1) (2021-01-11)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.2.0...v5.2.1)
@@ -9,6 +21,10 @@ All notable changes to this project will be documented in this file. The format 
 ### Fixed
 
 - Add back error fix for \(MODULES-3677\) [\#241](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/241) ([daianamezdrea](https://github.com/daianamezdrea))
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- Release prep version 5.2.1 [\#243](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/243) ([daianamezdrea](https://github.com/daianamezdrea))
 
 ## [v5.2.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.2.0) (2020-12-09)
 
@@ -39,6 +55,12 @@ All notable changes to this project will be documented in this file. The format 
 
 - \[MODULES-10759\] - set a default value if custom facts fails [\#223](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/223) ([adrianiurca](https://github.com/adrianiurca))
 
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- \(maint\) pin bolt version to 2.23.0 [\#225](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/225) ([adrianiurca](https://github.com/adrianiurca))
+- Fix weekly workflow [\#212](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/212) ([carabasdaniel](https://github.com/carabasdaniel))
+- \[IAC-697\] Fix package spec and remove older OSes from release checks [\#211](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/211) ([carabasdaniel](https://github.com/carabasdaniel))
+
 ## [v5.0.2](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.2) (2020-01-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.1...v5.0.2)
@@ -66,10 +88,6 @@ All notable changes to this project will be documented in this file. The format 
 ## [v4.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.1.0) (2019-08-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v4.0.0...v4.1.0)
-
-### Added
-
-- \(MODULES-9690\) Redact Sensitive Commandline [\#168](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/168) ([RandomNoun7](https://github.com/RandomNoun7))
 
 ## [v4.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.0.0) (2019-07-30)
 

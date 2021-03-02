@@ -24,7 +24,7 @@
 
 ## Classes
 
-### `chocolatey`
+### <a name="chocolatey"></a>`chocolatey`
 
 Used for managing installation and configuration of Chocolatey itself.
 
@@ -82,9 +82,19 @@ class {'chocolatey':
 
 #### Parameters
 
-The following parameters are available in the `chocolatey` class.
+The following parameters are available in the `chocolatey` class:
 
-##### `choco_install_location`
+* [`choco_install_location`](#choco_install_location)
+* [`use_7zip`](#use_7zip)
+* [`seven_zip_download_url`](#seven_zip_download_url)
+* [`choco_install_timeout_seconds`](#choco_install_timeout_seconds)
+* [`chocolatey_download_url`](#chocolatey_download_url)
+* [`enable_autouninstaller`](#enable_autouninstaller)
+* [`log_output`](#log_output)
+* [`chocolatey_version`](#chocolatey_version)
+* [`install_proxy`](#install_proxy)
+
+##### <a name="choco_install_location"></a>`choco_install_location`
 
 Data type: `Stdlib::Windowspath`
 
@@ -96,7 +106,7 @@ the `ChocolateyInstall` environment variable, falls back to
 
 Default value: `$::chocolatey::params::install_location`
 
-##### `use_7zip`
+##### <a name="use_7zip"></a>`use_7zip`
 
 Data type: `Boolean`
 
@@ -106,7 +116,7 @@ Defaults to `false`.
 
 Default value: `$::chocolatey::params::use_7zip`
 
-##### `seven_zip_download_url`
+##### <a name="seven_zip_download_url"></a>`seven_zip_download_url`
 
 Data type: `String`
 
@@ -117,7 +127,7 @@ Defaults to 'https://chocolatey.org/7za.exe'.
 
 Default value: `$::chocolatey::params::seven_zip_download_url`
 
-##### `choco_install_timeout_seconds`
+##### <a name="choco_install_timeout_seconds"></a>`choco_install_timeout_seconds`
 
 Data type: `Integer`
 
@@ -127,7 +137,7 @@ necessary). Defaults to `1500` (25 minutes).
 
 Default value: `$::chocolatey::params::install_timeout_seconds`
 
-##### `chocolatey_download_url`
+##### <a name="chocolatey_download_url"></a>`chocolatey_download_url`
 
 Data type: `Stdlib::Filesource`
 
@@ -138,7 +148,7 @@ Any old url location will work. Defaults to
 
 Default value: `$::chocolatey::params::download_url`
 
-##### `enable_autouninstaller`
+##### <a name="enable_autouninstaller"></a>`enable_autouninstaller`
 
 Data type: `Boolean`
 
@@ -150,7 +160,7 @@ package. Defaults to `true`. Setting is ignored in Chocolatey v0.9.10+.
 
 Default value: `$::chocolatey::params::enable_autouninstaller`
 
-##### `log_output`
+##### <a name="log_output"></a>`log_output`
 
 Data type: `Boolean`
 
@@ -159,7 +169,7 @@ Log output from the installer. Defaults to
 
 Default value: ``false``
 
-##### `chocolatey_version`
+##### <a name="chocolatey_version"></a>`chocolatey_version`
 
 Data type: `String`
 
@@ -169,7 +179,7 @@ back to `$::chocolateyversion`.
 
 Default value: `$::chocolatey::params::chocolatey_version`
 
-##### `install_proxy`
+##### <a name="install_proxy"></a>`install_proxy`
 
 Data type: `Any`
 
@@ -178,13 +188,13 @@ Proxy server to use to use for installation of chocolatey itself or
 
 Default value: ``undef``
 
-### `chocolatey::params`
+### <a name="chocolateyparams"></a>`chocolatey::params`
 
 The chocolatey::params class.
 
 ## Resource types
 
-### `chocolateyconfig`
+### <a name="chocolateyconfig"></a>`chocolateyconfig`
 
 Allows managing config settings for Chocolatey.
 Configuration values provide settings for users
@@ -216,7 +226,10 @@ configuration file.
 
 The following parameters are available in the `chocolateyconfig` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
@@ -225,12 +238,12 @@ Puppet is not able to easily manage any values that
 include Password in the key name in them as they
 will be encrypted in the configuration file.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `chocolateyconfig` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `chocolateyfeature`
+### <a name="chocolateyfeature"></a>`chocolateyfeature`
 
 Allows managing features for Chocolatey. Features are
 configuration that act as feature flippers to turn on or
@@ -252,18 +265,21 @@ Specifies state of resource
 
 The following parameters are available in the `chocolateyfeature` type.
 
-##### `name`
+* [`name`](#name)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the feature. Used for uniqueness.
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `chocolateyfeature` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
-### `chocolateysource`
+### <a name="chocolateysource"></a>`chocolateysource`
 
 Allows managing sources for Chocolatey. A source can be a
 folder, a CIFS share, a NuGet Http OData feed, or a full
@@ -358,13 +374,17 @@ Default value: `''`
 
 The following parameters are available in the `chocolateysource` type.
 
-##### `name`
+* [`name`](#name)
+* [`password`](#password)
+* [`provider`](#provider)
+
+##### <a name="name"></a>`name`
 
 namevar
 
 The name of the source. Used for uniqueness.
 
-##### `password`
+##### <a name="password"></a>`password`
 
 Optional user password for authenticated feeds.
 Not ensurable. Value is not able to be checked
@@ -377,7 +397,7 @@ the property at all.
 
 Default value: `''`
 
-##### `provider`
+##### <a name="provider"></a>`provider`
 
 The specific backend to use for this `chocolateysource` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
