@@ -23,14 +23,6 @@ All notable changes to this project will be documented in this file. The format 
 - Add back error fix for \(MODULES-3677\) [\#241](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/241) ([daianamezdrea](https://github.com/daianamezdrea))
 - \[MODULES-10759\] - set a default value if custom facts fails [\#223](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/223) ([adrianiurca](https://github.com/adrianiurca))
 
-### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
-
-- Release prep version 5.2.1 [\#243](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/243) ([daianamezdrea](https://github.com/daianamezdrea))
-
-## [v5.2.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.2.0) (2020-12-09)
-
-[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.1.1...v5.2.0)
-
 ### Added
 
 - pdksync - \(feat\) - Add support for Puppet 7 [\#236](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/236) ([daianamezdrea](https://github.com/daianamezdrea))
@@ -51,18 +43,6 @@ All notable changes to this project will be documented in this file. The format 
 
 - \(IAC-980\) - Removal of inappropriate terminology [\#224](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/224) ([david22swan](https://github.com/david22swan))
 - pdksync - \(IAC-973\) - Update travis/appveyor to run on new default branch `main` [\#219](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/219) ([david22swan](https://github.com/david22swan))
-
-### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
-
-- \(maint\) pin bolt version to 2.23.0 [\#225](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/225) ([adrianiurca](https://github.com/adrianiurca))
-- Fix weekly workflow [\#212](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/212) ([carabasdaniel](https://github.com/carabasdaniel))
-- \[IAC-697\] Fix package spec and remove older OSes from release checks [\#211](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/211) ([carabasdaniel](https://github.com/carabasdaniel))
-
-### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
-
-- \(maint\) pin bolt version to 2.23.0 [\#225](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/225) ([adrianiurca](https://github.com/adrianiurca))
-- Fix weekly workflow [\#212](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/212) ([carabasdaniel](https://github.com/carabasdaniel))
-- \[IAC-697\] Fix package spec and remove older OSes from release checks [\#211](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/211) ([carabasdaniel](https://github.com/carabasdaniel))
 
 ## [v5.0.2](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.2) (2020-01-16)
 
