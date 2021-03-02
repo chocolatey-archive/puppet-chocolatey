@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-chocolatey",
-  "version": "5.2.1",
+  "version": "6.0.0",
   "author": "puppetlabs",
   "summary": "Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
