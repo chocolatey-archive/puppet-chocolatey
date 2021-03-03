@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v6.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.0.0) (2021-03-02)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.2.1...v6.0.0)
+
+### Changed
+
+- pdksync - Remove Puppet 5 from testing and bump minimal version to 6.0.0 [\#248](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/248) ([carabasdaniel](https://github.com/carabasdaniel))
+
+### Fixed
+
+- \(MODULES-10704\) - Have the code error out rather than return nil values when finding version [\#247](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/247) ([david22swan](https://github.com/david22swan))
+
 ## [v5.2.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.2.1) (2021-01-11)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.2.0...v5.2.1)
@@ -9,10 +21,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Fixed
 
 - Add back error fix for \(MODULES-3677\) [\#241](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/241) ([daianamezdrea](https://github.com/daianamezdrea))
-
-## [v5.2.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.2.0) (2020-12-09)
-
-[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.1.1...v5.2.0)
+- \[MODULES-10759\] - set a default value if custom facts fails [\#223](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/223) ([adrianiurca](https://github.com/adrianiurca))
 
 ### Added
 
@@ -35,17 +44,9 @@ All notable changes to this project will be documented in this file. The format 
 - \(IAC-980\) - Removal of inappropriate terminology [\#224](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/224) ([david22swan](https://github.com/david22swan))
 - pdksync - \(IAC-973\) - Update travis/appveyor to run on new default branch `main` [\#219](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/219) ([david22swan](https://github.com/david22swan))
 
-### Fixed
-
-- \[MODULES-10759\] - set a default value if custom facts fails [\#223](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/223) ([adrianiurca](https://github.com/adrianiurca))
-
 ## [v5.0.2](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.2) (2020-01-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.0.1...v5.0.2)
-
-### Fixed
-
-- MODULES-10387 - update dependencies [\#198](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/198) ([lionce](https://github.com/lionce))
 
 ## [v5.0.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v5.0.1) (2019-12-09)
 
@@ -67,10 +68,6 @@ All notable changes to this project will be documented in this file. The format 
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v4.0.0...v4.1.0)
 
-### Added
-
-- \(MODULES-9690\) Redact Sensitive Commandline [\#168](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/168) ([RandomNoun7](https://github.com/RandomNoun7))
-
 ## [v4.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.0.0) (2019-07-30)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/3.3.0...v4.0.0)
@@ -84,6 +81,10 @@ All notable changes to this project will be documented in this file. The format 
 - \(MODULES-9317\) Add Puppet Strings docs [\#162](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/162) ([eimlav](https://github.com/eimlav))
 - \(FM-8194\) Convert tests to litmus [\#156](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/156) ([eimlav](https://github.com/eimlav))
 - \(MODULES-9224\) Add no progress flag [\#154](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/154) ([michaeltlombardi](https://github.com/michaeltlombardi))
+
+### Fixed
+
+- MODULES-10387 - update dependencies [\#198](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/198) ([lionce](https://github.com/lionce))
 
 ## 3.3.0
 
