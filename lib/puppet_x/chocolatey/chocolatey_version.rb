@@ -13,7 +13,7 @@ module PuppetX::Chocolatey::ChocolateyVersion
   # @return [String] Semver string of Chocolatey package
   def self.version
     version = nil
-    choco_path = "#{PuppetX::Chocolatey::ChocolateyInstall.install_path}\\choco.exe"
+    choco_path = "#{Facter.value('choco_install_path')}\\choco.exe"
     if Puppet::Util::Platform.windows? && File.exist?(choco_path)
       begin
         # call `choco -v`

@@ -35,7 +35,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
       # - Fall back to the older install location for older installations
       # - If all else fails, attempt to find Chocolatey in the default place
       #   it installs
-      choco_install_path = PuppetX::Chocolatey::ChocolateyInstall.install_path
+      choco_install_path = Facter.value('choco_install_path')
 
       chocopath =  (choco_install_path if choco_install_path && file_exists?("#{choco_install_path}\\choco.exe")) ||
                    ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\choco.exe')) ||
@@ -53,7 +53,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
 
   # Sets the `ChocolateyInstall` environment variables to the current Chocolatey install path
   def set_env_chocolateyinstall
-    ENV['ChocolateyInstall'] = PuppetX::Chocolatey::ChocolateyInstall.install_path
+    ENV['ChocolateyInstall'] = Facter.value('choco_install_path')
   end
   module_function :set_env_chocolateyinstall
 
@@ -61,7 +61,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
   #
   # @return [String] Semver string of Chocolatey version
   def choco_version
-    @chocoversion ||= strip_beta_from_version(PuppetX::Chocolatey::ChocolateyVersion.version)
+    @chocoversion ||= strip_beta_from_version(Facter.value('chocolateyversion'))
   end
   module_function :choco_version
 
@@ -79,7 +79,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
   #
   # @return [String] Path to config file
   def choco_config_file
-    choco_install_path = PuppetX::Chocolatey::ChocolateyInstall.install_path
+    choco_install_path = Facter.value('choco_install_path')
     choco_config = "#{choco_install_path}\\config\\chocolatey.config"
 
     # choco may be installed, but a config file doesn't exist until the
