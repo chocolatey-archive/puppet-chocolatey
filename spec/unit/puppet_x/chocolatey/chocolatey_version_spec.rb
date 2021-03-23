@@ -13,7 +13,7 @@ describe 'Chocolatey Version' do
       let(:expected_value) { '1.2.3' }
 
       before :each do
-        allow(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+        expect(Facter).to receive(:value).with('choco_install_path').and_return('c:\dude')
         allow(File).to receive(:exist?).with('c:\dude\choco.exe').and_return(true)
       end
 
@@ -62,6 +62,7 @@ Please run chocolatey /? or chocolatey help - chocolatey v' + expected_value)
 
     context 'When Chocolatey is not installed' do
       it 'returns nil' do
+        expect(Facter).to receive(:value).with('choco_install_path').and_return(nil)
         expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return(nil)
         expect(File).to receive(:exist?).with('\choco.exe').and_return(false)
         expect(PuppetX::Chocolatey::ChocolateyVersion.version).to be_nil

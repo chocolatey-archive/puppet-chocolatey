@@ -356,11 +356,13 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
     context 'with compiled choco client' do
       it 'uses install command with held package' do
         allow(provider.class).to receive(:compiled_choco?).and_return(true)
-        expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('c:\dude')
+        expect(Facter).to receive(:value).with('choco_install_path').and_return('c:\dude')
+        expect(Facter).to receive(:value).with('chocolateyversion').and_return(first_compiled_choco_version)
         allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\bin\choco.exe').and_return(true)
-        allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
         allow(Puppet::Util::Execution).to receive(:execute)
+
+        PuppetX::Chocolatey::ChocolateyCommon.clear_cached_values
 
         resource[:ensure] = :held
         expect(provider).to receive(:chocolatey).with('install', 'chocolatey', '-y', nil)
