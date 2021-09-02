@@ -31,6 +31,12 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
   has_feature :uninstall_options
   has_feature :holdable
   has_feature :package_settings
+  has_feature :version_ranges
+
+  if Puppet::Util::Platform.windows?
+    require 'puppet/util/package/version/range'
+    require 'puppet/util/package/version/gem'
+  end
 
   require Pathname.new(__FILE__).dirname + '../../../' + 'puppet_x/chocolatey/chocolatey_common'
   include PuppetX::Chocolatey::ChocolateyCommon
@@ -111,6 +117,19 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     args << 'install'
 
     should = @resource.should(:ensure)
+
+    if should.is_a?(String)
+      begin
+        should_range = GEM_VERSION_RANGE.parse(should, GEM_VERSION)
+        unless should_range.is_a?(VersionRange::Eq)
+          should = best_version(should_range)
+          @resource[:ensure] = should
+        end
+      rescue VersionRange::ValidationFailure, DebianVersion::ValidationFailure
+        Puppet.debug("Cannot parse #{should} as a debian version range, falling through")
+      end
+    end
+
     case should
     when true, false, Symbol
       args << @resource[:name][%r{\A\S*}]
@@ -123,7 +142,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
               end
 
       # Add the package version
-      args << @resource[:name][%r{\A\S*}] << '--version' << @resource[:ensure]
+      args << @resource[:name][%r{\A\S*}] << '--version' << should
     end
 
     if choco_exe
@@ -358,5 +377,62 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
   def package_settings_insync?(_should, _is)
     true
+  end
+
+  def version_range?(value)
+    GEM_VERSION_RANGE.parse(value, GEM_VERSION)
+    true
+  rescue
+    false
+  end
+
+  def insync?(is)
+    # this is called after the generic version matching logic (insync? for the
+    # type), so we only get here if should != is
+    return false unless is && is != :absent
+    # if 'should' is a range and 'is' a gem version we should check if 'should' includes 'is'
+    should = @resource[:ensure]
+    return false unless is.is_a?(String) && should.is_a?(String)
+    return false unless version_range?(should)
+    should_range = GEM_VERSION_RANGE.parse(should, GEM_VERSION)
+    should_range.include?(GEM_VERSION.parse(is))
+  end
+
+  def all_versions_cmd
+    choco_exe = compiled_choco?
+    args = [
+      'list',
+      @resource[:name][%r{\A\S*}],
+      '-a',
+    ]
+
+    args << '-r' if choco_exe
+    if @resource[:source]
+      args << '--source' << @resource[:source]
+    end
+    [command(:chocolatey), *args]
+  end
+
+  def best_version(should_range)
+    # Get all available versions from chocolatey which are matching the defined version range and return the highest.
+    available_versions = SortedSet.new
+    execpipe(all_versions_cmd) do |process|
+      process.each_line do |line|
+        line.chomp!
+        next if line.empty?
+        if compiled_choco?
+          values = line.split('|')
+          package_ver = GEM_VERSION.parse(values[1])
+        else
+          # Example: ( latest        : 2013.08.19.155043 )
+          values = line.split(':').map(&:strip).delete_if(&:empty?)
+          package_ver = values[1]
+        end
+        available_versions << package_ver if should_range.include?(package_ver)
+      end
+    end
+
+    raise Puppet::Error, 'No available version found that match given version range.' if available_versions.empty?
+    available_versions.to_a.last.to_s
   end
 end
