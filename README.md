@@ -372,7 +372,7 @@ case $operatingsystem {
 
 ~~~puppet
 package { 'notepadplusplus':
-  ensure            => installed|latest|'1.0.0'|absent,
+  ensure            => installed|latest|'1.0.0'|'>=1.0 <2.0'|absent,
   provider          => 'chocolatey',
   install_options   => ['-pre','-params','"','param1','param2','"'],
   uninstall_options => ['-r'],
@@ -383,6 +383,7 @@ package { 'notepadplusplus':
 
 * Supports `installable` and `uninstallable`.
 * Supports `versionable` so that `ensure =>  '1.0'` works.
+* Supports `version_range` so that `ensure =>  '>=1.0 <2.0'` works.
 * Supports `upgradeable`.
 * Supports `latest` (checks upstream), `absent` (uninstall).
 * Supports `install_options` for pre-release, and other command-line options.
@@ -413,6 +414,15 @@ package { 'notepadplusplus':
 ~~~puppet
 package { 'notepadplusplus':
   ensure   => '6.7.5',
+  provider => 'chocolatey',
+}
+~~~
+
+#### To ensure a version range
+
+~~~puppet
+package { 'notepadplusplus':
+  ensure   => '>=6.7.5 <7.0',
   provider => 'chocolatey',
 }
 ~~~

@@ -74,6 +74,15 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
   end
   let(:provider_class) { subject.class }
   let(:provider) { subject.class.new(resource) }
+  let(:all_versions) do
+    <<-'EOT'
+chocolatey|18.1
+chocolatey|18.2
+chocolatey|18.3
+chocolatey|18.9
+chocolatey|19.0
+  EOT
+  end
 
   before :each do
     resource.provider = provider
@@ -303,6 +312,24 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
         expect(provider).to receive(:chocolatey).with('upgrade', 'chocolatey', '--version', '1.2.3', '-y', nil)
 
         provider.install
+      end
+
+      it 'finds highest available version within range' do
+        resource[:ensure] = '>18.1 <19'
+        allow(provider).to receive(:execpipe).with([nil, 'list', 'chocolatey', '-a', '-r']).and_yield(all_versions)
+        allow(provider).to receive(:latestcmd).and_return('chocolatey|18.1|19.0|false')
+        expect(provider).to receive(:chocolatey).with('upgrade', 'chocolatey', '--version', '18.9', '-y', nil)
+
+        provider.install
+      end
+
+      it 'fails if no version matching version range can be found' do
+        resource[:ensure] = '>8.1 <9'
+        allow(provider).to receive(:execpipe).with([nil, 'list', 'chocolatey', '-a', '-r']).and_yield(all_versions)
+        allow(provider).to receive(:latestcmd).and_return('chocolatey|18.1|19.0|false')
+        expect {
+          provider.install
+        }.to raise_error(Puppet::Error, %r{No available version found that match given version range.})
       end
 
       it 'calls install instead of upgrade if package name ends with .config' do
@@ -625,6 +652,25 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
         # expect(provider).to receive(:chocolatey).with('version', 'chocolatey', '--source', 'c:\packages', '| findstr /R "latest" | findstr /V "latestCompare"')
 
         # provider.latest
+      end
+    end
+  end
+
+  context 'when specifying a version range' do
+    context 'with compiled choco client' do
+      before :each do
+        allow(provider.class).to receive(:compiled_choco?).and_return(true)
+        allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(first_compiled_choco_version)
+      end
+
+      it 'is in sync when existing version is within version range' do
+        resource[:ensure] = '>18.1 <19'
+        expect(provider.insync?('18.5.1')).to be true
+      end
+
+      it 'is not in sync when existing version is outside of version range' do
+        resource[:ensure] = '>18.1 <19'
+        expect(provider.insync?('17.5.1')).to be false
       end
     end
   end
