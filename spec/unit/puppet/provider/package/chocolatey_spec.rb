@@ -395,7 +395,7 @@ chocolatey|19.0
         expect(provider).to receive(:chocolatey).with('install', 'chocolatey', '-y', nil)
         expect(provider).to receive(:chocolatey).with('pin', 'add', '-n', 'chocolatey')
 
-        provider.hold
+        provider.deprecated_hold
       end
     end
 
@@ -407,7 +407,7 @@ chocolatey|19.0
       it 'throws an argument error with held package' do
         resource[:ensure] = :held
 
-        expect { provider.hold }.to raise_error(ArgumentError, 'Only choco v0.9.9+ can use ensure => held')
+        expect { provider.deprecated_hold }.to raise_error(ArgumentError, 'Only choco v0.9.9+ can use ensure => held')
       end
     end
   end
@@ -415,6 +415,7 @@ chocolatey|19.0
   context 'when uninstalling' do
     context 'with compiled choco client' do
       before :each do
+        allow(provider).to receive(:on_hold?).and_return(false)
         allow(provider).to receive(:use_package_exit_codes_feature_enabled?).and_return(false)
         allow(provider.class).to receive(:compiled_choco?).and_return(true)
         allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(first_compiled_choco_version)
@@ -464,6 +465,14 @@ chocolatey|19.0
 
         provider.uninstall
       end
+
+      it 'calls the unhold method if the current package is on hold' do
+        allow(provider).to receive(:on_hold?).and_return(true)
+        expect(provider).to receive(:chocolatey).with('pin', 'remove', '-n', 'chocolatey')
+        expect(provider).to receive(:chocolatey).with('uninstall', 'chocolatey', '-fy', nil)
+
+        provider.uninstall
+      end
     end
 
     context 'with posh choco client' do
@@ -490,6 +499,7 @@ chocolatey|19.0
   context 'when updating' do
     context 'with compiled choco client' do
       before :each do
+        allow(provider).to receive(:on_hold?).and_return(false)
         allow(provider).to receive(:use_package_exit_codes_feature_enabled?).and_return(false)
         allow(provider.class).to receive(:compiled_choco?).and_return(true)
         allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(first_compiled_choco_version)
@@ -575,6 +585,17 @@ chocolatey|19.0
                                                                                      provider: :chocolatey)]
         resource[:source] = 'c:\packages'
         expect(provider).to receive(:chocolatey).with('upgrade', 'chocolatey', '-y', '--source', 'c:\packages', nil)
+
+        provider.update
+      end
+
+      it 'calls the unhold method if the current package is on hold' do
+        expect(provider_class).to receive(:instances).and_return [provider_class.new(ensure: 'latest',
+                                                                                     name: 'chocolatey',
+                                                                                     provider: :chocolatey)]
+        allow(provider).to receive(:on_hold?).and_return(true)
+        expect(provider).to receive(:chocolatey).with('pin', 'remove', '-n', 'chocolatey')
+        expect(provider).to receive(:chocolatey).with('upgrade', 'chocolatey', '-y', nil)
 
         provider.update
       end
@@ -736,6 +757,32 @@ chocolatey|19.0
           expect(packages[1].properties).to eq(provider: :chocolatey,
                                                ensure: '2.00',
                                                name: 'package2')
+        end
+
+        it 'returns installed packages with their versions and mark propperty' do
+          expect(provider_class).to receive(:execpipe).and_yield(StringIO.new(%(package1|1.23\n\package2|2.00\n\package3|3.00\n)))
+          expect(Puppet::Util::Execution).to receive(:execute).and_return("Chocolatey v0.10.15 Business\npackage1|1.23|\npackage2|2.0|\n")
+
+          packages = provider_class.instances
+
+          expect(packages.length).to eq(3)
+
+          expect(packages[0].properties).to eq(provider: :chocolatey,
+                                               ensure: '1.23',
+                                               name: 'package1',
+                                               mark: :hold)
+          expect(packages[0].on_hold?).to eq(true)
+
+          expect(packages[1].properties).to eq(provider: :chocolatey,
+                                               ensure: '2.00',
+                                               name: 'package2',
+                                               mark: :hold)
+          expect(packages[1].on_hold?).to eq(true)
+
+          expect(packages[2].properties).to eq(provider: :chocolatey,
+                                               ensure: '3.00',
+                                               name: 'package3')
+          expect(packages[2].on_hold?).to eq(false)
         end
 
         it 'returns nil on error' do
