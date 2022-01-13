@@ -36,6 +36,7 @@ spec/spec_helper.rb:
 .github/workflows/spec.yml:
   checks: 'syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop'
   unmanaged: false
+  use_ruby_task_helper: true
 .github/workflows/release.yml:
   unmanaged: false
 .travis.yml:

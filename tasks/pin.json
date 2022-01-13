@@ -1,0 +1,21 @@
+{
+  "description": "Manage package pinning",
+  "files": [
+    "ruby_task_helper/files/task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "action": {
+      "description": "Action to perform",
+      "type": "Enum[list,add,remove]"
+    },
+    "package": {
+      "description": "Package to manipulate",
+      "type": "Optional[String[1]]"
+    },
+    "version": {
+      "description": "Use a specific version",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
