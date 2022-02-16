@@ -157,6 +157,7 @@ chocolatey|19.0
       choco_features = []
 
       it 'matches the count of sources in the config' do
+        expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
         expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config)
         expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(true)
         expect(File).to receive(:read).with(choco_config).and_return choco_config_contents
@@ -166,6 +167,7 @@ chocolatey|19.0
       end
 
       it 'contains xml elements' do
+        expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
         expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_config_file).and_return(choco_config)
         expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_config).and_return(true)
         expect(File).to receive(:read).with(choco_config).and_return choco_config_contents
