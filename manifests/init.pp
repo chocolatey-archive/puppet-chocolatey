@@ -74,17 +74,16 @@
 # @param install_proxy Proxy server to use to use for installation of chocolatey itself or
 #   `undef` to not use a proxy
 class chocolatey (
-  Stdlib::Windowspath $choco_install_location = $::chocolatey::params::install_location,
-  Boolean $use_7zip                           = $::chocolatey::params::use_7zip,
-  String $seven_zip_download_url              = $::chocolatey::params::seven_zip_download_url,
-  Integer $choco_install_timeout_seconds      = $::chocolatey::params::install_timeout_seconds,
-  Stdlib::Filesource $chocolatey_download_url = $::chocolatey::params::download_url,
-  Boolean $enable_autouninstaller             = $::chocolatey::params::enable_autouninstaller,
+  Stdlib::Windowspath $choco_install_location = $facts['choco_install_path'],
+  Boolean $use_7zip                           = false,
+  String $seven_zip_download_url              = 'https://chocolatey.org/7za.exe',
+  Integer $choco_install_timeout_seconds      = 1500,
+  Stdlib::Filesource $chocolatey_download_url = 'https://chocolatey.org/api/v2/package/chocolatey/',
+  Boolean $enable_autouninstaller             = true,
   $log_output                                 = false,
-  $chocolatey_version                         = $::chocolatey::params::chocolatey_version,
+  $chocolatey_version                         = $facts['chocolateyversion'],
   $install_proxy                              = undef,
-) inherits ::chocolatey::params {
-
+) {
   class { '::chocolatey::install': }
   -> class { '::chocolatey::config': }
 

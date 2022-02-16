@@ -22,7 +22,6 @@ describe 'chocolatey' do
       # it { is_expected.to compile }
       # it { is_expected.to compile.with_all_deps }
       it { is_expected.to contain_class('chocolatey') }
-      it { is_expected.to contain_class('chocolatey::params') }
       it { is_expected.to contain_class('chocolatey::install') }
       it { is_expected.to contain_class('chocolatey::config') }
     end
