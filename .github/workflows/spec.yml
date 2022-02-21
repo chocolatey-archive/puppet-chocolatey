@@ -120,6 +120,10 @@ jobs:
           buildevents cmd $TRACE_ID $STEP_ID 'bundle env' -- bundle env
           echo ::endgroup::
 
+      - name: Create task helper symlink
+        run: |
+          ln -s "${PWD}/spec/fixtures/modules/ruby_task_helper" ..
+
       - name: Run Static & Syntax Tests
         run: |
           buildevents cmd $TRACE_ID $STEP_ID 'static_syntax_checks Puppet ${{ matrix.puppet_version }}, Ruby ${{ matrix.ruby_version }}' -- bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop

@@ -1,0 +1,21 @@
+{
+  "description": "Manage a package",
+  "files": [
+    "ruby_task_helper/files/task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "action": {
+      "description": "Action to perform",
+      "type": "Enum[install,upgrade,uninstall]"
+    },
+    "package": {
+      "description": "Package to manipulate",
+      "type": "String[1]"
+    },
+    "version": {
+      "description": "Use a specific version",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
