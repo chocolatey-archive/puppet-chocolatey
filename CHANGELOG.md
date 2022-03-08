@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v6.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.1.0) (2022-02-08)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.0.1...v6.1.0)
+
+### Added
+
+- add support for version range [\#269](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/269) ([rico89](https://github.com/rico89))
+- \(MODULES-11255\) Add basic tasks to manage packages [\#273](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/273) ([smortex](https://github.com/smortex))
+- pdksync - \(FM-8922\) - Add Support for Windows 2022 [\#278](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/278) ([david22swan](https://github.com/david22swan))
+
 ## [v6.0.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.0.1) (2021-04-17)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.0.0...v6.0.1)
