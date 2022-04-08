@@ -49,7 +49,9 @@ describe 'Chocolatey Common' do
     let(:choco_install_loc) { 'c:\dude' }
 
     before(:each) do
-      expect(Facter).to receive(:value).with('choco_install_path').and_return(choco_install_loc)
+      expected_version = '0.9.9.0.1'
+      expect(Facter).to receive(:value).with('choco_install_path').and_return(choco_install_loc).once
+      expect(Facter).to receive(:value).with('chocolateyversion').and_return(expected_version).once
     end
 
     it 'returns the normal config file location when found' do

@@ -386,7 +386,7 @@ chocolatey|19.0
       it 'uses install command with held package' do
         allow(provider.class).to receive(:compiled_choco?).and_return(true)
         expect(Facter).to receive(:value).with('choco_install_path').and_return('c:\dude')
-        expect(Facter).to receive(:value).with('chocolateyversion').and_return(first_compiled_choco_version)
+        expect(Facter).to receive(:value).with('chocolateyversion').and_return(first_compiled_choco_version).twice
         allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('c:\dude\bin\choco.exe').and_return(true)
         # unhold is called in installs on compiled choco
         allow(Puppet::Util::Execution).to receive(:execute)
