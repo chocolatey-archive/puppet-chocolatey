@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Fixed
 
-- (GH-283) Fix error when `update` is incorrectly called on versions 1.0 and above. ([chelnak](https://github.com/chalnak))
+- (GH-283) Fix error when `update` is incorrectly called on versions 1.0 and above. [\#283](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/283) ([chelnak](https://github.com/chalnak))
 
 ## [v6.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.1.0) (2022-02-08)
 
