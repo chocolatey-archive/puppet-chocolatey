@@ -107,9 +107,6 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
     choco_exe = compiled_choco?
 
-    # always unhold on install
-    unhold if choco_exe
-
     args = []
 
     # also will need to address -sidebyside or -m in the install args to allow
@@ -174,8 +171,8 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
     choco_exe = compiled_choco?
 
-    # always unhold on uninstall
-    unhold if choco_exe
+    # unhold on uninstall if package is on hold
+    unhold if on_hold?
 
     args = 'uninstall', @resource[:name][%r{\A\S*}]
 
@@ -207,8 +204,8 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     PuppetX::Chocolatey::ChocolateyCommon.set_env_chocolateyinstall
     choco_exe = compiled_choco?
 
-    # always unhold on upgrade
-    unhold if choco_exe
+    # unhold on upgrade if package is on hold
+    unhold if on_hold?
 
     args = []
 
@@ -292,8 +289,13 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
                    else
                      line.split(' ')
                    end
-          values[1] = :held if pins.include? values[0]
-          packages << new(name: values[0].downcase, ensure: values[1], provider: name)
+          package = {
+            name: values[0].downcase,
+            ensure: values[1],
+            provider: name
+          }
+          package[:mark] = :hold if pins.include? package[:name]
+          packages << new(package)
         end
       end
     rescue Puppet::ExecutionFailure
@@ -351,11 +353,15 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     package_ver
   end
 
-  def hold
+  def deprecated_hold
     raise ArgumentError, 'Only choco v0.9.9+ can use ensure => held' unless compiled_choco?
 
     install
 
+    hold
+  end
+
+  def hold
     args = 'pin', 'add', '-n', @resource[:name][%r{\A\S*}]
 
     chocolatey(*args)
@@ -364,7 +370,14 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
   def unhold
     return unless compiled_choco?
 
-    Puppet::Util::Execution.execute([command(:chocolatey), 'pin', 'remove', '-n', @resource[:name][%r{\A\S*}]], failonfail: false)
+    args = 'pin', 'remove', '-n', @resource[:name][%r{\A\S*}]
+
+    chocolatey(*args)
+  end
+
+  def on_hold?
+    return false unless compiled_choco?
+    properties[:mark] == :hold
   end
 
   def package_settings
