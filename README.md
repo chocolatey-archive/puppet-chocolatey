@@ -523,6 +523,20 @@ package {'mysql':
 **Note:** The above is for Chocolatey v0.9.9+. You may need to look for an
 alternative method to pass args if you have 0.9.8.x and below.
 
+#### A warning about secrets in install_options
+
+There is no guarantee that secrets in `install_options` will not show up in debug runs of either `puppet agent` or `puppet apply` calls.
+
+This is another reason to _not_ set your production runs to debug mode.
+
+However, this information is not written to puppetdb or any other Puppet logs.
+
+It **is** written to the Chocolatey log on each machine unless you have C4B and use the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameters, which will redact specified values from the Chocolatey log.
+
+For more information on these Chocolatey parameters, see the Chocolatey reference documentation on the [install command](https://chocolatey.org/docs/commands-install#options-and-switches) and the [upgrade command](https://chocolatey.org/docs/commands-upgrade#options-and-switches).
+
+If you need to include a secret in your `install_options`, do not run in debug mode in production and use C4B and the `--package-parameters-sensitive` or `--install-arguments-sensitive` Chocolatey parameter.
+
 #### Passing Flags With Package Settings
 
 You can pass flags to the chocolatey provider using package_settings.  You
