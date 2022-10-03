@@ -2,13 +2,21 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v6.2.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.2.0) - 2022-05-16
+## [v6.2.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.2.1) (2022-10-03)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.2.0...v6.2.1)
+
+### Fixed
+
+- \(MAINT\) Dropping of support for windows 7,8.1, 2008/2008R2 \(Server\) [\#300](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/300) ([jordanbreen28](https://github.com/jordanbreen28))
+
+## [v6.2.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.2.0) (2022-05-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.1.1...v6.2.0)
 
 ### Added
 
-- Update holdable feature [#270](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/270) ([rico89](https://github.com/rico89))
+- update holdable feature [\#270](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/270) ([rico89](https://github.com/rico89))
 
 ## [v6.1.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.1.1) (2022-04-11)
 
@@ -16,19 +24,19 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Fixed
 
-- (GH-283) Fix error when `update` is incorrectly called on versions 1.0 and above. [\#283](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/283) ([chelnak](https://github.com/chalnak))
+- \(GH-283\) Fix deprecation error [\#286](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/286) ([chelnak](https://github.com/chelnak))
 
-## [v6.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.1.0) (2022-02-08)
+## [v6.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.1.0) (2022-03-08)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.0.1...v6.1.0)
 
 ### Added
 
-- add support for version range [\#269](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/269) ([rico89](https://github.com/rico89))
-- \(MODULES-11255\) Add basic tasks to manage packages [\#273](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/273) ([smortex](https://github.com/smortex))
 - pdksync - \(FM-8922\) - Add Support for Windows 2022 [\#278](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/278) ([david22swan](https://github.com/david22swan))
+- \(MODULES-11255\) Add basic tasks to manage packages [\#273](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/273) ([smortex](https://github.com/smortex))
+- add support for version range [\#269](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/269) ([rico89](https://github.com/rico89))
 
-## [v6.0.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.0.1) (2021-04-17)
+## [v6.0.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v6.0.1) (2021-04-19)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.0.0...v6.0.1)
 
