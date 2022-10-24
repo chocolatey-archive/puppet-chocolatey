@@ -9,7 +9,6 @@
 #### Public Classes
 
 * [`chocolatey`](#chocolatey): Used for managing installation and configuration of Chocolatey itself.
-* [`chocolatey::params`](#chocolateyparams)
 
 #### Private Classes
 
@@ -21,6 +20,13 @@
 * [`chocolateyconfig`](#chocolateyconfig): Allows managing config settings for Chocolatey. Configuration values provide settings for users to configure aspects of Chocolatey and the wa
 * [`chocolateyfeature`](#chocolateyfeature): Allows managing features for Chocolatey. Features are configuration that act as feature flippers to turn on or off certain aspects of how Cho
 * [`chocolateysource`](#chocolateysource): Allows managing sources for Chocolatey. A source can be a folder, a CIFS share, a NuGet Http OData feed, or a full Package Gallery. Learn mor
+
+### Tasks
+
+* [`init`](#init): Manage a package
+* [`outdated`](#outdated): List outdated packages
+* [`pin`](#pin): Manage package pinning
+* [`status`](#status): List currently installed packages
 
 ## Classes
 
@@ -104,7 +110,7 @@ e.g. `c:\`. Defaults to the currently detected install location based on
 the `ChocolateyInstall` environment variable, falls back to
 `'C:\ProgramData\chocolatey'`.
 
-Default value: `$::chocolatey::params::install_location`
+Default value: `$facts['choco_install_path']`
 
 ##### <a name="use_7zip"></a>`use_7zip`
 
@@ -114,7 +120,7 @@ Whether to use built-in shell or allow installer
 to download 7zip to extract `chocolatey.nupkg` during installation.
 Defaults to `false`.
 
-Default value: `$::chocolatey::params::use_7zip`
+Default value: ``false``
 
 ##### <a name="seven_zip_download_url"></a>`seven_zip_download_url`
 
@@ -125,7 +131,7 @@ Supports all sources supported by Puppet's file resource. You should use
 a 32bit binary for compatibility.
 Defaults to 'https://chocolatey.org/7za.exe'.
 
-Default value: `$::chocolatey::params::seven_zip_download_url`
+Default value: `'https://chocolatey.org/7za.exe'`
 
 ##### <a name="choco_install_timeout_seconds"></a>`choco_install_timeout_seconds`
 
@@ -135,7 +141,7 @@ How long in seconds should
 be allowed for the install of Chocolatey (including .NET Framework 4 if
 necessary). Defaults to `1500` (25 minutes).
 
-Default value: `$::chocolatey::params::install_timeout_seconds`
+Default value: `1500`
 
 ##### <a name="chocolatey_download_url"></a>`chocolatey_download_url`
 
@@ -146,7 +152,7 @@ A url that will return
 Any old url location will work. Defaults to
 `'https://chocolatey.org/api/v2/package/chocolatey/'`.
 
-Default value: `$::chocolatey::params::download_url`
+Default value: `'https://chocolatey.org/api/v2/package/chocolatey/'`
 
 ##### <a name="enable_autouninstaller"></a>`enable_autouninstaller`
 
@@ -158,7 +164,7 @@ automatically manage the uninstall of software from Programs and Features
 without necessarily requiring a `chocolateyUninstall.ps1` file in the
 package. Defaults to `true`. Setting is ignored in Chocolatey v0.9.10+.
 
-Default value: `$::chocolatey::params::enable_autouninstaller`
+Default value: ``true``
 
 ##### <a name="log_output"></a>`log_output`
 
@@ -177,7 +183,7 @@ Data type: `String`
 Chocolatey what version to expect and to pre-load features with, falls
 back to `$::chocolateyversion`.
 
-Default value: `$::chocolatey::params::chocolatey_version`
+Default value: `$facts['chocolateyversion']`
 
 ##### <a name="install_proxy"></a>`install_proxy`
 
@@ -187,10 +193,6 @@ Proxy server to use to use for installation of chocolatey itself or
 `undef` to not use a proxy
 
 Default value: ``undef``
-
-### <a name="chocolateyparams"></a>`chocolatey::params`
-
-The chocolatey::params class.
 
 ## Resource types
 
@@ -401,4 +403,70 @@ Default value: `''`
 
 The specific backend to use for this `chocolateysource` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
+
+## Tasks
+
+### <a name="init"></a>`init`
+
+Manage a package
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `action`
+
+Data type: `Enum[install,upgrade,uninstall]`
+
+Action to perform
+
+##### `package`
+
+Data type: `String[1]`
+
+Package to manipulate
+
+##### `version`
+
+Data type: `Optional[String[1]]`
+
+Use a specific version
+
+### <a name="outdated"></a>`outdated`
+
+List outdated packages
+
+**Supports noop?** false
+
+### <a name="pin"></a>`pin`
+
+Manage package pinning
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `action`
+
+Data type: `Enum[list,add,remove]`
+
+Action to perform
+
+##### `package`
+
+Data type: `Optional[String[1]]`
+
+Package to manipulate
+
+##### `version`
+
+Data type: `Optional[String[1]]`
+
+Use a specific version
+
+### <a name="status"></a>`status`
+
+List currently installed packages
+
+**Supports noop?** false
 

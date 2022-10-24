@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-chocolatey",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "author": "puppetlabs",
   "summary": "Chocolatey package provider for Puppet",
   "license": "Apache-2.0",
@@ -29,11 +29,7 @@
     {
       "operatingsystem": "Windows",
       "operatingsystemrelease": [
-        "7",
-        "8.1",
         "10",
-        "2008",
-        "2008 R2",
         "2012",
         "2012 R2",
         "2016",
@@ -61,7 +57,7 @@
     "chocolatey for business",
     "chocolatey professional"
   ],
-  "pdk-version": "2.3.0",
+  "pdk-version": "2.5.0",
   "template-url": "https://github.com/puppetlabs/pdk-templates.git#main",
-  "template-ref": "heads/main-0-g806810b"
+  "template-ref": "tags/2.6.0-0-gd0490b9"
 }
