@@ -122,7 +122,7 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
     args << command
     args << '--name' << resource[:name]
 
-    Puppet::Util::Execution.execute([command(:chocolatey), *args])
+    Puppet::Util::Execution.execute([command(:chocolatey), *args], sensitive: true)
 
     @property_hash.clear
     @property_flush.clear
