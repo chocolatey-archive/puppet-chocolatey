@@ -199,7 +199,8 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       if resource[:user] && resource[:user] != ''
         args << '--user' << resource[:user]
         args << '--password' << resource[:password]
-        opts = { sensitive: true, failonfail: true, combine: true }
+        opts[:failonfail] = true
+        opts[:combine] = true
       end
 
       choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
