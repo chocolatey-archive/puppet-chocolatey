@@ -260,7 +260,8 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'config', 'set',
                                                                  '--name', resource_name,
-                                                                 '--value', resource_value])
+                                                                 '--value', resource_value],
+                                                                 sensitive: true)
 
       resource.flush
     end
@@ -271,7 +272,8 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
       # PuppetX::Chocolatey::ChocolateyCommon.allow(:choco_version).returns(minimum_supported_version)
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'config', 'unset',
-                                                                 '--name', resource_name])
+                                                                 '--name', resource_name],
+                                                                 sensitive: true)
 
       resource.flush
     end
@@ -281,7 +283,8 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'config', 'set',
                                                                  '--name', resource_name,
-                                                                 '--value', resource_value]).and_raise(Puppet::ExecutionFailure, 'Nooooo')
+                                                                 '--value', resource_value],
+                                                                 sensitive: true).and_raise(Puppet::ExecutionFailure, 'Nooooo')
 
       expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolateyconfig})
     end
