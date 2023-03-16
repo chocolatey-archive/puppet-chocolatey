@@ -176,7 +176,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
   def flush
     args = []
-    opts = {}
+    opts = { sensitive: true }
 
     args << 'source'
 
@@ -199,7 +199,8 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       if resource[:user] && resource[:user] != ''
         args << '--user' << resource[:user]
         args << '--password' << resource[:password]
-        opts = { sensitive: true, failonfail: true, combine: true }
+        opts[:failonfail] = true
+        opts[:combine] = true
       end
 
       choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
@@ -228,7 +229,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     if property_ensure == :present
       begin
-        Puppet::Util::Execution.execute([command(:chocolatey), 'source', 'enable', '--name', resource[:name]])
+        Puppet::Util::Execution.execute([command(:chocolatey), 'source', 'enable', '--name', resource[:name]], sensitive: true)
       rescue Puppet::ExecutionFailure
         raise Puppet::Error, "An error occurred running choco. Unable to set Chocolatey source configuration for #{inspect}"
       end

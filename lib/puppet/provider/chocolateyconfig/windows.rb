@@ -146,7 +146,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     end
 
     begin
-      Puppet::Util::Execution.execute([command(:chocolatey), *args])
+      Puppet::Util::Execution.execute([command(:chocolatey), *args], sensitive: true)
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "An error occurred running choco. Unable to set Chocolateyconfig[#{name}]: #{e}"
     end
