@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v7.0.1](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v7.0.1) (2023-03-16)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v7.0.0...v7.0.1)
+
+### Fixed
+
+- \(CONT-708\) Set all execute's to run with sensitive [\#310](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/310) ([david22swan](https://github.com/david22swan))
+
 ## [v7.0.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v7.0.0) (2022-10-31)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v6.2.1...v7.0.0)
@@ -84,6 +92,10 @@ All notable changes to this project will be documented in this file. The format 
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-chocolatey/compare/v5.1.0...v5.1.1)
 
+### Added
+
+- pdksync - \(IAC-973\) - Update travis/appveyor to run on new default branch `main` [\#219](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/219) ([david22swan](https://github.com/david22swan))
+
 ### Fixed
 
 - \(MODULES-10791\) Increase upper boundary for powershell dependency to 5.0.0 [\#228](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/228) ([adrianiurca](https://github.com/adrianiurca))
@@ -95,7 +107,6 @@ All notable changes to this project will be documented in this file. The format 
 ### Added
 
 - \(IAC-980\) - Removal of inappropriate terminology [\#224](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/224) ([david22swan](https://github.com/david22swan))
-- pdksync - \(IAC-973\) - Update travis/appveyor to run on new default branch `main` [\#219](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/219) ([david22swan](https://github.com/david22swan))
 
 ### Fixed
 
@@ -120,10 +131,6 @@ All notable changes to this project will be documented in this file. The format 
 ### Changed
 
 - Use datatypes and facts hash. Remove logic for Puppet 3.x [\#175](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/175) ([treydock](https://github.com/treydock))
-
-### Fixed
-
-- \(MODULES-8521\) Fix $chocolatey\_version parameter [\#103](https://github.com/puppetlabs/puppetlabs-chocolatey/pull/103) ([helge000](https://github.com/helge000))
 
 ## [v4.1.0](https://github.com/puppetlabs/puppetlabs-chocolatey/tree/v4.1.0) (2019-08-16)
 
