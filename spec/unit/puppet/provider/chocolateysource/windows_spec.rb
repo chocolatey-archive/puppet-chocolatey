@@ -236,14 +236,14 @@ describe provider do
 
     before :each do
       element.add_attributes('id' => element_id,
-                             'value'       => element_value,
-                             'disabled'    => element_disabled,
-                             'priority'    => element_priority,
-                             'user'        => element_user,
-                             'password'    => element_password,
+                             'value' => element_value,
+                             'disabled' => element_disabled,
+                             'priority' => element_priority,
+                             'user' => element_user,
+                             'password' => element_password,
                              'bypassProxy' => element_bypass_proxy,
                              'selfService' => element_allow_self_service,
-                             'adminOnly'   => element_admin_only)
+                             'adminOnly' => element_admin_only)
     end
 
     it 'returns nil source when element it nil' do

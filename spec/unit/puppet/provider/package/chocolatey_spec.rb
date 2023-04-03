@@ -188,9 +188,9 @@ chocolatey|19.0
 
     before :each do
       element.add_attributes('name' => element_name,
-                             'enabled'       => element_enabled,
+                             'enabled' => element_enabled,
                              'setExplicitly' => element_set_explicitly,
-                             'description'   => element_description)
+                             'description' => element_description)
     end
 
     it 'returns nil source when element is nil' do
