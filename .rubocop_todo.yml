@@ -6,18 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-Layout/HeredocIndentation:
-  Exclude:
-    - 'spec/tasks/chocolatey_outdated_task_spec.rb'
-    - 'spec/tasks/chocolatey_pin_task_spec.rb'
-    - 'spec/tasks/chocolatey_status_task_spec.rb'
-    - 'spec/unit/puppet/provider/chocolateyconfig/windows_spec.rb'
-    - 'spec/unit/puppet/provider/chocolateyfeature/windows_spec.rb'
-    - 'spec/unit/puppet/provider/chocolateysource/windows_spec.rb'
-    - 'spec/unit/puppet/provider/package/chocolatey_spec.rb'
-
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AutoCorrect, EnforcedStyle.

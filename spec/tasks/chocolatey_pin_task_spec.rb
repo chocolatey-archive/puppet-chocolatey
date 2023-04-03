@@ -22,7 +22,7 @@ describe ChocolateyPinTask do
 
     before(:each) do
       allow(Open3).to receive(:capture2).with('choco', 'pin', 'list', '--no-color', '--limit-output').and_return([<<~OUTPUT, sucess_status])
-      puppet-bolt|3.20.0
+        puppet-bolt|3.20.0
       OUTPUT
     end
 
