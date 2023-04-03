@@ -60,7 +60,7 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
     <apiKeys source="https://chocolatey.org/" key="bogus/encrypted+value=" />
  </apiKeys>
 </chocolatey>
-  EOT
+    EOT
   end
   let(:choco_config_contents_upec) do
     <<-'EOT'
@@ -70,7 +70,7 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
         <feature name="usePackageExitCodes" enabled="true" setExplicitly="true" description="Use Package Exit Codes - Package scripts can provide exit codes. With this on, package exit codes will be what choco uses for exit when non-zero (this value can come from a dependency package). Chocolatey defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature off, choco will exit with a 0 or a 1 (matching previous behavior). Available in 0.9.10+." />
       </features>
     </chocolatey>
-  EOT
+    EOT
   end
   let(:provider_class) { subject.class }
   let(:provider) { subject.class.new(resource) }
@@ -81,7 +81,7 @@ chocolatey|18.2
 chocolatey|18.3
 chocolatey|18.9
 chocolatey|19.0
-  EOT
+    EOT
   end
 
   before :each do

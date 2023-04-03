@@ -54,7 +54,7 @@ describe provider do
     <apiKeys source="https:\/\/chocolatey.org\/" key="bogus\/encrypted+value=" />
  </apiKeys>
 </chocolatey>
-  EOT
+    EOT
   end
 
   let(:minimum_supported_version) { '0.9.9.0' }
