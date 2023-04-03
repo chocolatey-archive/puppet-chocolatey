@@ -1,10 +1,11 @@
-name: "nightly"
+name: "ci"
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+  pull_request:
+    branches:
+      - "main"
   workflow_dispatch:
-
+    
 jobs:
   setup_matrix:
     name: "Setup Test Matrix"
