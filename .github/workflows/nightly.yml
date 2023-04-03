@@ -6,9 +6,71 @@ on:
   workflow_dispatch:
 
 jobs:
+  setup_matrix:
+    name: "Setup Test Matrix"
+    runs-on: ubuntu-20.04
+    outputs:
+      spec_matrix: ${{ steps.get-matrix.outputs.spec_matrix }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Activate Ruby 2.7
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+          bundler-cache: true
+
+      - name: Print bundle environment
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+
+      - name: Run Static & Syntax Tests
+        run: |
+          bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop
+
+      - name: Setup Spec Test Matrix
+        id: get-matrix
+        run: |
+          bundle exec matrix_from_metadata_v2
+
   Spec:
-    uses: "puppetlabs/cat-github-actions/.github/workflows/module_ci.yml@main"
-    secrets: "inherit"
+    name: "Spec Tests (Puppet: ${{matrix.puppet_version}}, Ruby Ver: ${{matrix.ruby_version}})"
+    needs:
+      - setup_matrix
+    if: ${{ needs.setup_matrix.outputs.spec_matrix != '{}' }}
+
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.setup_matrix.outputs.spec_matrix)}}
+
+    steps:
+
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: "Activate Ruby ${{ matrix.ruby_version }}"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby_version}}
+          bundler-cache: true
+
+      - name: Print bundle environment
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+
+      - name: Create task helper symlink
+        run: |
+          ln -s "${PWD}/spec/fixtures/modules/ruby_task_helper" ..
+
+      - name: Run parallel_spec tests
+        run: |
+          bundle exec rake parallel_spec
 
   Acceptance:
     needs: Spec
