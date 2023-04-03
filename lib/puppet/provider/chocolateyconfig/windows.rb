@@ -112,6 +112,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
       raise ArgumentError, 'Unless ensure => absent, value is required.'
     end
+
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     validate_check = PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) &&
                      choco_version < Gem::Version.new(CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION)

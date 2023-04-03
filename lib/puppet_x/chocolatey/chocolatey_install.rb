@@ -42,6 +42,7 @@ module PuppetX
       # @return [String] Path to temp folder
       def self.temp_dir
         return unless Puppet::Util::Platform.windows?
+
         require 'win32/registry'
 
         value = nil

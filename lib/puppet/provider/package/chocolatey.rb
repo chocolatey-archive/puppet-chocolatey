@@ -100,6 +100,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     # This is unlikely to work because Puppet itself will not know how to handle these
     # alternate exit codes.
     return true if use_package_exit_codes_feature[:enabled].casecmp('true').zero? && use_package_exit_codes_feature[:set_explicitly].casecmp('true').zero?
+
     false
   end
 
@@ -284,6 +285,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
           line.chomp!
           next if line.empty? || line.match(%r{Reading environment variables.*})
           raise Puppet::Error, 'At least one source must be enabled.' if line.match?(%r{Unable to search for packages.*})
+
           values = if choco_exe
                      line.split('|')
                    else
@@ -336,6 +338,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
         process.each_line do |line|
           line.chomp!
           next if line.empty?
+
           if compiled_choco?
             values = line.split('|')
             package_ver = values[2]
@@ -377,6 +380,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
   def on_hold?
     return false unless compiled_choco?
+
     properties[:mark] == :hold
   end
 
@@ -403,10 +407,12 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     # this is called after the generic version matching logic (insync? for the
     # type), so we only get here if should != is
     return false unless is && is != :absent
+
     # if 'should' is a range and 'is' a gem version we should check if 'should' includes 'is'
     should = @resource[:ensure]
     return false unless is.is_a?(String) && should.is_a?(String)
     return false unless version_range?(should)
+
     should_range = GEM_VERSION_RANGE.parse(should, GEM_VERSION)
     should_range.include?(GEM_VERSION.parse(is))
   end
@@ -433,6 +439,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       process.each_line do |line|
         line.chomp!
         next if line.empty?
+
         if compiled_choco?
           values = line.split('|')
           package_ver = GEM_VERSION.parse(values[1])
@@ -446,6 +453,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     end
 
     raise Puppet::Error, 'No available version found that match given version range.' if available_versions.empty?
+
     available_versions.to_a.last.to_s
   end
 end
