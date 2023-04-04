@@ -379,7 +379,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
   def version_range?(value)
     GEM_VERSION_RANGE.parse(value, GEM_VERSION)
     true
-  rescue
+  rescue StandardError
     false
   end
 

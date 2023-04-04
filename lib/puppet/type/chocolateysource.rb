@@ -205,7 +205,7 @@ Puppet::Type.newtype(:chocolateysource) do
     # if value.is_a? Integer or (value.is_a? String and value.match numeric)
 
     !Float(value).nil?
-  rescue
+  rescue StandardError
     false
   end
 
