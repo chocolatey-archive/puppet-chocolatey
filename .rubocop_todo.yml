@@ -8,17 +8,6 @@
 
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/LineContinuationSpacing:
-  Exclude:
-    - 'lib/puppet/provider/chocolateyconfig/windows.rb'
-    - 'lib/puppet/provider/chocolateyfeature/windows.rb'
-    - 'lib/puppet/provider/chocolateysource/windows.rb'
-    - 'spec/unit/puppet/provider/chocolateysource/windows_spec.rb'
-
-# Offense count: 6
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.
 # SupportedStyles: aligned, indented
 Layout/LineEndStringConcatenationIndentation:
