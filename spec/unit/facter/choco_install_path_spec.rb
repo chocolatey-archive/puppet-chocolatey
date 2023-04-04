@@ -15,6 +15,11 @@ describe 'choco_install_path fact' do
     Facter.clear_messages
   end
 
+  after(:each) do
+    Facter.clear
+    Facter.clear_messages
+  end
+
   context 'on Windows' do
     it 'returns the output of PuppetX::Chocolatey::ChocolateyInstall.install_path' do
       expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:install_path).and_return('C:\somewhere')
@@ -27,10 +32,5 @@ describe 'choco_install_path fact' do
 
       expect(fact_value).to eq('C:\ProgramData\chocolatey')
     end
-  end
-
-  after(:each) do
-    Facter.clear
-    Facter.clear_messages
   end
 end

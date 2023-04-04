@@ -7,6 +7,11 @@ require 'puppet_x/chocolatey/chocolatey_install'
 
 describe 'Chocolatey Install Location' do
   context 'using normal install path' do
+    after :each do
+      # setting the values back
+      ENV['ChocolateyInstall'] = 'c:\blah'
+    end
+
     context 'on Windows' do
       before :each do
         skip 'Not on Windows platform' unless Puppet::Util::Platform.windows?
@@ -53,11 +58,6 @@ describe 'Chocolatey Install Location' do
 
         expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to be_nil
       end
-    end
-
-    after :each do
-      # setting the values back
-      ENV['ChocolateyInstall'] = 'c:\blah'
     end
   end
 

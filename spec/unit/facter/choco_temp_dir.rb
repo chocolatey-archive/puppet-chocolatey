@@ -15,6 +15,11 @@ describe 'choco_temp_dir fact' do
     Facter.clear_messages
   end
 
+  after(:each) do
+    Facter.clear
+    Facter.clear_messages
+  end
+
   it 'returns the TEMP directory' do
     expect(PuppetX::Chocolatey::ChocolateyInstall).to receive(:temp_dir).and_return('waffles')
 
@@ -25,10 +30,5 @@ describe 'choco_temp_dir fact' do
     expect(PuppetX::Chocolatey::ChocolateyInstall).to receieve(:temp_dir).and_return(nil)
 
     expect(fact_value).to eq(ENV['TEMP'])
-  end
-
-  after(:each) do
-    Facter.clear
-    Facter.clear_messages
   end
 end

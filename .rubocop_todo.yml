@@ -127,15 +127,6 @@ RSpec/FilePath:
 
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
-RSpec/HooksBeforeExamples:
-  Exclude:
-    - 'spec/unit/facter/choco_install_path_spec.rb'
-    - 'spec/unit/facter/choco_temp_dir.rb'
-    - 'spec/unit/facter/chocolateyversion_spec.rb'
-    - 'spec/unit/puppet_x/chocolatey/chocolatey_install_spec.rb'
-
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: single_line_only, single_statement_only, disallow, require_implicit
 RSpec/ImplicitSubject:
