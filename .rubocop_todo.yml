@@ -88,12 +88,6 @@ Performance/CollectionLiteralInLoop:
   Exclude:
     - 'spec/classes/init_spec.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Performance/StringIdentifierArgument:
-  Exclude:
-    - 'spec/unit/puppet/provider/chocolateyconfig/windows_spec.rb'
-
 # Offense count: 13
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpec/BeEq:

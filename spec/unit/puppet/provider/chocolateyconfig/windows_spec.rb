@@ -224,7 +224,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
 
     it 'does not error when the property_hash is defined, even if :ensure is :present and no :value is supplied' do
       resource.delete(:value)
-      resource.provider.instance_variable_set('@property_hash', value: 'something')
+      resource.provider.instance_variable_set(:@property_hash, value: 'something')
       resource.provider.validate
     end
 
