@@ -62,7 +62,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
   # @return [String] Semver string of Chocolatey version
   def choco_version
     version_fact = Facter.value('chocolateyversion')
-    @chocoversion ||= strip_beta_from_version((version_fact == '0' ? nil : version_fact) || PuppetX::Chocolatey::ChocolateyVersion.version)
+    @chocoversion ||= strip_beta_from_version(((version_fact == '0') ? nil : version_fact) || PuppetX::Chocolatey::ChocolateyVersion.version)
     @chocoversion
   end
   module_function :choco_version

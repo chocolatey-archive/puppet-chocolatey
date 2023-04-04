@@ -217,14 +217,6 @@ Style/SymbolProc:
     - 'lib/puppet/type/chocolateyfeature.rb'
     - 'lib/puppet/type/chocolateysource.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, AllowSafeAssignment.
-# SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
-Style/TernaryParentheses:
-  Exclude:
-    - 'lib/puppet_x/chocolatey/chocolatey_common.rb'
-
 # Offense count: 18
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyleForMultiline.
