@@ -44,7 +44,7 @@ describe 'package resource' do
 
     it 'installs package' do
       apply_manifest(pp_chocolatey_package) do |result|
-        expect(result.stdout).to match(%r{Notice\: \/Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: created})
+        expect(result.stdout).to match(%r{Notice: /Stage\[main\]/Main/Package\[#{package_name}\]/ensure: created})
       end
       apply_manifest(pp_chocolatey_package, catch_changes: true)
     end
@@ -59,7 +59,7 @@ describe 'package resource' do
 
     it 'uninstalls package' do
       apply_manifest(pp_chocolatey_package_removed) do |result|
-        expect(result.stdout).to match(%r{Stage\[main\]\/Main\/Package\[#{package_name}\]\/ensure\: removed})
+        expect(result.stdout).to match(%r{Stage\[main\]/Main/Package\[#{package_name}\]/ensure: removed})
       end
       apply_manifest(pp_chocolatey_package_removed, catch_changes: true)
     end

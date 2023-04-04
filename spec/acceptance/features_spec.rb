@@ -143,7 +143,7 @@ describe 'chocolateyfeature resource' do
     it 'raises error' do
       apply_manifest(pp_chocolateyfeature, expect_failures: true) do |result|
         expect(result.exit_code).to eq(1)
-        expect(result.stderr).to match(%r{Error: Parameter ensure failed on Chocolateyfeature\[checksumFiles\]: Invalid value \"absent\"})
+        expect(result.stderr).to match(%r{Error: Parameter ensure failed on Chocolateyfeature\[checksumFiles\]: Invalid value "absent"})
       end
     end
   end
