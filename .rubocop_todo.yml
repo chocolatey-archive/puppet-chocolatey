@@ -191,14 +191,6 @@ Style/RedundantArgument:
   Exclude:
     - 'lib/puppet/provider/package/chocolatey.rb'
 
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantHeredocDelimiterQuotes:
-  Exclude:
-    - 'lib/puppet/type/chocolateyfeature.rb'
-    - 'lib/puppet/type/chocolateysource.rb'
-    - 'spec/unit/puppet/provider/package/chocolatey_spec.rb'
-
 # Offense count: 29
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantRegexpEscape:

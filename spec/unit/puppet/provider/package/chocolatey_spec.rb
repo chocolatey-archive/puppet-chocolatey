@@ -63,7 +63,7 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
     EOT
   end
   let(:choco_config_contents_upec) do
-    <<-'EOT'
+    <<-EOT
     <?xml version="1.0" encoding="utf-8"?>
     <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <features>
@@ -75,7 +75,7 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
   let(:provider_class) { subject.class }
   let(:provider) { subject.class.new(resource) }
   let(:all_versions) do
-    <<~'EOT'
+    <<~EOT
       chocolatey|18.1
       chocolatey|18.2
       chocolatey|18.3

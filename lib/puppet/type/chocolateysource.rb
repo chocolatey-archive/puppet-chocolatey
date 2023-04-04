@@ -4,7 +4,7 @@ require 'puppet/type'
 require 'pathname'
 
 Puppet::Type.newtype(:chocolateysource) do
-  @doc = <<-'EOT'
+  @doc = <<-EOT
     Allows managing sources for Chocolatey. A source can be a
     folder, a CIFS share, a NuGet Http OData feed, or a full
     Package Gallery. Learn more about sources at

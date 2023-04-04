@@ -4,7 +4,7 @@ require 'puppet/type'
 require 'pathname'
 
 Puppet::Type.newtype(:chocolateyfeature) do
-  @doc = <<-'EOT'
+  @doc = <<-EOT
     Allows managing features for Chocolatey. Features are
     configuration that act as feature flippers to turn on or
     off certain aspects of how Chocolatey works.
