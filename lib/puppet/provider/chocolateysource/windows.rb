@@ -202,17 +202,11 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       end
 
       choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY)
-        args << '--bypass-proxy' if resource[:bypass_proxy].to_s == 'true'
-      end
+      args << '--bypass-proxy' if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY) && (resource[:bypass_proxy].to_s == 'true')
 
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE)
-        args << '--allow-self-service' if resource[:allow_self_service] == :true
-      end
+      args << '--allow-self-service' if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE) && (resource[:allow_self_service] == :true)
 
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY)
-        args << '--admin-only' if resource[:admin_only].to_s == 'true'
-      end
+      args << '--admin-only' if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY) && (resource[:admin_only].to_s == 'true')
 
       args << '--priority' << resource[:priority] if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
     end
