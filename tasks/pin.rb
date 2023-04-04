@@ -46,7 +46,7 @@ class ChocolateyPinTask < TaskHelper
 
         result << {
           package: parts[0],
-          version: parts[1],
+          version: parts[1]
         }
       end
 

@@ -8,7 +8,7 @@ describe 'chocolatey' do
       chocolateyversion: '0.9.9.8',
       choco_install_path: 'C:\ProgramData\chocolatey',
       choco_temp_dir: 'C:\Temp',
-      path: 'C:\something',
+      path: 'C:\something'
     }
   end
 
@@ -48,7 +48,7 @@ describe 'chocolatey' do
         let(:params) do
           {
             use_7zip: true,
-            seven_zip_download_url: 'https://packages.organization.net/7za.exe',
+            seven_zip_download_url: 'https://packages.organization.net/7za.exe'
           }
         end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'chocolatey' do
   let(:facts) do
     {
-      path: 'C:\something',
+      path: 'C:\something'
     }
   end
 
