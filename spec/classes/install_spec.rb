@@ -33,7 +33,7 @@ describe 'chocolatey' do
       let(:params) { { use_7zip: false } }
 
       it {
-        is_expected.not_to contain_file('C:\Temp\7za.exe')
+        expect(subject).not_to contain_file('C:\Temp\7za.exe')
       }
     end
 
