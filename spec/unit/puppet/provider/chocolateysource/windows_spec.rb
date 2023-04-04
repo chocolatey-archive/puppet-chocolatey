@@ -156,6 +156,7 @@ describe provider do
       it "accepts 'true' as a string" do
         resource[:bypass_proxy] = 'true'
       end
+
       it "accepts 'true as a boolean'" do
         resource[:bypass_proxy] = true
       end
@@ -165,6 +166,7 @@ describe provider do
       it "accepts 'true' as a string" do
         resource[:allow_self_service] = 'true'
       end
+
       it "accepts 'true as a boolean'" do
         resource[:allow_self_service] = true
       end
@@ -174,6 +176,7 @@ describe provider do
       it "accepts 'true' as a string" do
         resource[:admin_only] = 'true'
       end
+
       it "accepts 'true as a boolean'" do
         resource[:admin_only] = true
       end

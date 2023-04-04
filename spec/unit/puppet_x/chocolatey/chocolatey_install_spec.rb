@@ -72,6 +72,7 @@ describe 'Chocolatey Install Location' do
 
       expect(PuppetX::Chocolatey::ChocolateyInstall.temp_dir).to eq expected_value
     end
+
     it 'returns nil path from registry if it does not exist' do
       allow_any_instance_of(Win32::Registry).to receive(:[]).with('TEMP').and_raise(Win32::Registry::Error.new(2), 'file not found yo')
 
