@@ -43,6 +43,7 @@ describe 'chocolatey' do
 
         it { is_expected.to contain_file('C:\Temp\7za.exe').with_source('https://chocolatey.org/7za.exe') }
       end
+
       context "seven_zip_download_url => 'https://packages.organization.net/7za.exe'" do
         let(:params) do
           {

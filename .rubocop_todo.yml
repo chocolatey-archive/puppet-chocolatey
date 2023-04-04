@@ -107,12 +107,6 @@ RSpec/ContextWording:
 RSpec/DescribeClass:
   Enabled: false
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/EmptyLineAfterExampleGroup:
-  Exclude:
-    - 'spec/classes/install_spec.rb'
-
 # Offense count: 57
 # Configuration parameters: CountAsOne.
 RSpec/ExampleLength:
