@@ -131,7 +131,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     if PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) && choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION)
       raise Puppet::ResourceError, "Chocolatey version must be '#{MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values with Puppet. " \
-        "Detected '#{choco_version}' as your version. Please upgrade Chocolatey to use this resource."
+                                   "Detected '#{choco_version}' as your version. Please upgrade Chocolatey to use this resource."
     end
 
     if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY) && resource[:priority] && resource[:priority] != '0'
@@ -148,7 +148,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY) && resource[:admin_only] && resource[:admin_only] != :false
       Puppet.warning("Chocolatey is unable to specify administrator only visibility for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY}. " \
-        'The value you set will be ignored.')
+                     'The value you set will be ignored.')
     end
 
     # location is always filled in with puppet resource, but
@@ -168,7 +168,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     if resource[:password] && resource[:password] != '' # rubocop:disable Style/GuardClause
       Puppet.debug('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. ' \
-        "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{resource[:name]}]")
+                   "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{resource[:name]}]")
     end
   end
 

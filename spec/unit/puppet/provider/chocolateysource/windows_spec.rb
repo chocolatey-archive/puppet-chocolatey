@@ -317,7 +317,7 @@ describe provider do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
       expect(Puppet).to receive(:warning).never
       expect(Puppet).to receive(:debug).with('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. ' \
-        "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{name}]")
+                                             "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{name}]")
 
       resource.provider.validate
     end
