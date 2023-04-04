@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../tasks/status.rb'
+require_relative '../../tasks/status'
 
 describe ChocolateyStatusTask do
   subject { described_class.new.task }

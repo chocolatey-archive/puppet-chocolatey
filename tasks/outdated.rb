@@ -4,7 +4,7 @@
 require 'open3'
 require 'puppet'
 
-require_relative '../../ruby_task_helper/files/task_helper.rb'
+require_relative '../../ruby_task_helper/files/task_helper'
 
 # Retun a list of packages with pending updates
 class ChocolateyOutdatedTask < TaskHelper

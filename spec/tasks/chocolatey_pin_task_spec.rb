@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../tasks/pin.rb'
+require_relative '../../tasks/pin'
 
 describe ChocolateyPinTask do
   subject { described_class.new.task(action: action, package: package, version: version) }

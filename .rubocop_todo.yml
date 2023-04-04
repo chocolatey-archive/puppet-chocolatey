@@ -191,19 +191,6 @@ Style/RedundantArgument:
   Exclude:
     - 'lib/puppet/provider/package/chocolatey.rb'
 
-# Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantFileExtensionInRequire:
-  Exclude:
-    - 'spec/tasks/chocolatey_outdated_task_spec.rb'
-    - 'spec/tasks/chocolatey_pin_task_spec.rb'
-    - 'spec/tasks/chocolatey_status_task_spec.rb'
-    - 'spec/tasks/chocolatey_task_spec.rb'
-    - 'tasks/init.rb'
-    - 'tasks/outdated.rb'
-    - 'tasks/pin.rb'
-    - 'tasks/status.rb'
-
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantHeredocDelimiterQuotes:
