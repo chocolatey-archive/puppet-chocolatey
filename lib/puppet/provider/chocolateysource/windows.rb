@@ -162,9 +162,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     # resource[:location] is nil when running puppet resource
     # if you remove `location => value`
     location_check = resource[:location] if location_check == :absent
-    if resource[:ensure] == :present && (location_check.nil? || location_check.strip == '')
-      raise ArgumentError, 'A non-empty location must be specified when ensure => present.'
-    end
+    raise ArgumentError, 'A non-empty location must be specified when ensure => present.' if resource[:ensure] == :present && (location_check.nil? || location_check.strip == '')
 
     if resource[:password] && resource[:password] != '' # rubocop:disable Style/GuardClause
       Puppet.debug('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. ' \
@@ -216,9 +214,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
         args << '--admin-only' if resource[:admin_only].to_s == 'true'
       end
 
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
-        args << '--priority' << resource[:priority]
-      end
+      args << '--priority' << resource[:priority] if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
     end
 
     begin

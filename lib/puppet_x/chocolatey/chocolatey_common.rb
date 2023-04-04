@@ -40,7 +40,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
       chocopath =  (choco_install_path if choco_install_path && file_exists?("#{choco_install_path}\\choco.exe")) ||
                    ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\choco.exe')) ||
                    ('C:\Chocolatey' if file_exists?('C:\Chocolatey\choco.exe')) ||
-                   "#{ENV['ALLUSERSPROFILE']}\\chocolatey"
+                   "#{ENV.fetch('ALLUSERSPROFILE', nil)}\\chocolatey"
 
       chocopath += '\choco.exe'
     else

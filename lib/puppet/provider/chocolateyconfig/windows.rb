@@ -109,9 +109,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     # The hash *is* empty when the validate block is called during a puppet apply run.
     # The hash is *not* empty when the validate block is called during a puppet resource run.
     # If the hash is empty, fail only if :ensure is true and :value is not specified or is an empty string.
-    if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
-      raise ArgumentError, 'Unless ensure => absent, value is required.'
-    end
+    raise ArgumentError, 'Unless ensure => absent, value is required.' if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
 
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     validate_check = PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) &&
@@ -142,9 +140,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     args << command
     args << '--name' << resource[:name]
 
-    if property_ensure != :absent
-      args << '--value' << resource[:value]
-    end
+    args << '--value' << resource[:value] if property_ensure != :absent
 
     begin
       Puppet::Util::Execution.execute([command(:chocolatey), *args], sensitive: true)

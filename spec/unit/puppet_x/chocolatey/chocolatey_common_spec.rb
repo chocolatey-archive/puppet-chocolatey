@@ -31,7 +31,7 @@ describe 'Chocolatey Common' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('C:\ProgramData\chocolatey\choco.exe').and_return(false)
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('C:\Chocolatey\choco.exe').and_return(false)
 
-      PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == "#{ENV['ALLUSERSPROFILE']}\\chocolatey\\choco.exe"
+      PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == "#{ENV.fetch('ALLUSERSPROFILE', nil)}\\chocolatey\\choco.exe"
     end
   end
 

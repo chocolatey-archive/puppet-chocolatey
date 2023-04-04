@@ -143,13 +143,9 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       args << @resource[:name][%r{\A\S*}] << '--version' << should
     end
 
-    if choco_exe
-      args << '-y'
-    end
+    args << '-y' if choco_exe
 
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
 
     args << @resource[:install_options]
 
@@ -177,15 +173,11 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
     args = 'uninstall', @resource[:name][%r{\A\S*}]
 
-    if choco_exe
-      args << '-fy'
-    end
+    args << '-fy' if choco_exe
 
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     if !choco_exe || choco_version >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE)
-      if @resource[:source]
-        args << '--source' << @resource[:source]
-      end
+      args << '--source' << @resource[:source] if @resource[:source]
     end
 
     args << @resource[:uninstall_options]
@@ -216,9 +208,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       args << 'update' << @resource[:name][%r{\A\S*}]
     end
 
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
 
     args << @resource[:install_options]
 
@@ -235,9 +225,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
         args << '--no-progress'
       end
       output = chocolatey(*args)
-      if @resource[:package_settings]['log_output']
-        Puppet.info 'Output from chocolatey: ' + output
-      end
+      Puppet.info 'Output from chocolatey: ' + output if @resource[:package_settings]['log_output']
     else
       install
     end
@@ -262,9 +250,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     args = []
     args << 'list'
     args << '-lo'
-    if compiled_choco?
-      args << '-r'
-    end
+    args << '-r' if compiled_choco?
 
     [command(:chocolatey), *args]
   end
@@ -316,17 +302,11 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
              args << 'version' << @resource[:name][%r{\A\S*}]
            end
 
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
 
-    unless choco_exe
-      args << '| findstr /R "latest" | findstr /V "latestCompare"'
-    end
+    args << '| findstr /R "latest" | findstr /V "latestCompare"' unless choco_exe
     @resource[:package_settings] ||= {}
-    if @resource[:package_settings]['verbose']
-      Puppet.info 'Calling chocolatey with arguments: ' + args.join(' ')
-    end
+    Puppet.info 'Calling chocolatey with arguments: ' + args.join(' ') if @resource[:package_settings]['verbose']
     [command(:chocolatey), *args]
   end
 
@@ -426,9 +406,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     ]
 
     args << '-r' if choco_exe
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
     [command(:chocolatey), *args]
   end
 

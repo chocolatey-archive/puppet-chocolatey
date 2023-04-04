@@ -179,23 +179,6 @@ RSpec/StubbedMock:
     - 'spec/unit/puppet_x/chocolatey/chocolatey_common_spec.rb'
     - 'spec/unit/puppet_x/chocolatey/chocolatey_version_spec.rb'
 
-# Offense count: 31
-# This cop supports safe autocorrection (--autocorrect).
-Style/IfUnlessModifier:
-  Exclude:
-    - 'lib/puppet/provider/chocolateyconfig/windows.rb'
-    - 'lib/puppet/provider/chocolateyfeature/windows.rb'
-    - 'lib/puppet/provider/chocolateysource/windows.rb'
-    - 'lib/puppet/provider/package/chocolatey.rb'
-    - 'lib/puppet/type/chocolateyconfig.rb'
-    - 'lib/puppet/type/chocolateyfeature.rb'
-    - 'lib/puppet/type/chocolateysource.rb'
-    - 'lib/puppet_x/chocolatey/chocolatey_install.rb'
-    - 'tasks/init.rb'
-    - 'tasks/outdated.rb'
-    - 'tasks/pin.rb'
-    - 'tasks/status.rb'
-
 # Offense count: 1
 Style/MixinUsage:
   Exclude:

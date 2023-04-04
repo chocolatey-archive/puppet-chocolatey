@@ -23,9 +23,7 @@ Puppet::Type.type(:chocolateyfeature).provide(:windows) do
   end
 
   def properties
-    if @property_hash.empty?
-      @property_hash = query
-    end
+    @property_hash = query if @property_hash.empty?
     @property_hash.dup
   end
 

@@ -29,6 +29,6 @@ describe 'choco_temp_dir fact' do
   it 'returns the default path when PuppetX::Chocolatey::ChocolateyInstall.install_path is nil' do
     expect(PuppetX::Chocolatey::ChocolateyInstall).to receieve(:temp_dir).and_return(nil)
 
-    expect(fact_value).to eq(ENV['TEMP'])
+    expect(fact_value).to eq(ENV.fetch('TEMP', nil))
   end
 end

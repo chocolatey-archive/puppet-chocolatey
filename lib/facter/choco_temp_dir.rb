@@ -6,6 +6,6 @@ require Pathname.new(__FILE__).dirname + '../' + 'puppet_x/chocolatey/chocolatey
 Facter.add('choco_temp_dir') do
   confine osfamily: :windows
   setcode do
-    PuppetX::Chocolatey::ChocolateyInstall.temp_dir || ENV['TEMP']
+    PuppetX::Chocolatey::ChocolateyInstall.temp_dir || ENV.fetch('TEMP', nil)
   end
 end

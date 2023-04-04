@@ -57,6 +57,4 @@ class ChocolateyPinTask < TaskHelper
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  ChocolateyPinTask.run
-end
+ChocolateyPinTask.run if __FILE__ == $PROGRAM_NAME

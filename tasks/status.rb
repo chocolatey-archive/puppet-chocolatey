@@ -31,6 +31,4 @@ class ChocolateyStatusTask < TaskHelper
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  ChocolateyStatusTask.run
-end
+ChocolateyStatusTask.run if __FILE__ == $PROGRAM_NAME

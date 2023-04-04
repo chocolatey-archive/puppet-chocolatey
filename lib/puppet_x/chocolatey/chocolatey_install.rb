@@ -30,9 +30,7 @@ module PuppetX
         # Since it is technically possible that Chocolatey could exist on
         # non-Windows installations, we don't want to confine this
         # to just Windows.
-        if value.nil?
-          value = ENV['ChocolateyInstall']
-        end
+        value = ENV.fetch('ChocolateyInstall', nil) if value.nil?
 
         value
       end

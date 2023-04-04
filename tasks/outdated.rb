@@ -32,6 +32,4 @@ class ChocolateyOutdatedTask < TaskHelper
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  ChocolateyOutdatedTask.run
-end
+ChocolateyOutdatedTask.run if __FILE__ == $PROGRAM_NAME
