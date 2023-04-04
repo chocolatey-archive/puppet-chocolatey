@@ -17,8 +17,7 @@ def encode_command(cmd)
   cmd = cmd.chars.to_a.join("\x00").chomp
   cmd << "\x00" unless cmd[-1].eql? "\x00"
   # use strict_encode because linefeeds are not correctly handled in our model
-  cmd = Base64.strict_encode64(cmd).chomp
-  cmd
+  Base64.strict_encode64(cmd).chomp
 end
 
 def install_chocolatey

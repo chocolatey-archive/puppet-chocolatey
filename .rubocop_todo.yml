@@ -191,12 +191,6 @@ Style/RedundantArgument:
   Exclude:
     - 'lib/puppet/provider/package/chocolatey.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantAssignment:
-  Exclude:
-    - 'spec/spec_helper_acceptance_local.rb'
-
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantFileExtensionInRequire:
