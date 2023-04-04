@@ -167,12 +167,6 @@ RSpec/NoExpectationExample:
     - 'spec/unit/puppet/type/chocolateyfeature_spec.rb'
     - 'spec/unit/puppet/type/chocolateysource_spec.rb'
 
-# Offense count: 18
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ReceiveNever:
-  Exclude:
-    - 'spec/unit/puppet/provider/chocolateysource/windows_spec.rb'
-
 # Offense count: 116
 RSpec/StubbedMock:
   Exclude:

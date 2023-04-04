@@ -299,8 +299,8 @@ describe provider do
 
     it 'does not warn when both user/password are empty' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
-      expect(Puppet).to receive(:warning).never
-      expect(Puppet).to receive(:debug).never
+      expect(Puppet).not_to receive(:warning)
+      expect(Puppet).not_to receive(:debug)
 
       resource.provider.validate
     end
@@ -318,7 +318,7 @@ describe provider do
       resource[:password] = 'tim'
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
       expect(Puppet).to receive(:debug).with('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. ' \
                                              "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{name}]")
 
@@ -330,7 +330,7 @@ describe provider do
       resource[:password] = 'tim'
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -340,7 +340,7 @@ describe provider do
       resource[:password] = 'tim'
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -349,7 +349,7 @@ describe provider do
       resource[:bypass_proxy] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -358,7 +358,7 @@ describe provider do
       resource[:bypass_proxy] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_bypass_proxy)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -376,7 +376,7 @@ describe provider do
       resource[:allow_self_service] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -385,7 +385,7 @@ describe provider do
       resource[:allow_self_service] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_allow_self_service)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -403,7 +403,7 @@ describe provider do
       resource[:admin_only] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -412,7 +412,7 @@ describe provider do
       resource[:admin_only] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_admin_only)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -428,14 +428,14 @@ describe provider do
 
     it 'does not warn if priority is not set' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
 
     it 'does not warn if priority is not set on older unsupported versions' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -444,7 +444,7 @@ describe provider do
       resource[:priority] = 0
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -453,7 +453,7 @@ describe provider do
       resource[:priority] = 10
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -462,7 +462,7 @@ describe provider do
       resource[:priority] = 10
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_priority)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -849,16 +849,16 @@ describe provider do
       resource[:ensure] = :absent
       resource.provider.destroy
 
-      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).not_to receive(:choco_version)
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'remove',
                                                                  '--name', resource_name],
                                                                 sensitive: true)
 
-      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
-                                                                 'source', 'enable',
-                                                                 '--name', 'yup'],
-                                                                sensitive: true).never
+      expect(Puppet::Util::Execution).not_to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                     'source', 'enable',
+                                                                     '--name', 'yup'],
+                                                                    sensitive: true)
 
       resource.flush
     end
