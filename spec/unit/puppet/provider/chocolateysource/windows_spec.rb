@@ -288,7 +288,7 @@ describe provider do
     end
   end
 
-  context '.validation' do
+  describe '.validation' do
     before :each do
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).and_return(true)
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_install_path).and_return(true)
@@ -493,7 +493,7 @@ describe provider do
     end
   end
 
-  context '.flush' do
+  describe '.flush' do
     resource_name = 'yup'
     resource_location = 'loc'
     resource_ensure = :present

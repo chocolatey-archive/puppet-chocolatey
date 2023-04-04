@@ -188,7 +188,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
     end
   end
 
-  context '.validation' do
+  describe '.validation' do
     it 'does not error when Chocolatey is not installed' do
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).and_return(false)
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_install_path).and_return(false)
@@ -239,7 +239,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
     end
   end
 
-  context '.flush' do
+  describe '.flush' do
     resource_name = 'yup'
     resource_value = 'this'
     resource_ensure = :present

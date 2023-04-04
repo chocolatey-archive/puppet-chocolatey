@@ -96,15 +96,6 @@ RSpec/BeEq:
     - 'spec/tasks/chocolatey_task_spec.rb'
     - 'spec/unit/puppet/provider/package/chocolatey_spec.rb'
 
-# Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ContextMethod:
-  Exclude:
-    - 'spec/unit/puppet/provider/chocolateyconfig/windows_spec.rb'
-    - 'spec/unit/puppet/provider/chocolateysource/windows_spec.rb'
-    - 'spec/unit/puppet/type/chocolateysource_spec.rb'
-    - 'spec/unit/puppet_x/chocolatey/chocolatey_common_spec.rb'
-
 # Offense count: 93
 # Configuration parameters: Prefixes, AllowedPatterns.
 # Prefixes: when, with, without
