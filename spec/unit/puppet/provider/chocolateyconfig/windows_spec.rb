@@ -261,7 +261,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
                                                                  'config', 'set',
                                                                  '--name', resource_name,
                                                                  '--value', resource_value],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -273,7 +273,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'config', 'unset',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -284,7 +284,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
                                                                  'config', 'set',
                                                                  '--name', resource_name,
                                                                  '--value', resource_value],
-                                                                sensitive: true).and_raise(Puppet::ExecutionFailure, 'Nooooo')
+                                                                { sensitive: true }).and_raise(Puppet::ExecutionFailure, 'Nooooo')
 
       expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolateyconfig})
     end

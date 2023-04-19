@@ -525,12 +525,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', 'yup'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -553,12 +553,12 @@ describe provider do
                                                                  '--bypass-proxy',
                                                                  '--allow-self-service',
                                                                  '--admin-only',
-                                                                 '--priority', resource_priority], combine: true, failonfail: true, sensitive: true)
+                                                                 '--priority', resource_priority], { combine: true, failonfail: true, sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -571,12 +571,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', resource_priority],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -591,12 +591,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--bypass-proxy',
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -611,12 +611,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--allow-self-service',
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -631,12 +631,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--admin-only',
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -652,12 +652,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--user', resource_user,
                                                                  '--password', resource_password,
-                                                                 '--priority', '0'], combine: true, failonfail: true, sensitive: true)
+                                                                 '--priority', '0'], { combine: true, failonfail: true, sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -672,12 +672,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--user', resource_user,
-                                                                 '--password', resource_password], combine: true, failonfail: true, sensitive: true)
+                                                                 '--password', resource_password], { combine: true, failonfail: true, sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -691,12 +691,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -711,12 +711,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--bypass-proxy',
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -730,12 +730,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -750,12 +750,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--allow-self-service',
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -770,12 +770,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--admin-only',
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -787,12 +787,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -804,12 +804,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -822,12 +822,12 @@ describe provider do
                                                                  'source', 'add',
                                                                  '--name', resource_name,
                                                                  '--source', resource_location],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -840,7 +840,7 @@ describe provider do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'disable',
                                                                  '--name', 'chocolatey'],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -853,12 +853,12 @@ describe provider do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'remove',
                                                                  '--name', resource_name],
-                                                                sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).not_to receive(:execute).with([provider_class.command(:chocolatey),
                                                                      'source', 'enable',
                                                                      '--name', 'yup'],
-                                                                    sensitive: true)
+                                                                    { sensitive: true })
 
       resource.flush
     end
@@ -870,7 +870,7 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                sensitive: true).and_raise(Puppet::ExecutionFailure, 'Nooooo')
+                                                                { sensitive: true }).and_raise(Puppet::ExecutionFailure, 'Nooooo')
 
       expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolatey source})
     end

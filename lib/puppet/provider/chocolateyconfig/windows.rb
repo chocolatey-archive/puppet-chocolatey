@@ -143,7 +143,7 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     args << '--value' << resource[:value] if property_ensure != :absent
 
     begin
-      Puppet::Util::Execution.execute([command(:chocolatey), *args], sensitive: true)
+      Puppet::Util::Execution.execute([command(:chocolatey), *args], { sensitive: true })
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "An error occurred running choco. Unable to set Chocolateyconfig[#{name}]: #{e}"
     end
