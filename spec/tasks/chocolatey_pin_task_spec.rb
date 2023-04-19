@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../tasks/pin.rb'
+require_relative '../../tasks/pin'
 
 describe ChocolateyPinTask do
   subject { described_class.new.task(action: action, package: package, version: version) }
@@ -22,7 +22,7 @@ describe ChocolateyPinTask do
 
     before(:each) do
       allow(Open3).to receive(:capture2).with('choco', 'pin', 'list', '--no-color', '--limit-output').and_return([<<~OUTPUT, sucess_status])
-      puppet-bolt|3.20.0
+        puppet-bolt|3.20.0
       OUTPUT
     end
 

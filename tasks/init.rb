@@ -4,7 +4,7 @@
 require 'open3'
 require 'puppet'
 
-require_relative '../../ruby_task_helper/files/task_helper.rb'
+require_relative '../../ruby_task_helper/files/task_helper'
 
 # Manage installing, upgrading and uninstalling packages
 class ChocolateyTask < TaskHelper
@@ -34,6 +34,4 @@ class ChocolateyTask < TaskHelper
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  ChocolateyTask.run
-end
+ChocolateyTask.run if __FILE__ == $PROGRAM_NAME

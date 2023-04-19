@@ -1,7 +1,7 @@
 #!/opt/puppetlabs/puppet/bin/ruby
 # frozen_string_literal: true
 
-require_relative '../../ruby_task_helper/files/task_helper.rb'
+require_relative '../../ruby_task_helper/files/task_helper'
 
 require 'open3'
 require 'puppet'
@@ -23,7 +23,7 @@ class ChocolateyStatusTask < TaskHelper
 
       result << {
         package: parts[0],
-        version: parts[1],
+        version: parts[1]
       }
     end
 
@@ -31,6 +31,4 @@ class ChocolateyStatusTask < TaskHelper
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-  ChocolateyStatusTask.run
-end
+ChocolateyStatusTask.run if __FILE__ == $PROGRAM_NAME

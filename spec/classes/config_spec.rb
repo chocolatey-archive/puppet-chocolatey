@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'chocolatey' do
   let(:facts) do
     {
-      path: 'C:\something',
+      path: 'C:\something'
     }
   end
 
@@ -26,7 +26,7 @@ describe 'chocolatey' do
           it { is_expected.not_to contain_exec("chocolatey_autouninstaller_#{feature_enable}") }
 
           it {
-            is_expected.not_to contain_exec("chocolatey_autouninstaller_#{feature_enable}").with_command("C:\\ProgramData\\chocolatey\\bin\\choco.exe feature -r #{feature_enable} -n autoUninstaller")
+            expect(subject).not_to contain_exec("chocolatey_autouninstaller_#{feature_enable}").with_command("C:\\ProgramData\\chocolatey\\bin\\choco.exe feature -r #{feature_enable} -n autoUninstaller") # rubocop:disable Layout/LineLength
           }
         end
       end
@@ -48,7 +48,7 @@ describe 'chocolatey' do
           it { is_expected.not_to contain_exec("chocolatey_autouninstaller_#{feature_enable}") }
 
           it {
-            is_expected.not_to contain_exec("chocolatey_autouninstaller_#{feature_enable}").with_command("C:\\ProgramData\\chocolatey\\bin\\choco.exe feature -r #{feature_enable} -n autoUninstaller")
+            expect(subject).not_to contain_exec("chocolatey_autouninstaller_#{feature_enable}").with_command("C:\\ProgramData\\chocolatey\\bin\\choco.exe feature -r #{feature_enable} -n autoUninstaller") # rubocop:disable Layout/LineLength
           }
         end
       end
@@ -70,7 +70,7 @@ describe 'chocolatey' do
           it { is_expected.to contain_exec("chocolatey_autouninstaller_#{feature_enable}") }
 
           it {
-            is_expected.to contain_exec("chocolatey_autouninstaller_#{feature_enable}").with_command("C:\\ProgramData\\chocolatey\\bin\\choco.exe feature -r #{feature_enable} -n autoUninstaller")
+            expect(subject).to contain_exec("chocolatey_autouninstaller_#{feature_enable}").with_command("C:\\ProgramData\\chocolatey\\bin\\choco.exe feature -r #{feature_enable} -n autoUninstaller")
           }
         end
       end

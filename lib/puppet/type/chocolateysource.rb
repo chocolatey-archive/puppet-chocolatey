@@ -4,7 +4,7 @@ require 'puppet/type'
 require 'pathname'
 
 Puppet::Type.newtype(:chocolateysource) do
-  @doc = <<-'EOT'
+  @doc = <<-EOT
     Allows managing sources for Chocolatey. A source can be a
     folder, a CIFS share, a NuGet Http OData feed, or a full
     Package Gallery. Learn more about sources at
@@ -29,9 +29,7 @@ Puppet::Type.newtype(:chocolateysource) do
     desc 'The name of the source. Used for uniqueness.'
 
     validate do |value|
-      if value.nil? || value.empty?
-        raise ArgumentError, 'A non-empty name must be specified.'
-      end
+      raise ArgumentError, 'A non-empty name must be specified.' if value.nil? || value.empty?
     end
 
     isnamevar
@@ -52,9 +50,7 @@ Puppet::Type.newtype(:chocolateysource) do
       `ensure`)."
 
     validate do |value|
-      if value.nil? || value.empty?
-        raise ArgumentError, 'A non-empty location must be specified.'
-      end
+      raise ArgumentError, 'A non-empty location must be specified.' if value.nil? || value.empty?
     end
 
     def insync?(is)
@@ -100,9 +96,7 @@ Puppet::Type.newtype(:chocolateysource) do
       Defaults to 0."
 
     validate do |value|
-      if value.nil?
-        raise ArgumentError, 'A non-empty priority must be specified.'
-      end
+      raise ArgumentError, 'A non-empty priority must be specified.' if value.nil?
       raise ArgumentError, 'An integer is necessary for priority. Specify 0 or remove for no priority.' unless resource.numeric?(value)
     end
 
@@ -178,9 +172,7 @@ Puppet::Type.newtype(:chocolateysource) do
       raise ArgumentError, 'If specifying user/password, you must specify both values.'
     end
 
-    if provider.respond_to?(:validate)
-      provider.validate
-    end
+    provider.validate if provider.respond_to?(:validate)
   end
 
   autorequire(:exec) do
@@ -213,7 +205,7 @@ Puppet::Type.newtype(:chocolateysource) do
     # if value.is_a? Integer or (value.is_a? String and value.match numeric)
 
     !Float(value).nil?
-  rescue
+  rescue StandardError
     false
   end
 

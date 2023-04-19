@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../tasks/status.rb'
+require_relative '../../tasks/status'
 
 describe ChocolateyStatusTask do
   subject { described_class.new.task }
@@ -12,8 +12,8 @@ describe ChocolateyStatusTask do
     allow(sucess_status).to receive(:exited?).and_return(true)
     allow(sucess_status).to receive(:exitstatus).and_return(0)
     allow(Open3).to receive(:capture2).with('choco', 'list', '--local-only', '--no-color', '--limit-output').and_return([<<~OUTPUT, sucess_status])
-    chocolatey|0.11.3
-    puppet-bolt|3.20.0
+      chocolatey|0.11.3
+      puppet-bolt|3.20.0
     OUTPUT
   end
 

@@ -15,7 +15,7 @@ RSpec.configure do |_c|
     Win32::Registry.any_instance.stubs(:[]).with('Domain')
     Win32::Registry.any_instance.stubs(:[]).with('ChocolateyInstall').raises(Win32::Registry::Error.new(2), 'file not found yo')
     # rubocop:enable RSpec/AnyInstance
-  rescue
+  rescue StandardError
     # ignore errors thrown while setting up mocks
   end
 end

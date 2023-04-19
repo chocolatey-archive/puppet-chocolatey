@@ -38,7 +38,7 @@ describe 'chocolateyconfig' do
     it 'applies manifest, sets config' do
       idempotent_apply(pp_chocolateysource)
       run_shell(config_content_command) do |result|
-        expect(get_xml_value("//config/add[@key='proxy']/@value", result.stdout).to_s).to match(%r{https\:\/\/somewhere})
+        expect(get_xml_value("//config/add[@key='proxy']/@value", result.stdout).to_s).to match(%r{https://somewhere})
       end
     end
   end

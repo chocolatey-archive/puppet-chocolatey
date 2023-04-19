@@ -109,15 +109,14 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     # The hash *is* empty when the validate block is called during a puppet apply run.
     # The hash is *not* empty when the validate block is called during a puppet resource run.
     # If the hash is empty, fail only if :ensure is true and :value is not specified or is an empty string.
-    if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
-      raise ArgumentError, 'Unless ensure => absent, value is required.'
-    end
+    raise ArgumentError, 'Unless ensure => absent, value is required.' if @property_hash.empty? && resource[:ensure] == :present && resource[:value].to_s.empty?
+
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     validate_check = PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) &&
                      choco_version < Gem::Version.new(CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION)
     if validate_check # rubocop:disable Style/GuardClause
-      raise Puppet::ResourceError, "Chocolatey version must be '#{CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values. Detected '#{choco_version}' as your version. "\
-        'Please upgrade Chocolatey.'
+      raise Puppet::ResourceError, "Chocolatey version must be '#{CONFIG_MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values. Detected '#{choco_version}' as your version. " \
+                                   'Please upgrade Chocolatey.'
     end
   end
 
@@ -141,12 +140,10 @@ Puppet::Type.type(:chocolateyconfig).provide(:windows) do
     args << command
     args << '--name' << resource[:name]
 
-    if property_ensure != :absent
-      args << '--value' << resource[:value]
-    end
+    args << '--value' << resource[:value] if property_ensure != :absent
 
     begin
-      Puppet::Util::Execution.execute([command(:chocolatey), *args], sensitive: true)
+      Puppet::Util::Execution.execute([command(:chocolatey), *args], { sensitive: true })
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "An error occurred running choco. Unable to set Chocolateyconfig[#{name}]: #{e}"
     end

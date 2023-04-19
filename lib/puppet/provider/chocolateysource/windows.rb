@@ -130,8 +130,8 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
   def validate
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
     if PuppetX::Chocolatey::ChocolateyCommon.file_exists?(PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command) && choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION)
-      raise Puppet::ResourceError, "Chocolatey version must be '#{MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values with Puppet. "\
-        "Detected '#{choco_version}' as your version. Please upgrade Chocolatey to use this resource."
+      raise Puppet::ResourceError, "Chocolatey version must be '#{MINIMUM_SUPPORTED_CHOCO_VERSION}' to manage configuration values with Puppet. " \
+                                   "Detected '#{choco_version}' as your version. Please upgrade Chocolatey to use this resource."
     end
 
     if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY) && resource[:priority] && resource[:priority] != '0'
@@ -147,8 +147,8 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     end
 
     if choco_version < Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY) && resource[:admin_only] && resource[:admin_only] != :false
-      Puppet.warning("Chocolatey is unable to specify administrator only visibility for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY}. "\
-        'The value you set will be ignored.')
+      Puppet.warning("Chocolatey is unable to specify administrator only visibility for sources when version is less than #{MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY}. " \
+                     'The value you set will be ignored.')
     end
 
     # location is always filled in with puppet resource, but
@@ -162,13 +162,11 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
     # resource[:location] is nil when running puppet resource
     # if you remove `location => value`
     location_check = resource[:location] if location_check == :absent
-    if resource[:ensure] == :present && (location_check.nil? || location_check.strip == '')
-      raise ArgumentError, 'A non-empty location must be specified when ensure => present.'
-    end
+    raise ArgumentError, 'A non-empty location must be specified when ensure => present.' if resource[:ensure] == :present && (location_check.nil? || location_check.strip == '')
 
     if resource[:password] && resource[:password] != '' # rubocop:disable Style/GuardClause
-      Puppet.debug('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. '\
-        "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{resource[:name]}]")
+      Puppet.debug('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. ' \
+                   "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{resource[:name]}]")
     end
   end
 
@@ -204,21 +202,13 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
       end
 
       choco_gem_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY)
-        args << '--bypass-proxy' if resource[:bypass_proxy].to_s == 'true'
-      end
+      args << '--bypass-proxy' if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_BYPASS_PROXY) && (resource[:bypass_proxy].to_s == 'true')
 
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE)
-        args << '--allow-self-service' if resource[:allow_self_service] == :true
-      end
+      args << '--allow-self-service' if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ALLOW_SELF_SERVICE) && (resource[:allow_self_service] == :true)
 
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY)
-        args << '--admin-only' if resource[:admin_only].to_s == 'true'
-      end
+      args << '--admin-only' if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_ADMIN_ONLY) && (resource[:admin_only].to_s == 'true')
 
-      if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
-        args << '--priority' << resource[:priority]
-      end
+      args << '--priority' << resource[:priority] if choco_gem_version >= Gem::Version.new(MINIMUM_SUPPORTED_CHOCO_VERSION_PRIORITY)
     end
 
     begin
@@ -229,7 +219,7 @@ Puppet::Type.type(:chocolateysource).provide(:windows) do
 
     if property_ensure == :present
       begin
-        Puppet::Util::Execution.execute([command(:chocolatey), 'source', 'enable', '--name', resource[:name]], sensitive: true)
+        Puppet::Util::Execution.execute([command(:chocolatey), 'source', 'enable', '--name', resource[:name]], { sensitive: true })
       rescue Puppet::ExecutionFailure
         raise Puppet::Error, "An error occurred running choco. Unable to set Chocolatey source configuration for #{inspect}"
       end

@@ -114,7 +114,7 @@ describe Puppet::Type.type(:chocolateysource) do
     expect(reqs[0].target).to eq(resource)
   end
 
-  context '.validate' do
+  describe '.validate' do
     it 'passes when both user/password are empty' do
       resource.validate
     end

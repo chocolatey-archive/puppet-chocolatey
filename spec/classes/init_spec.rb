@@ -7,7 +7,7 @@ describe 'chocolatey' do
     {
       chocolateyversion: '0.9.9.8',
       choco_install_path: 'C:\ProgramData\chocolatey',
-      path: 'C:\something',
+      path: 'C:\something'
     }
   end
 
@@ -30,7 +30,7 @@ describe 'chocolatey' do
   context 'accepts install_proxy parameter' do
     let(:params) do
       {
-        install_proxy: 'http://proxy.megacorp.com:3128',
+        install_proxy: 'http://proxy.megacorp.com:3128'
       }
     end
 
@@ -44,7 +44,7 @@ describe 'chocolatey' do
       context param_value.to_s do
         let(:params) do
           {
-            chocolatey_download_url: param_value,
+            chocolatey_download_url: param_value
           }
         end
 
@@ -61,7 +61,7 @@ describe 'chocolatey' do
       context "#{param_value} (invalid scenario)" do
         let(:params) do
           {
-            chocolatey_download_url: param_value,
+            chocolatey_download_url: param_value
           }
         end
 
@@ -77,7 +77,7 @@ describe 'chocolatey' do
       context "#{param_value} (invalid scenario)" do
         let(:params) do
           {
-            chocolatey_download_url: param_value,
+            chocolatey_download_url: param_value
           }
         end
 
@@ -95,7 +95,7 @@ describe 'chocolatey' do
       context param_value.to_s do
         let(:params) do
           {
-            choco_install_location: param_value,
+            choco_install_location: param_value
           }
         end
 
@@ -109,7 +109,7 @@ describe 'chocolatey' do
       context "#{param_value} (invalid scenario)" do
         let(:params) do
           {
-            choco_install_location: param_value,
+            choco_install_location: param_value
           }
         end
 
@@ -125,7 +125,7 @@ describe 'chocolatey' do
       context "#{param_value} (invalid scenario)" do
         let(:params) do
           {
-            choco_install_location: param_value,
+            choco_install_location: param_value
           }
         end
 
@@ -143,7 +143,7 @@ describe 'chocolatey' do
       context param_value.to_s do
         let(:params) do
           {
-            choco_install_timeout_seconds: param_value,
+            choco_install_timeout_seconds: param_value
           }
         end
 
@@ -157,7 +157,7 @@ describe 'chocolatey' do
       context "#{param_value} (invalid scenario)" do
         let(:params) do
           {
-            choco_install_timeout_seconds: param_value,
+            choco_install_timeout_seconds: param_value
           }
         end
 
@@ -176,7 +176,7 @@ describe 'chocolatey' do
         context param_value.to_s do
           let(:params) do
             {
-              boolean_param.to_sym => param_value,
+              boolean_param.to_sym => param_value
             }
           end
 
@@ -190,7 +190,7 @@ describe 'chocolatey' do
         context "#{param_value} (invalid scenario)" do
           let(:params) do
             {
-              boolean_param.to_sym => param_value,
+              boolean_param.to_sym => param_value
             }
           end
 

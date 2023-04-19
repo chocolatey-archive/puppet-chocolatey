@@ -12,48 +12,48 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
   let(:choco_config) { 'c:\choco.config' }
   let(:choco_install_path) { 'c:\dude\bin\choco.exe' }
   let(:choco_config_contents) do
-    <<-EOT
-<?xml version="1.0" encoding="utf-8"?>
-<chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <config>
-    <add key="cacheLocation" value="" description="Cache location if not TEMP folder." />
-    <add key="commandExecutionTimeoutSeconds" value="2700" description="Default timeout for command execution." />
-    <add key="containsLegacyPackageInstalls" value="true" description="Install has packages installed prior to 0.9.9 series." />
-    <add key="proxy" value="" description="Explicit proxy location." />
-    <add key="proxyUser" value="" description="Optional proxy user." />
-    <add key="proxyPassword" value="" description="Optional proxy password. Encrypted." />
-    <add key="virusCheckMinimumPositives" value="5" description="Minimum numer of scan result positives before flagging a binary as a possible virus. Available in 0.9.10+. Licensed versions only." />
-    <add key="virusScannerType" value="VirusTotal" description="Virus Scanner Type (Generic or VirusTotal). Defaults to VirusTotal for Pro. Available in 0.9.10+. Licensed versions only." />
-    <add key="genericVirusScannerPath" value="" description="The full path to the command line virus scanner executable. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
-    <add key="genericVirusScannerArgs" value="[[File]]" description="The arguments to pass to the generic virus scanner. Use [[File]] for the file path placeholder. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
-    <add key="genericVirusScannerValidExitCodes" value="0" description="The exit codes for the generic virus scanner when a file is not flagged. Separate with comma, defaults to 0. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
-  </config>
-  <sources>
-    <source id="local" value="c:\packages" disabled="true" user="rob" password="bogus/encrypted+value=" priority="0" />
-    <source id="chocolatey" value="https://chocolatey.org/api/v2/" disabled="false" priority="0" />
-    <source id="chocolatey.licensed" value="https://licensedpackages.chocolatey.org/api/v2/" disabled="false" user="customer" password="bogus/encrypted+value=" priority="10" />
-  </sources>
-  <features>
-    <feature name="checksumFiles" enabled="true" setExplicitly="false" description="Checksum files when pulled in from internet (based on package)." />
-    <feature name="virusCheckFiles" enabled="false" setExplicitly="false" />
-    <feature name="autoUninstaller" enabled="true" setExplicitly="true" description="Uninstall from programs and features without requiring an explicit uninstall script." />
-    <feature name="allowGlobalConfirmation" enabled="false" setExplicitly="true" description="Prompt for confirmation in scripts or bypass." />
-    <feature name="allowInsecureConfirmation" enabled="false" setExplicitly="false" />
-    <feature name="failOnAutoUninstaller" enabled="false" setExplicitly="false" description="Fail if automatic uninstaller fails." />
-    <feature name="failOnStandardError" enabled="false" setExplicitly="false" description="Fail if install provider writes to stderr." />
-    <feature name="powershellHost" enabled="true" setExplicitly="false" description="Use Chocolatey''s built-in PowerShell host." />
-    <feature name="logEnvironmentValues" enabled="false" setExplicitly="false" description="Log Environment Values - will log values of environment before and after install (could disclose sensitive data)." />
-    <feature name="virusCheck" enabled="true" setExplicitly="true" description="Virus Check - perform virus checking on downloaded files. Available in 0.9.10+. Licensed versions only." />
-    <feature name="downloadCache" enabled="true" setExplicitly="false" description="Download Cache - use the private download cache if available for a package. Available in 0.9.10+. Licensed versions only." />
-    <feature name="failOnInvalidOrMissingLicense" enabled="false" setExplicitly="false" description="Fail On Invalid Or Missing License - allows knowing when a license is expired or not applied to a machine." />
-    <feature name="ignoreInvalidOptionsSwitches" enabled="true" setExplicitly="false" description="Ignore Invalid Options/Switches - If a switch or option is passed that is not recognized, should choco fail?" />
-    <feature name="usePackageExitCodes" enabled="true" setExplicitly="false" description="Use Package Exit Codes - Package scripts can provide exit codes. With this on, package exit codes will be what choco uses for exit when non-zero (this value can come from a dependency package). Chocolatey defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature off, choco will exit with a 0 or a 1 (matching previous behavior). Available in 0.9.10+." />
-  </features>
-  <apiKeys>
-    <apiKeys source="https://chocolatey.org/" key="bogus/encrypted+value=" />
- </apiKeys>
-</chocolatey>
-  EOT
+    <<~EOT
+      <?xml version="1.0" encoding="utf-8"?>
+      <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <config>
+          <add key="cacheLocation" value="" description="Cache location if not TEMP folder." />
+          <add key="commandExecutionTimeoutSeconds" value="2700" description="Default timeout for command execution." />
+          <add key="containsLegacyPackageInstalls" value="true" description="Install has packages installed prior to 0.9.9 series." />
+          <add key="proxy" value="" description="Explicit proxy location." />
+          <add key="proxyUser" value="" description="Optional proxy user." />
+          <add key="proxyPassword" value="" description="Optional proxy password. Encrypted." />
+          <add key="virusCheckMinimumPositives" value="5" description="Minimum numer of scan result positives before flagging a binary as a possible virus. Available in 0.9.10+. Licensed versions only." />
+          <add key="virusScannerType" value="VirusTotal" description="Virus Scanner Type (Generic or VirusTotal). Defaults to VirusTotal for Pro. Available in 0.9.10+. Licensed versions only." />
+          <add key="genericVirusScannerPath" value="" description="The full path to the command line virus scanner executable. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
+          <add key="genericVirusScannerArgs" value="[[File]]" description="The arguments to pass to the generic virus scanner. Use [[File]] for the file path placeholder. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
+          <add key="genericVirusScannerValidExitCodes" value="0" description="The exit codes for the generic virus scanner when a file is not flagged. Separate with comma, defaults to 0. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
+        </config>
+        <sources>
+          <source id="local" value="c:\packages" disabled="true" user="rob" password="bogus/encrypted+value=" priority="0" />
+          <source id="chocolatey" value="https://chocolatey.org/api/v2/" disabled="false" priority="0" />
+          <source id="chocolatey.licensed" value="https://licensedpackages.chocolatey.org/api/v2/" disabled="false" user="customer" password="bogus/encrypted+value=" priority="10" />
+        </sources>
+        <features>
+          <feature name="checksumFiles" enabled="true" setExplicitly="false" description="Checksum files when pulled in from internet (based on package)." />
+          <feature name="virusCheckFiles" enabled="false" setExplicitly="false" />
+          <feature name="autoUninstaller" enabled="true" setExplicitly="true" description="Uninstall from programs and features without requiring an explicit uninstall script." />
+          <feature name="allowGlobalConfirmation" enabled="false" setExplicitly="true" description="Prompt for confirmation in scripts or bypass." />
+          <feature name="allowInsecureConfirmation" enabled="false" setExplicitly="false" />
+          <feature name="failOnAutoUninstaller" enabled="false" setExplicitly="false" description="Fail if automatic uninstaller fails." />
+          <feature name="failOnStandardError" enabled="false" setExplicitly="false" description="Fail if install provider writes to stderr." />
+          <feature name="powershellHost" enabled="true" setExplicitly="false" description="Use Chocolatey''s built-in PowerShell host." />
+          <feature name="logEnvironmentValues" enabled="false" setExplicitly="false" description="Log Environment Values - will log values of environment before and after install (could disclose sensitive data)." />
+          <feature name="virusCheck" enabled="true" setExplicitly="true" description="Virus Check - perform virus checking on downloaded files. Available in 0.9.10+. Licensed versions only." />
+          <feature name="downloadCache" enabled="true" setExplicitly="false" description="Download Cache - use the private download cache if available for a package. Available in 0.9.10+. Licensed versions only." />
+          <feature name="failOnInvalidOrMissingLicense" enabled="false" setExplicitly="false" description="Fail On Invalid Or Missing License - allows knowing when a license is expired or not applied to a machine." />
+          <feature name="ignoreInvalidOptionsSwitches" enabled="true" setExplicitly="false" description="Ignore Invalid Options/Switches - If a switch or option is passed that is not recognized, should choco fail?" />
+          <feature name="usePackageExitCodes" enabled="true" setExplicitly="false" description="Use Package Exit Codes - Package scripts can provide exit codes. With this on, package exit codes will be what choco uses for exit when non-zero (this value can come from a dependency package). Chocolatey defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature off, choco will exit with a 0 or a 1 (matching previous behavior). Available in 0.9.10+." />
+        </features>
+        <apiKeys>
+          <apiKeys source="https://chocolatey.org/" key="bogus/encrypted+value=" />
+       </apiKeys>
+      </chocolatey>
+    EOT
   end
 
   let(:minimum_supported_version) { '0.9.10.0' }
@@ -188,7 +188,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
     end
   end
 
-  context '.validation' do
+  describe '.validation' do
     it 'does not error when Chocolatey is not installed' do
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).and_return(false)
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_install_path).and_return(false)
@@ -224,7 +224,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
 
     it 'does not error when the property_hash is defined, even if :ensure is :present and no :value is supplied' do
       resource.delete(:value)
-      resource.provider.instance_variable_set('@property_hash', value: 'something')
+      resource.provider.instance_variable_set(:@property_hash, value: 'something')
       resource.provider.validate
     end
 
@@ -239,7 +239,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
     end
   end
 
-  context '.flush' do
+  describe '.flush' do
     resource_name = 'yup'
     resource_value = 'this'
     resource_ensure = :present
@@ -261,7 +261,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
                                                                  'config', 'set',
                                                                  '--name', resource_name,
                                                                  '--value', resource_value],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -273,7 +273,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'config', 'unset',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -284,7 +284,7 @@ describe Puppet::Type.type(:chocolateyconfig).provider(:windows) do
                                                                  'config', 'set',
                                                                  '--name', resource_name,
                                                                  '--value', resource_value],
-                                                                 sensitive: true).and_raise(Puppet::ExecutionFailure, 'Nooooo')
+                                                                { sensitive: true }).and_raise(Puppet::ExecutionFailure, 'Nooooo')
 
       expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolateyconfig})
     end

@@ -40,7 +40,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
       chocopath =  (choco_install_path if choco_install_path && file_exists?("#{choco_install_path}\\choco.exe")) ||
                    ('C:\ProgramData\chocolatey' if file_exists?('C:\ProgramData\chocolatey\choco.exe')) ||
                    ('C:\Chocolatey' if file_exists?('C:\Chocolatey\choco.exe')) ||
-                   "#{ENV['ALLUSERSPROFILE']}\\chocolatey"
+                   "#{ENV.fetch('ALLUSERSPROFILE', nil)}\\chocolatey"
 
       chocopath += '\choco.exe'
     else
@@ -62,7 +62,7 @@ module PuppetX::Chocolatey::ChocolateyCommon
   # @return [String] Semver string of Chocolatey version
   def choco_version
     version_fact = Facter.value('chocolateyversion')
-    @chocoversion ||= strip_beta_from_version((version_fact == '0' ? nil : version_fact) || PuppetX::Chocolatey::ChocolateyVersion.version)
+    @chocoversion ||= strip_beta_from_version(((version_fact == '0') ? nil : version_fact) || PuppetX::Chocolatey::ChocolateyVersion.version)
     @chocoversion
   end
   module_function :choco_version

@@ -13,7 +13,7 @@ describe 'Chocolatey Common' do
     allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:set_env_chocolateyinstall)
   end
 
-  context '.chocolatey_command' do
+  describe '.chocolatey_command' do
     before :each do
       skip 'Not on Windows platform' unless Puppet.features.microsoft_windows?
     end
@@ -31,11 +31,11 @@ describe 'Chocolatey Common' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('C:\ProgramData\chocolatey\choco.exe').and_return(false)
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with('C:\Chocolatey\choco.exe').and_return(false)
 
-      PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == "#{ENV['ALLUSERSPROFILE']}\\chocolatey\\choco.exe"
+      PuppetX::Chocolatey::ChocolateyCommon.chocolatey_command.should == "#{ENV.fetch('ALLUSERSPROFILE', nil)}\\chocolatey\\choco.exe"
     end
   end
 
-  context '.choco_version' do
+  describe '.choco_version' do
     it 'returns PuppetX::Chocolatey::ChocolateyVersion.version' do
       expected = '0.9.9.0.1'
       expect(Facter).to receive(:value).with('chocolateyversion').and_return(expected)
@@ -45,7 +45,7 @@ describe 'Chocolatey Common' do
     end
   end
 
-  context '.choco_config_file' do
+  describe '.choco_config_file' do
     let(:choco_install_loc) { 'c:\dude' }
 
     before(:each) do

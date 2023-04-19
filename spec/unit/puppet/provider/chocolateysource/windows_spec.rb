@@ -14,48 +14,48 @@ describe provider do
   let(:choco_config) { 'c:\choco.config' }
   let(:choco_install_path) { 'c:\dude\bin\choco.exe' }
   let(:choco_config_contents) do
-    <<-'EOT'
-<?xml version="1.0" encoding="utf-8"?>
-<chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <config>
-    <add key="cacheLocation" value="" description="Cache location if not TEMP folder." />
-    <add key="commandExecutionTimeoutSeconds" value="2700" description="Default timeout for command execution." />
-    <add key="containsLegacyPackageInstalls" value="true" description="Install has packages installed prior to 0.9.9 series." />
-    <add key="proxy" value="" description="Explicit proxy location." />
-    <add key="proxyUser" value="" description="Optional proxy user." />
-    <add key="proxyPassword" value="" description="Optional proxy password. Encrypted." />
-    <add key="virusCheckMinimumPositives" value="5" description="Minimum numer of scan result positives before flagging a binary as a possible virus. Available in 0.9.10+. Licensed versions only." />
-    <add key="virusScannerType" value="VirusTotal" description="Virus Scanner Type (Generic or VirusTotal). Defaults to VirusTotal for Pro. Available in 0.9.10+. Licensed versions only." />
-    <add key="genericVirusScannerPath" value="" description="The full path to the command line virus scanner executable. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
-    <add key="genericVirusScannerArgs" value="[[File]]" description="The arguments to pass to the generic virus scanner. Use [[File]] for the file path placeholder. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
-    <add key="genericVirusScannerValidExitCodes" value="0" description="The exit codes for the generic virus scanner when a file is not flagged. Separate with comma, defaults to 0. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
-  </config>
-  <sources>
-    <source id="local" value="c:\packages" disabled="true" user="rob" password="bogus/encrypted+value=" priority="0" />
-    <source id="chocolatey" value="https://chocolatey.org/api/v2/" disabled="false" priority="0" />
-    <source id="chocolatey.licensed" value="https://licensedpackages.chocolatey.org/api/v2/" disabled="false" user="customer" password="bogus/encrypted+value=" priority="10" />
-  </sources>
-  <features>
-    <feature name="checksumFiles" enabled="true" setExplicitly="false" description="Checksum files when pulled in from internet (based on package)." />
-    <feature name="virusCheckFiles" enabled="false" setExplicitly="false" />
-    <feature name="autoUninstaller" enabled="true" setExplicitly="true" description="Uninstall from programs and features without requiring an explicit uninstall script." />
-    <feature name="allowGlobalConfirmation" enabled="false" setExplicitly="true" description="Prompt for confirmation in scripts or bypass." />
-    <feature name="allowInsecureConfirmation" enabled="false" setExplicitly="false" />
-    <feature name="failOnAutoUninstaller" enabled="false" setExplicitly="false" description="Fail if automatic uninstaller fails." />
-    <feature name="failOnStandardError" enabled="false" setExplicitly="false" description="Fail if install provider writes to stderr." />
-    <feature name="powershellHost" enabled="true" setExplicitly="false" description="Use Chocolatey''s built-in PowerShell host." />
-    <feature name="logEnvironmentValues" enabled="false" setExplicitly="false" description="Log Environment Values - will log values of environment before and after install (could disclose sensitive data)." />
-    <feature name="virusCheck" enabled="true" setExplicitly="true" description="Virus Check - perform virus checking on downloaded files. Available in 0.9.10+. Licensed versions only." />
-    <feature name="downloadCache" enabled="true" setExplicitly="false" description="Download Cache - use the private download cache if available for a package. Available in 0.9.10+. Licensed versions only." />
-    <feature name="failOnInvalidOrMissingLicense" enabled="false" setExplicitly="false" description="Fail On Invalid Or Missing License - allows knowing when a license is expired or not applied to a machine." />
-    <feature name="ignoreInvalidOptionsSwitches" enabled="true" setExplicitly="false" description="Ignore Invalid Options/Switches - If a switch or option is passed that is not recognized, should choco fail?" />
-    <feature name="usePackageExitCodes" enabled="true" setExplicitly="false" description="Use Package Exit Codes - Package scripts can provide exit codes. With this on, package exit codes will be what choco uses for exit when non-zero (this value can come from a dependency package). Chocolatey defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature off, choco will exit with a 0 or a 1 (matching previous behavior). Available in 0.9.10+." />
-  </features>
-  <apiKeys>
-    <apiKeys source="https://chocolatey.org/" key="bogus/encrypted+value=" />
- </apiKeys>
-</chocolatey>
-  EOT
+    <<~'EOT'
+      <?xml version="1.0" encoding="utf-8"?>
+      <chocolatey xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <config>
+          <add key="cacheLocation" value="" description="Cache location if not TEMP folder." />
+          <add key="commandExecutionTimeoutSeconds" value="2700" description="Default timeout for command execution." />
+          <add key="containsLegacyPackageInstalls" value="true" description="Install has packages installed prior to 0.9.9 series." />
+          <add key="proxy" value="" description="Explicit proxy location." />
+          <add key="proxyUser" value="" description="Optional proxy user." />
+          <add key="proxyPassword" value="" description="Optional proxy password. Encrypted." />
+          <add key="virusCheckMinimumPositives" value="5" description="Minimum numer of scan result positives before flagging a binary as a possible virus. Available in 0.9.10+. Licensed versions only." />
+          <add key="virusScannerType" value="VirusTotal" description="Virus Scanner Type (Generic or VirusTotal). Defaults to VirusTotal for Pro. Available in 0.9.10+. Licensed versions only." />
+          <add key="genericVirusScannerPath" value="" description="The full path to the command line virus scanner executable. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
+          <add key="genericVirusScannerArgs" value="[[File]]" description="The arguments to pass to the generic virus scanner. Use [[File]] for the file path placeholder. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
+          <add key="genericVirusScannerValidExitCodes" value="0" description="The exit codes for the generic virus scanner when a file is not flagged. Separate with comma, defaults to 0. Used when virusScannerType is Generic. Available in 0.9.10+. Licensed versions only." />
+        </config>
+        <sources>
+          <source id="local" value="c:\packages" disabled="true" user="rob" password="bogus/encrypted+value=" priority="0" />
+          <source id="chocolatey" value="https://chocolatey.org/api/v2/" disabled="false" priority="0" />
+          <source id="chocolatey.licensed" value="https://licensedpackages.chocolatey.org/api/v2/" disabled="false" user="customer" password="bogus/encrypted+value=" priority="10" />
+        </sources>
+        <features>
+          <feature name="checksumFiles" enabled="true" setExplicitly="false" description="Checksum files when pulled in from internet (based on package)." />
+          <feature name="virusCheckFiles" enabled="false" setExplicitly="false" />
+          <feature name="autoUninstaller" enabled="true" setExplicitly="true" description="Uninstall from programs and features without requiring an explicit uninstall script." />
+          <feature name="allowGlobalConfirmation" enabled="false" setExplicitly="true" description="Prompt for confirmation in scripts or bypass." />
+          <feature name="allowInsecureConfirmation" enabled="false" setExplicitly="false" />
+          <feature name="failOnAutoUninstaller" enabled="false" setExplicitly="false" description="Fail if automatic uninstaller fails." />
+          <feature name="failOnStandardError" enabled="false" setExplicitly="false" description="Fail if install provider writes to stderr." />
+          <feature name="powershellHost" enabled="true" setExplicitly="false" description="Use Chocolatey''s built-in PowerShell host." />
+          <feature name="logEnvironmentValues" enabled="false" setExplicitly="false" description="Log Environment Values - will log values of environment before and after install (could disclose sensitive data)." />
+          <feature name="virusCheck" enabled="true" setExplicitly="true" description="Virus Check - perform virus checking on downloaded files. Available in 0.9.10+. Licensed versions only." />
+          <feature name="downloadCache" enabled="true" setExplicitly="false" description="Download Cache - use the private download cache if available for a package. Available in 0.9.10+. Licensed versions only." />
+          <feature name="failOnInvalidOrMissingLicense" enabled="false" setExplicitly="false" description="Fail On Invalid Or Missing License - allows knowing when a license is expired or not applied to a machine." />
+          <feature name="ignoreInvalidOptionsSwitches" enabled="true" setExplicitly="false" description="Ignore Invalid Options/Switches - If a switch or option is passed that is not recognized, should choco fail?" />
+          <feature name="usePackageExitCodes" enabled="true" setExplicitly="false" description="Use Package Exit Codes - Package scripts can provide exit codes. With this on, package exit codes will be what choco uses for exit when non-zero (this value can come from a dependency package). Chocolatey defines valid exit codes as 0, 1605, 1614, 1641, 3010. With this feature off, choco will exit with a 0 or a 1 (matching previous behavior). Available in 0.9.10+." />
+        </features>
+        <apiKeys>
+          <apiKeys source="https://chocolatey.org/" key="bogus/encrypted+value=" />
+       </apiKeys>
+      </chocolatey>
+    EOT
   end
 
   let(:newer_choco_version) { '0.10.9' }
@@ -156,6 +156,7 @@ describe provider do
       it "accepts 'true' as a string" do
         resource[:bypass_proxy] = 'true'
       end
+
       it "accepts 'true as a boolean'" do
         resource[:bypass_proxy] = true
       end
@@ -165,6 +166,7 @@ describe provider do
       it "accepts 'true' as a string" do
         resource[:allow_self_service] = 'true'
       end
+
       it "accepts 'true as a boolean'" do
         resource[:allow_self_service] = true
       end
@@ -174,6 +176,7 @@ describe provider do
       it "accepts 'true' as a string" do
         resource[:admin_only] = 'true'
       end
+
       it "accepts 'true as a boolean'" do
         resource[:admin_only] = true
       end
@@ -236,14 +239,14 @@ describe provider do
 
     before :each do
       element.add_attributes('id' => element_id,
-                             'value'       => element_value,
-                             'disabled'    => element_disabled,
-                             'priority'    => element_priority,
-                             'user'        => element_user,
-                             'password'    => element_password,
+                             'value' => element_value,
+                             'disabled' => element_disabled,
+                             'priority' => element_priority,
+                             'user' => element_user,
+                             'password' => element_password,
                              'bypassProxy' => element_bypass_proxy,
                              'selfService' => element_allow_self_service,
-                             'adminOnly'   => element_admin_only)
+                             'adminOnly' => element_admin_only)
     end
 
     it 'returns nil source when element it nil' do
@@ -288,7 +291,7 @@ describe provider do
     end
   end
 
-  context '.validation' do
+  describe '.validation' do
     before :each do
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).and_return(true)
       allow(PuppetX::Chocolatey::ChocolateyCommon).to receive(:file_exists?).with(choco_install_path).and_return(true)
@@ -296,8 +299,8 @@ describe provider do
 
     it 'does not warn when both user/password are empty' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
-      expect(Puppet).to receive(:warning).never
-      expect(Puppet).to receive(:debug).never
+      expect(Puppet).not_to receive(:warning)
+      expect(Puppet).not_to receive(:debug)
 
       resource.provider.validate
     end
@@ -315,9 +318,9 @@ describe provider do
       resource[:password] = 'tim'
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
-      expect(Puppet).to receive(:debug).with('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. '\
-        "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{name}]")
+      expect(Puppet).not_to receive(:warning)
+      expect(Puppet).to receive(:debug).with('The password is not ensurable, so Puppet is unable to change the value using chocolateysource resource. ' \
+                                             "As a workaround, a password change can be in the form of an exec. Reference Chocolateysource[#{name}]")
 
       resource.provider.validate
     end
@@ -327,7 +330,7 @@ describe provider do
       resource[:password] = 'tim'
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -337,7 +340,7 @@ describe provider do
       resource[:password] = 'tim'
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -346,7 +349,7 @@ describe provider do
       resource[:bypass_proxy] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -355,7 +358,7 @@ describe provider do
       resource[:bypass_proxy] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_bypass_proxy)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -373,7 +376,7 @@ describe provider do
       resource[:allow_self_service] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -382,7 +385,7 @@ describe provider do
       resource[:allow_self_service] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_allow_self_service)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -400,7 +403,7 @@ describe provider do
       resource[:admin_only] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -409,7 +412,7 @@ describe provider do
       resource[:admin_only] = true
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_admin_only)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -425,14 +428,14 @@ describe provider do
 
     it 'does not warn if priority is not set' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
 
     it 'does not warn if priority is not set on older unsupported versions' do
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -441,7 +444,7 @@ describe provider do
       resource[:priority] = 0
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(last_unsupported_version_priority)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -450,7 +453,7 @@ describe provider do
       resource[:priority] = 10
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(newer_choco_version)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -459,7 +462,7 @@ describe provider do
       resource[:priority] = 10
 
       expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).and_return(minimum_supported_version_priority)
-      expect(Puppet).to receive(:warning).never
+      expect(Puppet).not_to receive(:warning)
 
       resource.provider.validate
     end
@@ -493,7 +496,7 @@ describe provider do
     end
   end
 
-  context '.flush' do
+  describe '.flush' do
     resource_name = 'yup'
     resource_location = 'loc'
     resource_ensure = :present
@@ -522,12 +525,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', 'yup'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -550,12 +553,12 @@ describe provider do
                                                                  '--bypass-proxy',
                                                                  '--allow-self-service',
                                                                  '--admin-only',
-                                                                 '--priority', resource_priority], combine: true, failonfail: true, sensitive: true)
+                                                                 '--priority', resource_priority], { combine: true, failonfail: true, sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -568,12 +571,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', resource_priority],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -588,12 +591,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--bypass-proxy',
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -608,12 +611,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--allow-self-service',
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -628,12 +631,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--admin-only',
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -649,12 +652,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--user', resource_user,
                                                                  '--password', resource_password,
-                                                                 '--priority', '0'], combine: true, failonfail: true, sensitive: true)
+                                                                 '--priority', '0'], { combine: true, failonfail: true, sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -669,12 +672,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--user', resource_user,
-                                                                 '--password', resource_password], combine: true, failonfail: true, sensitive: true)
+                                                                 '--password', resource_password], { combine: true, failonfail: true, sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -688,12 +691,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -708,12 +711,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--bypass-proxy',
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -727,12 +730,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -747,12 +750,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--allow-self-service',
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -767,12 +770,12 @@ describe provider do
                                                                  '--source', resource_location,
                                                                  '--admin-only',
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -784,12 +787,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -801,12 +804,12 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -819,12 +822,12 @@ describe provider do
                                                                  'source', 'add',
                                                                  '--name', resource_name,
                                                                  '--source', resource_location],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'enable',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -837,7 +840,7 @@ describe provider do
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'disable',
                                                                  '--name', 'chocolatey'],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
       resource.flush
     end
@@ -846,16 +849,16 @@ describe provider do
       resource[:ensure] = :absent
       resource.provider.destroy
 
-      expect(PuppetX::Chocolatey::ChocolateyCommon).to receive(:choco_version).never
+      expect(PuppetX::Chocolatey::ChocolateyCommon).not_to receive(:choco_version)
       expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
                                                                  'source', 'remove',
                                                                  '--name', resource_name],
-                                                                 sensitive: true)
+                                                                { sensitive: true })
 
-      expect(Puppet::Util::Execution).to receive(:execute).with([provider_class.command(:chocolatey),
-                                                                 'source', 'enable',
-                                                                 '--name', 'yup'],
-                                                                 sensitive: true).never
+      expect(Puppet::Util::Execution).not_to receive(:execute).with([provider_class.command(:chocolatey),
+                                                                     'source', 'enable',
+                                                                     '--name', 'yup'],
+                                                                    { sensitive: true })
 
       resource.flush
     end
@@ -867,7 +870,7 @@ describe provider do
                                                                  '--name', resource_name,
                                                                  '--source', resource_location,
                                                                  '--priority', '0'],
-                                                                 sensitive: true).and_raise(Puppet::ExecutionFailure, 'Nooooo')
+                                                                { sensitive: true }).and_raise(Puppet::ExecutionFailure, 'Nooooo')
 
       expect { resource.flush }.to raise_error(Puppet::Error, %r{Unable to set Chocolatey source})
     end

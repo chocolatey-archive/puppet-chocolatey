@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../tasks/init.rb'
+require_relative '../../tasks/init'
 
 describe ChocolateyTask do
   subject { described_class.new.task(action: action, package: package, version: version) }

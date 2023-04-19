@@ -7,6 +7,11 @@ require 'puppet_x/chocolatey/chocolatey_install'
 
 describe 'Chocolatey Install Location' do
   context 'using normal install path' do
+    after :each do
+      # setting the values back
+      ENV['ChocolateyInstall'] = 'c:\blah'
+    end
+
     context 'on Windows' do
       before :each do
         skip 'Not on Windows platform' unless Puppet::Util::Platform.windows?
@@ -54,11 +59,6 @@ describe 'Chocolatey Install Location' do
         expect(PuppetX::Chocolatey::ChocolateyInstall.install_path).to be_nil
       end
     end
-
-    after :each do
-      # setting the values back
-      ENV['ChocolateyInstall'] = 'c:\blah'
-    end
   end
 
   context 'using temp directory' do
@@ -72,6 +72,7 @@ describe 'Chocolatey Install Location' do
 
       expect(PuppetX::Chocolatey::ChocolateyInstall.temp_dir).to eq expected_value
     end
+
     it 'returns nil path from registry if it does not exist' do
       allow_any_instance_of(Win32::Registry).to receive(:[]).with('TEMP').and_raise(Win32::Registry::Error.new(2), 'file not found yo')
 

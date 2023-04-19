@@ -32,9 +32,7 @@ Puppet::Type.newtype(:chocolateyconfig) do
       will be encrypted in the configuration file."
 
     validate do |value|
-      if value.nil? || value.empty?
-        raise ArgumentError, 'A non-empty name must be specified.'
-      end
+      raise ArgumentError, 'A non-empty name must be specified.' if value.nil? || value.empty?
     end
 
     isnamevar
@@ -55,9 +53,7 @@ Puppet::Type.newtype(:chocolateyconfig) do
       configuration file."
 
     validate do |value|
-      if value.nil? || value.empty?
-        raise ArgumentError, 'A non-empty value must be specified. To unset value, use ensure => absent'
-      end
+      raise ArgumentError, 'A non-empty value must be specified. To unset value, use ensure => absent' if value.nil? || value.empty?
     end
 
     def insync?(is)
@@ -72,9 +68,7 @@ Puppet::Type.newtype(:chocolateyconfig) do
   end
 
   validate do
-    if provider.respond_to?(:validate)
-      provider.validate
-    end
+    provider.validate if provider.respond_to?(:validate)
   end
 
   autorequire(:exec) do

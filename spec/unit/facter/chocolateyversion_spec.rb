@@ -15,6 +15,11 @@ describe 'chocolateyversion fact' do
     Facter.clear_messages
   end
 
+  after(:each) do
+    Facter.clear
+    Facter.clear_messages
+  end
+
   context 'on Windows' do
     it 'returns the output of PuppetX::Chocolatey::ChocolateyVersion.version' do
       allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return('1.2.3')
@@ -27,10 +32,5 @@ describe 'chocolateyversion fact' do
 
       expect(fact_value).to eq('0')
     end
-  end
-
-  after(:each) do
-    Facter.clear
-    Facter.clear_messages
   end
 end

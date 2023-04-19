@@ -8,7 +8,7 @@ describe 'chocolatey' do
       chocolateyversion: '0.9.9.8',
       choco_install_path: 'C:\ProgramData\chocolatey',
       choco_temp_dir: 'C:\Temp',
-      path: 'C:\something',
+      path: 'C:\something'
     }
   end
 
@@ -33,7 +33,7 @@ describe 'chocolatey' do
       let(:params) { { use_7zip: false } }
 
       it {
-        is_expected.not_to contain_file('C:\Temp\7za.exe')
+        expect(subject).not_to contain_file('C:\Temp\7za.exe')
       }
     end
 
@@ -43,11 +43,12 @@ describe 'chocolatey' do
 
         it { is_expected.to contain_file('C:\Temp\7za.exe').with_source('https://chocolatey.org/7za.exe') }
       end
+
       context "seven_zip_download_url => 'https://packages.organization.net/7za.exe'" do
         let(:params) do
           {
             use_7zip: true,
-            seven_zip_download_url: 'https://packages.organization.net/7za.exe',
+            seven_zip_download_url: 'https://packages.organization.net/7za.exe'
           }
         end
 

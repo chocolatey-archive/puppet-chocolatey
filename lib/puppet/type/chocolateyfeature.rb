@@ -4,7 +4,7 @@ require 'puppet/type'
 require 'pathname'
 
 Puppet::Type.newtype(:chocolateyfeature) do
-  @doc = <<-'EOT'
+  @doc = <<-EOT
     Allows managing features for Chocolatey. Features are
     configuration that act as feature flippers to turn on or
     off certain aspects of how Chocolatey works.
@@ -17,9 +17,7 @@ Puppet::Type.newtype(:chocolateyfeature) do
     desc 'The name of the feature. Used for uniqueness.'
 
     validate do |value|
-      if value.nil? || value.empty?
-        raise ArgumentError, 'A non-empty name must be specified.'
-      end
+      raise ArgumentError, 'A non-empty name must be specified.' if value.nil? || value.empty?
     end
 
     isnamevar
@@ -45,13 +43,9 @@ Puppet::Type.newtype(:chocolateyfeature) do
   end
 
   validate do
-    if self[:ensure].nil? && provider.properties[:ensure].nil?
-      raise ArgumentError, 'Invalid value for ensure. Valid values are enabled or disabled.'
-    end
+    raise ArgumentError, 'Invalid value for ensure. Valid values are enabled or disabled.' if self[:ensure].nil? && provider.properties[:ensure].nil?
 
-    if provider.respond_to?(:validate)
-      provider.validate
-    end
+    provider.validate if provider.respond_to?(:validate)
   end
 
   autorequire(:exec) do

@@ -100,6 +100,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     # This is unlikely to work because Puppet itself will not know how to handle these
     # alternate exit codes.
     return true if use_package_exit_codes_feature[:enabled].casecmp('true').zero? && use_package_exit_codes_feature[:set_explicitly].casecmp('true').zero?
+
     false
   end
 
@@ -142,13 +143,9 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       args << @resource[:name][%r{\A\S*}] << '--version' << should
     end
 
-    if choco_exe
-      args << '-y'
-    end
+    args << '-y' if choco_exe
 
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
 
     args << @resource[:install_options]
 
@@ -176,15 +173,11 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
     args = 'uninstall', @resource[:name][%r{\A\S*}]
 
-    if choco_exe
-      args << '-fy'
-    end
+    args << '-fy' if choco_exe
 
     choco_version = Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon.choco_version)
-    if !choco_exe || choco_version >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE)
-      if @resource[:source]
-        args << '--source' << @resource[:source]
-      end
+    if (!choco_exe || choco_version >= Gem::Version.new(PuppetX::Chocolatey::ChocolateyCommon::MINIMUM_SUPPORTED_CHOCO_UNINSTALL_SOURCE)) && (@resource[:source])
+      args << '--source' << @resource[:source]
     end
 
     args << @resource[:uninstall_options]
@@ -215,9 +208,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       args << 'update' << @resource[:name][%r{\A\S*}]
     end
 
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
 
     args << @resource[:install_options]
 
@@ -234,9 +225,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
         args << '--no-progress'
       end
       output = chocolatey(*args)
-      if @resource[:package_settings]['log_output']
-        Puppet.info 'Output from chocolatey: ' + output
-      end
+      Puppet.info 'Output from chocolatey: ' + output if @resource[:package_settings]['log_output']
     else
       install
     end
@@ -261,9 +250,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     args = []
     args << 'list'
     args << '-lo'
-    if compiled_choco?
-      args << '-r'
-    end
+    args << '-r' if compiled_choco?
 
     [command(:chocolatey), *args]
   end
@@ -276,7 +263,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       pins = []
       pin_output = nil unless choco_exe
       # don't add -r yet, as there is an issue in 0.9.9.9/0.9.9.10 that returns full list plus pins
-      pin_output = Puppet::Util::Execution.execute([command(:chocolatey), 'pin', 'list'], sensitive: true) if choco_exe
+      pin_output = Puppet::Util::Execution.execute([command(:chocolatey), 'pin', 'list'], { sensitive: true }) if choco_exe
       pin_output&.split("\n")&.each { |pin| pins << pin.split('|')[0] }
 
       execpipe(listcmd) do |process|
@@ -284,6 +271,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
           line.chomp!
           next if line.empty? || line.match(%r{Reading environment variables.*})
           raise Puppet::Error, 'At least one source must be enabled.' if line.match?(%r{Unable to search for packages.*})
+
           values = if choco_exe
                      line.split('|')
                    else
@@ -314,17 +302,11 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
              args << 'version' << @resource[:name][%r{\A\S*}]
            end
 
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
 
-    unless choco_exe
-      args << '| findstr /R "latest" | findstr /V "latestCompare"'
-    end
+    args << '| findstr /R "latest" | findstr /V "latestCompare"' unless choco_exe
     @resource[:package_settings] ||= {}
-    if @resource[:package_settings]['verbose']
-      Puppet.info 'Calling chocolatey with arguments: ' + args.join(' ')
-    end
+    Puppet.info 'Calling chocolatey with arguments: ' + args.join(' ') if @resource[:package_settings]['verbose']
     [command(:chocolatey), *args]
   end
 
@@ -336,6 +318,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
         process.each_line do |line|
           line.chomp!
           next if line.empty?
+
           if compiled_choco?
             values = line.split('|')
             package_ver = values[2]
@@ -377,6 +360,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
   def on_hold?
     return false unless compiled_choco?
+
     properties[:mark] == :hold
   end
 
@@ -395,7 +379,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
   def version_range?(value)
     GEM_VERSION_RANGE.parse(value, GEM_VERSION)
     true
-  rescue
+  rescue StandardError
     false
   end
 
@@ -403,10 +387,12 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     # this is called after the generic version matching logic (insync? for the
     # type), so we only get here if should != is
     return false unless is && is != :absent
+
     # if 'should' is a range and 'is' a gem version we should check if 'should' includes 'is'
     should = @resource[:ensure]
     return false unless is.is_a?(String) && should.is_a?(String)
     return false unless version_range?(should)
+
     should_range = GEM_VERSION_RANGE.parse(should, GEM_VERSION)
     should_range.include?(GEM_VERSION.parse(is))
   end
@@ -420,9 +406,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     ]
 
     args << '-r' if choco_exe
-    if @resource[:source]
-      args << '--source' << @resource[:source]
-    end
+    args << '--source' << @resource[:source] if @resource[:source]
     [command(:chocolatey), *args]
   end
 
@@ -433,6 +417,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
       process.each_line do |line|
         line.chomp!
         next if line.empty?
+
         if compiled_choco?
           values = line.split('|')
           package_ver = GEM_VERSION.parse(values[1])
@@ -446,6 +431,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
     end
 
     raise Puppet::Error, 'No available version found that match given version range.' if available_versions.empty?
+
     available_versions.to_a.last.to_s
   end
 end
