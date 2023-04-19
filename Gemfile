@@ -41,6 +41,7 @@ group :system_tests do
   gem "puppet_litmus", '< 1.0.0', require: false, platforms: [:ruby, :x64_mingw]
   gem "serverspec", '~> 2.41',    require: false
   gem "nokogiri",                 require: false, platforms: [:ruby, :mswin, :mingw, :x64_mingw]
+  gem "sorted_set",               require: false
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']

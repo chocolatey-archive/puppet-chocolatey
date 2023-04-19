@@ -10,7 +10,9 @@ appveyor.yml:
 Gemfile:
   required:
     ":system_tests":
-    - gem: nokogiri
+    - gem: 
+      - nokogiri
+      - sorted_set
       platforms:
       - ruby
       - mswin
