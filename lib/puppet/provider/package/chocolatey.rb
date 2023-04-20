@@ -412,7 +412,7 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
   def best_version(should_range)
     # Get all available versions from chocolatey which are matching the defined version range and return the highest.
-    available_versions = SortedSet.new
+    available_versions = Set.new
     execpipe(all_versions_cmd) do |process|
       process.each_line do |line|
         line.chomp!
@@ -432,6 +432,6 @@ Puppet::Type.type(:package).provide(:chocolatey, parent: Puppet::Provider::Packa
 
     raise Puppet::Error, 'No available version found that match given version range.' if available_versions.empty?
 
-    available_versions.to_a.last.to_s
+    available_versions.to_a.max.to_s
   end
 end

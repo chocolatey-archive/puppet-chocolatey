@@ -12,7 +12,6 @@ Gemfile:
     ":system_tests":
     - gem: 
       - nokogiri
-      - sorted_set
       platforms:
       - ruby
       - mswin
