@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       spec_matrix: ${{ steps.get-matrix.outputs.spec_matrix }}
+
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
@@ -28,10 +29,6 @@ jobs:
           bundle env
           echo ::endgroup::
 
-      - name: Run Static & Syntax Tests
-        run: |
-          bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop
-
       - name: Setup Spec Test Matrix
         id: get-matrix
         run: |
@@ -47,6 +44,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.setup_matrix.outputs.spec_matrix)}}
+
+    env:
+      PUPPET_GEM_VERSION: ${{ matrix.puppet_version }}
+      FACTER_GEM_VERSION: 'https://github.com/puppetlabs/facter#main'
 
     steps:
 
@@ -68,6 +69,10 @@ jobs:
       - name: Create task helper symlink
         run: |
           ln -s "${PWD}/spec/fixtures/modules/ruby_task_helper" ..
+
+      - name: "Run Static & Syntax Tests"
+        run: |
+          bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop
 
       - name: Run parallel_spec tests
         run: |
