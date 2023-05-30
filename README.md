@@ -231,6 +231,18 @@ verifiable. If you need to rotate passwords, you cannot use this
 resource to do so unless you also change the location, user, or priority
 (because those are ensurable properties).
 
+**NOTE:** The sensitive `password` can be deferred using the [Deferred](https://www.puppet.com/docs/puppet/7/template_with_deferred_values.html) function on Puppet Master and enable to execute on agent.
+
+~~~ puppet
+chocolateysource {'sourcename':
+  ensure   => present,
+  location => 'https://internal/source',
+  user     => 'username',
+  password => Deferred('sprintf', ['password']),
+}
+
+~~~
+
 #### Features Configuration
 
 You can configure features that Chocolatey has available. Run
@@ -347,6 +359,14 @@ chocolateyconfig {'proxyPassword':
 }
 ~~~
 
+**NOTE:** The sensitive `value` can be deferred using the [Deferred](https://www.puppet.com/docs/puppet/7/template_with_deferred_values.html) function on Puppet Master and enable to execute on agent.
+
+~~~ puppet
+chocolateyconfig {'proxyPassword':
+  value  => Deferred('sprintf', ['securepassword']),
+}
+
+~~~
 #### Set Chocolatey as Default Windows Provider
 
 If you want to set this provider as the site-wide default,
