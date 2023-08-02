@@ -417,8 +417,7 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
   context 'when uninstalling' do
     context 'with compiled choco client' do
       before :each do
-        allow(provider).to receive(:on_hold?).and_return(false)
-        allow(provider).to receive(:use_package_exit_codes_feature_enabled?).and_return(false)
+        allow(provider).to receive_messages(on_hold?: false, use_package_exit_codes_feature_enabled?: false)
         allow(provider.class).to receive(:compiled_choco?).and_return(true)
         allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
@@ -501,8 +500,7 @@ describe Puppet::Type.type(:package).provider(:chocolatey) do
   context 'when updating' do
     context 'with compiled choco client' do
       before :each do
-        allow(provider).to receive(:on_hold?).and_return(false)
-        allow(provider).to receive(:use_package_exit_codes_feature_enabled?).and_return(false)
+        allow(provider).to receive_messages(on_hold?: false, use_package_exit_codes_feature_enabled?: false)
         allow(provider.class).to receive(:compiled_choco?).and_return(true)
         allow(PuppetX::Chocolatey::ChocolateyVersion).to receive(:version).and_return(first_compiled_choco_version)
         # unhold is called in installs on compiled choco
