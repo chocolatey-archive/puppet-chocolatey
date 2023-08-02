@@ -9,8 +9,7 @@ describe ChocolateyStatusTask do
   before(:each) do
     sucess_status = double
     allow(sucess_status).to receive(:==).with(0).and_return(true)
-    allow(sucess_status).to receive(:exited?).and_return(true)
-    allow(sucess_status).to receive(:exitstatus).and_return(0)
+    allow(sucess_status).to receive_messages(exited?: true, exitstatus: 0)
     allow(Open3).to receive(:capture2).with('choco', 'list', '--local-only', '--no-color', '--limit-output').and_return([<<~OUTPUT, sucess_status])
       chocolatey|0.11.3
       puppet-bolt|3.20.0

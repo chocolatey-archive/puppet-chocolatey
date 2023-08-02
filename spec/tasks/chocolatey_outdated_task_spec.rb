@@ -9,8 +9,7 @@ describe ChocolateyOutdatedTask do
   before(:each) do
     sucess_status = double
     allow(sucess_status).to receive(:==).with(0).and_return(true)
-    allow(sucess_status).to receive(:exited?).and_return(true)
-    allow(sucess_status).to receive(:exitstatus).and_return(0)
+    allow(sucess_status).to receive_messages(exited?: true, exitstatus: 0)
     allow(Open3).to receive(:capture2).with('choco', 'outdated', '--no-color', '--limit-output').and_return([<<~OUTPUT, sucess_status])
       puppet-bolt|3.20.0|3.21.0|false
     OUTPUT

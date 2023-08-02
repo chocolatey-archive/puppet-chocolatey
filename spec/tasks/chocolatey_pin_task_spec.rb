@@ -12,8 +12,7 @@ describe ChocolateyPinTask do
   let(:sucess_status) do
     res = double
     allow(res).to receive(:==).with(0).and_return(true)
-    allow(res).to receive(:exited?).and_return(true)
-    allow(res).to receive(:exitstatus).and_return(0)
+    allow(res).to receive_messages(exited?: true, exitstatus: 0)
     res
   end
 
