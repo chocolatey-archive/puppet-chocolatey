@@ -42,8 +42,15 @@ class chocolatey::install {
     data   => $chocolatey::choco_install_location,
   }
 
+  $install_parameters = {
+    'download_url'   => $download_url,
+    'unzip_type'     => $unzip_type,
+    '_install_proxy' => $_install_proxy,
+    'seven_zip_exe'  => $seven_zip_exe,
+  }
+
   exec { 'install_chocolatey_official':
-    command     => template('chocolatey/InstallChocolatey.ps1.erb'),
+    command     => epp('chocolatey/InstallChocolatey.ps1.epp', $install_parameters),
     creates     => "${chocolatey::choco_install_location}\\bin\\choco.exe",
     provider    => powershell,
     timeout     => $chocolatey::choco_install_timeout_seconds,

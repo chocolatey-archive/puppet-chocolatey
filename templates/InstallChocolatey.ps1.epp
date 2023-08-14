@@ -21,10 +21,10 @@ $ErrorActionPreference = 'Stop'
 #try {
 
 # variables
-$url = '<%= @download_url %>'
-$unzipMethod = '<%= @unzip_type %>'
-$install_proxy = <%= @_install_proxy %>
-$7zaExe = '<%= @seven_zip_exe %>'
+$url = '<%= $download_url %>'
+$unzipMethod = '<%= $unzip_type %>'
+$install_proxy = <%= $_install_proxy %>
+$7zaExe = '<%= $seven_zip_exe %>'
 if ($env:TEMP -eq $null) {
   $env:TEMP = Join-Path $env:SystemDrive 'temp'
 }
@@ -69,7 +69,7 @@ Fix-PowerShellOutputRedirectionBug
 # message though)
 try {
   # Set TLS 1.2 (3072), then TLS 1.1 (768), then TLS 1.0 (192), finally SSL 3.0 (48)
-  # Use integers because the enumeration values for TLS 1.2 and TLS 1.1 won't
+  # Use integers because the enumeration values for TLS 1.2 and TLS 1.1 will not
   # exist in .NET 4.0, even though they are addressable if .NET 4.5+ is
   # installed (.NET 4.5 is an in-place upgrade).
   [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
